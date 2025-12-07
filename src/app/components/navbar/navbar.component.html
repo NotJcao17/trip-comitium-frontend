@@ -1,0 +1,42 @@
+<nav class="navbar fixed-top navbar-expand-lg">
+    <div class="container-fluid justify-content-center">
+
+        <!-- CONTENEDOR DE VIDRIO -->
+        <div class="nav-glass-container">
+
+            <a class="navbar-brand" routerLink="/">
+                <i class="fa-solid fa-layer-group me-2"></i>Trip Comitium
+            </a>
+
+            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="text-white"><i class="fa-solid fa-bars"></i></span>
+            </button>
+
+            <!-- Menú -->
+            <div class="collapse navbar-collapse flex-grow-1" id="navbarNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" routerLink="/" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+                    <!-- Usamos fragmentos para scroll interno en la misma página -->
+                    <li class="nav-item"><a class="nav-link" routerLink="/" fragment="how-it-works">Cómo Funciona</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" routerLink="/" fragment="features">Funciones</a></li>
+                </ul>
+
+                <div class="d-flex gap-2 justify-content-lg-end">
+                    <!-- Lógica de Auth: Si no está logueado -->
+                    <ng-container *ngIf="!authService.isLoggedIn()">
+                        <a routerLink="/join" class="btn btn-glass btn-custom btn-sm">Unirse</a>
+                    </ng-container>
+
+                    <!-- Si está logueado -->
+                    <ng-container *ngIf="authService.isLoggedIn()">
+                        <!-- Botón Dashboard del Viaje -->
+                    </ng-container>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,30 @@
+<div class="slider-container glass-panel p-5 text-center">
+
+    <h5 class="text-white mb-4">¿Cuánto estás dispuesto a gastar?</h5>
+
+    <!-- Valor Gigante -->
+    <div class="amount-display mb-4 text-neon fw-bold">
+        ${{ amount | number }} <span class="fs-5 text-muted">{{ currency }}</span>
+    </div>
+
+    <!-- Slider -->
+    <div class="range-wrapper mb-4">
+        <input type="range" class="form-range custom-range"
+               [min]="min" [max]="max" [step]="step"
+               [(ngModel)]="amount">
+
+        <div class="d-flex justify-content-between mt-2 text-muted small">
+            <span>${{ min }}</span>
+            <span>${{ max }}</span>
+        </div>
+    </div>
+
+    <!-- Botón -->
+    <div class="mt-4">
+        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3">{{ successMessage }}</div>
+        <button class="btn btn-primary-grad btn-custom w-100" (click)="submitVote()" [disabled]="isSubmitting">
+            Confirmar Presupuesto
+        </button>
+    </div>
+
+</div>

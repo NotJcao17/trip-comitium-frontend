@@ -1,0 +1,108 @@
+<div class="glass-panel p-4 border border-primary border-opacity-25">
+    <h5 class="text-white mb-4">Configurar Nueva Encuesta</h5>
+
+    <form (ngSubmit)="submit()">
+        <div class="row">
+            <!-- Título -->
+            <div class="col-md-8 mb-3">
+                <label class="form-label text-muted small fw-bold">PREGUNTA / TÍTULO</label>
+                <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="title"
+                    name="title" placeholder="Ej. ¿Qué fecha prefieren?" required>
+            </div>
+
+            <!-- Tipo -->
+            <div class="col-md-4 mb-3">
+                <label class="form-label text-muted small fw-bold">TIPO DE RESPUESTA</label>
+                <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="type" name="type">
+                    <option value="multiple_choice">Opción Múltiple</option>
+                    <option value="date">Fechas (Calendario)</option>
+                    <option value="slider">Presupuesto (Slider)</option>
+                    <option value="tier_list">Tier List (Ranking)</option>
+                    <option value="text">Texto Libre</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Campos Dinámicos -->
+        <div class="mt-3 p-3 bg-black bg-opacity-25 rounded border border-secondary border-opacity-10">
+
+            <!-- A: Opciones (Para Multiple Choice / Tier List) -->
+            <div *ngIf="type === 'multiple_choice' || type === 'tier_list'">
+                <label class="form-label text-white small">OPCIONES (Una por línea)</label>
+                <textarea class="form-control bg-dark text-white border-secondary font-monospace" rows="4"
+                    [(ngModel)]="optionsText" name="optionsText" placeholder="Pizza&#10;Sushi&#10;Tacos"></textarea>
+                <div class="form-text text-muted small">Cada línea será una opción seleccionable o un elemento para
+                    rankear.</div>
+            </div>
+
+            <!-- B: Config Slider -->
+            <div *ngIf="type === 'slider'" class="row">
+                <div class="col-4">
+                    <label class="form-label text-white small">MÍNIMO</label>
+                    <input type="number" class="form-control bg-dark text-white border-secondary"
+                        [(ngModel)]="sliderMin" name="min">
+                </div>
+                <div class="col-4">
+                    <label class="form-label text-white small">MÁXIMO</label>
+                    <input type="number" class="form-control bg-dark text-white border-secondary"
+                        [(ngModel)]="sliderMax" name="max">
+                </div>
+                <div class="col-4">
+                    <label class="form-label text-white small">PASO</label>
+                    <input type="number" class="form-control bg-dark text-white border-secondary"
+                        [(ngModel)]="sliderStep" name="step">
+                </div>
+            </div>
+
+            <!-- C: Config Fechas -->
+            <div *ngIf="type === 'date'" class="row">
+                <div class="col-6">
+                    <label class="form-label text-white small">FECHA INICIO</label>
+                    <div class="position-relative">
+                        <!-- Visible Input (Formatted) -->
+                        <input type="text" class="form-control bg-dark text-white border-secondary"
+                            [value]="dateStart | date:'dd/MM/yyyy'" placeholder="dd/mm/yyyy" readonly>
+                        <i
+                            class="fa-solid fa-calendar text-white position-absolute top-50 end-0 translate-middle-y me-3"></i>
+
+                        <!-- Invisible Date Picker Trigger -->
+                        <input type="date" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                            style="cursor: pointer;" [(ngModel)]="dateStart" name="dateStart">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label class="form-label text-white small">FECHA FIN</label>
+                    <div class="position-relative">
+                        <!-- Visible Input (Formatted) -->
+                        <input type="text" class="form-control bg-dark text-white border-secondary"
+                            [value]="dateEnd | date:'dd/MM/yyyy'" placeholder="dd/mm/yyyy" readonly>
+                        <i
+                            class="fa-solid fa-calendar text-white position-absolute top-50 end-0 translate-middle-y me-3"></i>
+
+                        <!-- Invisible Date Picker Trigger -->
+                        <input type="date" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                            style="cursor: pointer;" [(ngModel)]="dateEnd" name="dateEnd">
+                    </div>
+                </div>
+                <div class="col-12 mt-2">
+                    <div class="text-muted small">
+                        <i class="fa-solid fa-info-circle me-2"></i> Define el rango de fechas disponible para votar.
+                    </div>
+                </div>
+            </div>
+
+            <!-- D: Info Texto -->
+            <div *ngIf="type === 'text'" class="text-muted small">
+                <i class="fa-solid fa-info-circle me-2"></i> Los usuarios tendrán un campo de texto abierto para
+                escribir su respuesta.
+            </div>
+
+        </div>
+
+        <div class="mt-4 text-end">
+            <button type="submit" class="btn btn-primary-grad btn-custom" [disabled]="!title || isSubmitting">
+                Crear Encuesta
+            </button>
+        </div>
+    </form>
+</div>

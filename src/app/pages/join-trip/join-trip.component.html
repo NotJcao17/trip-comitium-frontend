@@ -1,0 +1,65 @@
+<div class="ambient-light">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
+
+<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="row w-100 justify-content-center">
+        <div class="col-lg-5 col-md-7">
+
+            <div class="glass-panel p-4 p-md-5 animate-up text-center">
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-2">Unirse a Sala</h2>
+                    <p class="text-muted">Ingresa el código que te compartieron.</p>
+                </div>
+
+                <form (ngSubmit)="onSubmit()" class="text-start">
+
+                    <!-- Código -->
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">CÓDIGO DEL VIAJE</label>
+                        <input type="text"
+                            class="form-control custom-input text-center font-monospace fs-4 letter-spacing-2 text-uppercase"
+                            placeholder="ABC-12" [(ngModel)]="formData.shareCode" name="shareCode" required>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">TU NOMBRE O APODO</label>
+                        <input type="text" class="form-control custom-input" placeholder="¿Quién eres?"
+                            [(ngModel)]="formData.name" name="name" required>
+                    </div>
+
+                    <!-- PIN -->
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">TU PIN (4 DÍGITOS)</label>
+                        <div class="input-group">
+                            <input [type]="showPin ? 'text' : 'password'" class="form-control custom-input border-end-0"
+                                placeholder="****" maxlength="4" [(ngModel)]="formData.accessPin" name="accessPin"
+                                required>
+                            <button class="btn btn-glass border-start-0 text-white" type="button" (click)="togglePin()">
+                                <i class="fa-solid" [class.fa-eye]="!showPin" [class.fa-eye-slash]="showPin"></i>
+                            </button>
+                        </div>
+                        <div class="form-text text-white-50 small">Si es tu primera vez, este será tu PIN. Si ya
+                            entraste antes, usa el mismo.</div>
+                    </div>
+
+                    <div *ngIf="errorMessage"
+                        class="alert alert-danger bg-danger bg-opacity-25 border-danger text-white text-center mb-4">
+                        {{ errorMessage }}
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary-grad btn-custom btn-lg" [disabled]="isLoading">
+                            <span *ngIf="!isLoading">Entrar <i class="fa-solid fa-arrow-right ms-2"></i></span>
+                            <span *ngIf="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Verificando...</span>
+                        </button>
+                        <a routerLink="/" class="btn btn-glass btn-custom text-white">Volver</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

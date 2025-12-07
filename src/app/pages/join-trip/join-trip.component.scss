@@ -1,0 +1,38 @@
+/* Reutilizamos estilos para consistencia */
+.ambient-light {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden; z-index: -1; pointer-events: none;
+}
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; }
+.orb-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #ec4899; }
+.orb-2 { bottom: 10%; right: 10%; width: 500px; height: 500px; background: #6366f1; }
+
+.custom-input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 12px;
+    padding: 12px 15px;
+    transition: all 0.3s;
+
+    &:focus {
+        background: rgba(0, 0, 0, 0.5);
+        border-color: #ec4899; /* Rosa para variar un poco o mantener morado */
+        box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
+        color: white;
+    }
+    &::placeholder { color: rgba(255, 255, 255, 0.3); }
+}
+
+.letter-spacing-2 { letter-spacing: 2px; }
+
+.animate-up { animation: slideUp 0.6s ease-out; }
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+    padding-top: 130px !important;
+    padding-bottom: 50px;
+}

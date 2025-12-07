@@ -1,0 +1,23 @@
+<div [ngSwitch]="poll.type">
+
+  <!-- CASO 1: FECHAS -->
+  <div *ngSwitchCase="'date'">
+    <app-date-selector [poll]="poll"></app-date-selector>
+  </div>
+
+  <!-- CASO 2: TIER LIST -->
+  <div *ngSwitchCase="'tier_list'">
+    <app-tier-list-sort [poll]="poll"></app-tier-list-sort>
+  </div>
+
+  <!-- CASO 3: SLIDER -->
+  <div *ngSwitchCase="'slider'">
+    <app-budget-slider [poll]="poll"></app-budget-slider>
+  </div>
+
+  <!-- CASO 4: OPCIÓN MÚLTIPLE / TEXTO -->
+  <div *ngSwitchDefault>
+    <app-standard-vote [poll]="poll"></app-standard-vote>
+  </div>
+
+</div>

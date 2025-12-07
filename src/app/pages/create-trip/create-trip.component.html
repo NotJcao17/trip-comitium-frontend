@@ -1,0 +1,75 @@
+<!-- Fondo Ambiental -->
+<div class="ambient-light">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+</div>
+
+<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="row w-100 justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <!-- Tarjeta de Vidrio -->
+            <div class="glass-panel p-4 p-md-5 animate-up">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold mb-2">Crear Nueva Sala</h2>
+                    <p class="text-muted">Configura el espacio para tu grupo.</p>
+                </div>
+
+                <form (ngSubmit)="onSubmit()">
+                    <!-- Nombre del Viaje -->
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">NOMBRE DEL VIAJE</label>
+                        <input type="text" class="form-control form-control-lg custom-input"
+                            placeholder="Ej. Graduación 2025" [(ngModel)]="formData.tripName" name="tripName" required>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label class="form-label text-white small fw-bold">DESCRIPCIÓN (OPCIONAL)</label>
+                        <textarea class="form-control custom-input" rows="2" placeholder="Breve descripción del plan..."
+                            [(ngModel)]="formData.tripDescription" name="tripDescription"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <!-- Tu Nombre -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label text-white small fw-bold">TU NOMBRE (ADMIN)</label>
+                            <input type="text" class="form-control custom-input" placeholder="Ej. Ana"
+                                [(ngModel)]="formData.adminName" name="adminName" required>
+                        </div>
+                        <!-- Tu PIN -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label text-white small fw-bold">CREAR PIN DE ACCESO</label>
+                            <div class="input-group">
+                                <input [type]="showPin ? 'text' : 'password'"
+                                    class="form-control custom-input border-end-0" placeholder="4 dígitos" maxlength="4"
+                                    [(ngModel)]="formData.adminPin" name="adminPin" required>
+                                <button class="btn btn-glass border-start-0 text-white" type="button"
+                                    (click)="togglePin()">
+                                    <i class="fa-solid" [class.fa-eye]="!showPin" [class.fa-eye-slash]="showPin"></i>
+                                </button>
+                            </div>
+                            <div class="form-text text-white-50 small">Lo usarás para entrar después.</div>
+                        </div>
+                    </div>
+
+                    <!-- Mensaje de Error -->
+                    <div *ngIf="errorMessage"
+                        class="alert alert-danger bg-danger bg-opacity-25 border-danger text-white text-center mb-4">
+                        {{ errorMessage }}
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary-grad btn-custom btn-lg" [disabled]="isLoading">
+                            <span *ngIf="!isLoading">Despegar </span>
+                            <span *ngIf="isLoading"><i class="fa-solid fa-circle-notch fa-spin"></i> Creando...</span>
+                        </button>
+                        <a routerLink="/" class="btn btn-glass btn-custom text-white">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+.navbar {
+    padding: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.nav-glass-container {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+@media (min-width: 992px) {
+    .nav-glass-container { flex-wrap: nowrap; }
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--text-main) !important;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+    border-color: rgba(255,255,255,0.5);
+}

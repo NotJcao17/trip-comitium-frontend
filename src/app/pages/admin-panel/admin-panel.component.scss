@@ -1,0 +1,57 @@
+.admin-poll-card {
+    transition: all 0.2s;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    position: relative;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        z-index: 10;
+    }
+
+    &:focus-within {
+        z-index: 20;
+    }
+
+    &.active-card {
+        background: rgba(99, 102, 241, 0.1);
+        border-left-color: #6366f1;
+        z-index: 5;
+    }
+}
+
+.poll-icon-sm {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e1;
+}
+
+.clickable-area {
+    flex-grow: 1;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    padding-top: 100px !important;
+    padding-bottom: 50px;
+}

@@ -1,0 +1,48 @@
+<div class="calendar-wrapper glass-panel p-4">
+
+    <!-- Header Mes -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-sm btn-glass rounded-circle" (click)="changeMonth(-1)">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <h4 class="text-white fw-bold mb-0 text-capitalize">
+            {{ currentMonth | date:'MMMM yyyy' }}
+        </h4>
+        <button class="btn btn-sm btn-glass rounded-circle" (click)="changeMonth(1)">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- Días Semana -->
+    <div class="weekdays-grid mb-2">
+        <div class="text-muted small text-center fw-bold">D</div>
+        <div class="text-muted small text-center fw-bold">L</div>
+        <div class="text-muted small text-center fw-bold">M</div>
+        <div class="text-muted small text-center fw-bold">M</div>
+        <div class="text-muted small text-center fw-bold">J</div>
+        <div class="text-muted small text-center fw-bold">V</div>
+        <div class="text-muted small text-center fw-bold">S</div>
+    </div>
+
+    <!-- Grid Días -->
+    <div class="days-grid">
+        <div *ngFor="let day of calendarDays" class="day-cell" [class.empty]="!day.date" [class.selected]="day.selected"
+            [class.disabled]="day.disabled" [class.today]="day.isToday" (click)="toggleDate(day)">
+            <span *ngIf="day.date">{{ day.day }}</span>
+        </div>
+    </div>
+
+    <!-- Botón Guardar -->
+    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
+        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3 text-small">
+            <i class="fa-solid fa-check-circle me-2"></i>{{ successMessage }}
+        </div>
+
+        <button class="btn btn-primary-grad btn-custom w-100" [disabled]="selectedDates.size === 0 || isSubmitting"
+            (click)="submitVote()">
+            <span *ngIf="!isSubmitting">Confirmar Fechas ({{ selectedDates.size }})</span>
+            <span *ngIf="isSubmitting"><i class="fa-solid fa-spinner fa-spin"></i> Guardando...</span>
+        </button>
+    </div>
+
+</div>

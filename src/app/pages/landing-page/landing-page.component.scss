@@ -1,0 +1,367 @@
+/* Ambient Background */
+.ambient-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/playa.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: floatOrb 10s infinite ease-in-out alternate;
+}
+
+.orb-1 {
+    top: -10%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: #6366f1;
+}
+
+.orb-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: #ec4899;
+    animation-delay: -5s;
+}
+
+@keyframes floatOrb {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(30px, 50px);
+    }
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 100px;
+    position: relative;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title span {
+    display: block;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+/* Mockups Animation */
+.mockup-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+}
+
+.mockup-card {
+    padding: 20px;
+    animation: floatCard 6s ease-in-out infinite;
+}
+
+.mockup-card:nth-child(2) {
+    margin-top: 50px;
+    animation-delay: 1s;
+}
+
+.mockup-card:nth-child(3) {
+    margin-top: -50px;
+    animation-delay: 2s;
+}
+
+@keyframes floatCard {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@media (max-width: 991px) {
+    .hero-section {
+        text-align: center;
+        padding-top: 120px;
+        flex-direction: column;
+    }
+
+    .mockup-grid {
+        margin-top: 3rem;
+        transform: none;
+        grid-template-columns: 1fr;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .mockup-card:nth-child(2),
+    .mockup-card:nth-child(3) {
+        margin-top: 0;
+    }
+}
+
+/* Features */
+.step-card {
+    position: relative;
+    padding: 2rem;
+    height: 100%;
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.step-card:hover {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.step-number {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.step-icon {
+    font-size: 2rem;
+    color: #a855f7;
+    margin-bottom: 1.5rem;
+}
+
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+}
+
+.feature-icon i {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.h-tall {
+    height: 100%;
+    min-height: 400px;
+}
+
+.h-short {
+    height: 100%;
+    min-height: 250px;
+}
+
+.feature-img-placeholder {
+    width: 100%;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Tier List UI */
+.tier-row {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.tier-label {
+    width: 40px;
+    height: 30px;
+    border-radius: 4px;
+    display: grid;
+
+    place-items: center;
+    font-weight: bold;
+    font-size: 0.7rem;
+    color: #000;
+}
+
+.tier-s {
+    background: var(--tier-s);
+}
+
+.tier-a {
+    background: var(--tier-a);
+}
+
+.tier-b {
+    background: var(--tier-b);
+}
+
+.tier-content {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Animations */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+}
+
+/* =========================================
+   NUEVO CSS PARA LA VISTA PREVIA DEL HEATMAP
+   ========================================= */
+
+/* Ajustes al contenedor del placeholder */
+.feature-img-placeholder.heatmap-preview-container {
+    height: auto !important; /* Permitir que el contenido defina la altura */
+    min-height: 220px;
+    /* Fondo más oscuro para contraste */
+    background: rgba(15, 23, 42, 0.8) !important;
+    display: block !important; /* Sobreescribir el flex center original */
+    /* Permitir que los efectos hover salgan del contenedor */
+    overflow: visible !important;
+}
+
+/* La cuadrícula miniatura */
+.landing-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    max-width: 240px; /* Mantenerlo pequeño y centrado */
+    margin: 0 auto;
+}
+
+/* Cabeceras de días (D L M...) */
+.landing-day-header {
+    text-align: center;
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: rgba(255,255,255,0.4);
+    padding-bottom: 4px;
+}
+
+/* Las cajas de los días */
+.landing-day-box {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05); /* Color base sin votos */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
+    border: 1px solid transparent;
+    cursor: default;
+}
+
+/* Efecto hover (imitando la app real) */
+.landing-day-box:not(.empty):hover,
+.landing-day-box.select-simulate {
+    transform: scale(1.2);
+    border-color: white;
+    z-index: 10;
+    box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5);
+    font-weight: bold;
+    color: white;
+}
+
+.landing-day-box.empty {
+    background: transparent;
+    color: transparent;
+}
+
+/* ====================
+   COLORES DEL HEATMAP (Hardcoded para la landing)
+   ==================== */
+/* Azul/Indigo bajo */
+.heat-low {
+    background: rgba(79, 70, 229, 0.2);
+    color: white;
+}
+/* Violeta medio */
+.heat-mid {
+    background: rgba(79, 70, 229, 0.5);
+    color: white;
+}
+/* Rosa alto */
+.heat-high {
+    background: rgba(79, 70, 229, 0.75);
+    color: white;
+}
+/* Fucsia máximo con brillo */
+.heat-max {
+    background: rgba(79, 70, 229, 1);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(84, 83, 114, 0.5);
+}
+
+/* El texto de resultado simulado */
+.heatmap-result-simulate {
+    font-size: 0.85rem;
+    background: rgba(0,0,0,0.3);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Ajuste específico para el calendario dentro de las tarjetas flotantes del Hero */
+.mockup-card .landing-day-box {
+    font-size: 0.8rem; /* Un poco más pequeño que en la sección de features */
+    border-radius: 4px;
+}
+
+.mockup-card .landing-heatmap-grid {
+    gap: 3px; /* Espacio un poco más apretado */
+}

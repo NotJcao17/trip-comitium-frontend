@@ -1,0 +1,34 @@
+<div class="glass-panel poll-card p-4 h-100 d-flex flex-column justify-content-between position-relative"
+    [class.locked]="poll.status === 'locked'" (click)="onCardClick()">
+
+    <!-- Badge de Estado -->
+    <div class="position-absolute top-0 end-0 m-3">
+        <span *ngIf="poll.status === 'active' && !hasVoted"
+            class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25">Pendiente</span>
+        <span *ngIf="poll.status === 'active' && hasVoted"
+            class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"><i
+                class="fa-solid fa-check me-1"></i> Contestada</span>
+        <span *ngIf="poll.status === 'locked'"
+            class="badge bg-secondary bg-opacity-25 text-muted border border-secondary border-opacity-25"><i
+                class="fa-solid fa-lock me-1"></i> Cerrada</span>
+    </div>
+
+    <div>
+        <!-- Icono Grande -->
+        <div class="poll-icon mb-3">
+            <i class="fa-solid" [class]="getIcon()"></i>
+        </div>
+
+        <!-- Título -->
+        <h5 class="fw-bold text-white mb-1">{{ poll.title }}</h5>
+        <p class="text-white-50 small mb-0 text-uppercase letter-spacing-1">{{ getTypeLabel() }}</p>
+    </div>
+
+    <!-- Botón inútil (igual donde le piques funciona) -->
+    <div class="mt-4 pt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
+        <span class="small text-muted">
+            {{ poll.status === 'locked' ? 'Ver Resultados' : (hasVoted ? 'Modificar Voto' : 'Votar Ahora') }}
+        </span>
+        <i class="fa-solid fa-arrow-right text-white opacity-50"></i>
+    </div>
+</div>

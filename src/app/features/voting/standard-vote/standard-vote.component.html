@@ -1,0 +1,41 @@
+<div class="standard-container glass-panel p-4 p-md-5">
+
+    <!-- CASO A: OPCIÓN MÚLTIPLE -->
+    <div *ngIf="poll.type === 'multiple_choice'">
+        <p class="text-muted mb-4 text-center">Selecciona una opción:</p>
+
+        <div class="options-list d-grid gap-3">
+            <div *ngFor="let opt of poll.options"
+                 class="option-card"
+                 [class.selected]="selectedOptionId === opt.option_id"
+                 (click)="selectOption(opt.option_id)">
+
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <span class="fw-bold">{{ opt.text }}</span>
+                    <div class="check-circle">
+                        <i class="fa-solid fa-check" *ngIf="selectedOptionId === opt.option_id"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CASO B: TEXTO LIBRE -->
+    <div *ngIf="poll.type === 'text'">
+        <label class="text-white fw-bold mb-3 d-block">Tu Respuesta:</label>
+        <textarea class="form-control custom-input" rows="4"
+                  placeholder="Escribe aquí..."
+                  [(ngModel)]="textResponse"></textarea>
+    </div>
+
+    <!-- Botón Guardar -->
+    <div class="mt-5 text-center">
+        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3">{{ successMessage }}</div>
+        <button class="btn btn-primary-grad btn-custom w-100"
+                (click)="submitVote()"
+                [disabled]="isSubmitting || (poll.type === 'multiple_choice' && !selectedOptionId) || (poll.type === 'text' && !textResponse)">
+            Enviar Respuesta
+        </button>
+    </div>
+
+</div>

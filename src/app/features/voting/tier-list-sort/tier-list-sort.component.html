@@ -1,0 +1,46 @@
+<div class="tier-container glass-panel p-4">
+    <p class="text-muted small mb-3 text-center">Arrastra los elementos a su categoría correspondiente.</p>
+
+    <!-- Filas de Tiers (S, A, B, D, E) -->
+    <div *ngFor="let tier of tiers | slice:0:5" class="tier-row mb-3 d-flex align-items-stretch">
+        <!-- Etiqueta Lateral -->
+        <div class="tier-header d-flex align-items-center justify-content-center fw-bold text-dark rounded-start"
+            [style.background-color]="tier.color">
+            {{ tier.label }}
+        </div>
+
+        <!-- Zona de Drop -->
+        <div class="tier-drop-zone flex-grow-1 bg-dark bg-opacity-50 rounded-end p-2 d-flex flex-wrap gap-2" cdkDropList
+            [id]="'tier-' + tier.id" [cdkDropListData]="tier.items" [cdkDropListConnectedTo]="connectedLists"
+            (cdkDropListDropped)="drop($event)">
+
+            <!-- Items -->
+            <div *ngFor="let item of tier.items" class="tier-item" cdkDrag>
+                {{ item }}
+                <!-- Placeholder visual mientras arrastras -->
+                <div *cdkDragPlaceholder class="tier-placeholder"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banco de Opciones (Pool) -->
+    <h6 class="text-white mt-4 mb-2">Opciones Disponibles:</h6>
+    <div class="pool-zone bg-black bg-opacity-25 border border-secondary border-opacity-25 rounded p-3 min-vh-10"
+        cdkDropList id="pool-list" [cdkDropListData]="tiers[5].items" [cdkDropListConnectedTo]="connectedLists"
+        (cdkDropListDropped)="drop($event)">
+
+        <div *ngFor="let item of tiers[5].items" class="tier-item" cdkDrag>
+            {{ item }}
+        </div>
+        <p *ngIf="tiers[5].items.length === 0" class="text-muted small m-0 text-center w-100 fst-italic">Todo asignado
+        </p>
+    </div>
+
+    <!-- Botón Guardar -->
+    <div class="mt-4 text-center">
+        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3">{{ successMessage }}</div>
+        <button class="btn btn-primary-grad btn-custom w-100" (click)="submitVote()" [disabled]="isSubmitting">
+            Guardar Ranking
+        </button>
+    </div>
+</div>

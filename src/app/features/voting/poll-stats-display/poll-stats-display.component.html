@@ -1,0 +1,144 @@
+<div class="stats-container glass-panel p-4 border-top border-4 border-primary">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <span class="badge bg-dark border border-secondary text-muted mb-2 text-uppercase">{{ poll?.type }}</span>
+            <h4 class="text-white fw-bold mb-0">{{ poll?.title }}</h4>
+        </div>
+        <button class="btn btn-sm btn-glass" (click)="loadStats()"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <!-- Contenido -->
+    <div *ngIf="stats && !isLoading">
+
+        <!-- 1. HEATMAP (Calendario) -->
+        <div *ngIf="poll?.type === 'date'">
+            <div class="d-flex gap-4">
+                <!-- Calendario Visual -->
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="text-muted small fw-bold mb-0 text-uppercase">{{ monthName }}</h6>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-glass" (click)="changeMonth(-1)"><i
+                                    class="fa-solid fa-chevron-left"></i></button>
+                            <button class="btn btn-glass" (click)="changeMonth(1)"><i
+                                    class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid">
+                        <div class="text-center text-muted small py-1">D</div>
+                        <div class="text-center text-muted small py-1">L</div>
+                        <div class="text-center text-muted small py-1">M</div>
+                        <div class="text-center text-muted small py-1">M</div>
+                        <div class="text-center text-muted small py-1">J</div>
+                        <div class="text-center text-muted small py-1">V</div>
+                        <div class="text-center text-muted small py-1">S</div>
+
+                        <div *ngFor="let day of calendarDays" class="day-box" [class.empty]="day.empty"
+                            [style.background-color]="!day.empty ? getHeatmapColor(day.count) : 'transparent'"
+                            (mouseenter)="!day.empty && showDayDetails(day)"
+                            title="{{ day.fullDate }}: {{ day.count }} votos">
+                            <span *ngIf="!day.empty">{{ day.date }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel Lateral Detalles -->
+                <div class="details-panel bg-black bg-opacity-25 p-3 rounded border border-secondary border-opacity-25"
+                    style="width: 200px;">
+                    <h6 class="text-white small mb-2">Votaron este día:</h6>
+                    <ul class="list-unstyled small text-muted mb-0"
+                        *ngIf="selectedDayDetails.length > 0; else noSelection">
+                        <li *ngFor="let name of selectedDayDetails">
+                            <i class="fa-solid fa-user-check text-success me-2"></i>{{ name }}
+                        </li>
+                    </ul>
+                    <ng-template #noSelection>
+                        <p class="fst-italic opacity-50">Selecciona un día.</p>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SLIDER (Presupuesto) -->
+        <div *ngIf="poll?.type === 'slider'">
+            <div class="row text-center mb-4">
+                <div class="col-4">
+                    <small class="text-muted d-block">MÍNIMO</small>
+                    <span class="h5 text-white">${{ stats.min | number }}</span>
+                </div>
+                <div class="col-4 border-start border-end border-secondary border-opacity-25">
+                    <small class="text-neon fw-bold d-block">PROMEDIO</small>
+                    <span class="h3 text-neon">${{ stats.average | number:'1.0-0' }}</span>
+                </div>
+                <div class="col-4">
+                    <small class="text-muted d-block">MÁXIMO</small>
+                    <span class="h5 text-white">${{ stats.max | number }}</span>
+                </div>
+            </div>
+            <!-- Lista Deslizable -->
+            <div class="list-group list-group-flush bg-transparent max-h-200 overflow-auto custom-scroll">
+                <div *ngFor="let vote of stats.votes"
+                    class="list-group-item bg-transparent text-white d-flex justify-content-between border-secondary border-opacity-25">
+                    <span>{{ vote.name }}</span>
+                    <span class="fw-bold">${{ vote.value | number }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TIER LIST (Ranking) -->
+        <div *ngIf="poll?.type === 'tier_list'">
+            <h6 class="text-muted small fw-bold mb-3">S = 5 puntos, A = 4 puntos, B = 3 puntos ...</h6>
+            <div class="max-h-300 overflow-auto custom-scroll pe-2">
+                <div *ngFor="let item of stats.ranking; let i = index" class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-bold" [class.text-neon]="i === 0">{{ i + 1 }}. {{ item.item }}</span>
+                        <span class="small text-muted">{{ item.score }} pts</span>
+                    </div>
+                    <div class="progress bg-secondary bg-opacity-25" style="height: 6px;">
+                        <div class="progress-bar" [class.bg-primary-grad]="i === 0" [class.bg-secondary]="i > 0"
+                            [style.width.%]="(item.score / stats.ranking[0].score) * 100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. MULTIPLE CHOICE (Barras) -->
+        <div *ngIf="poll?.type === 'multiple_choice'">
+            <div class="max-h-300 overflow-auto custom-scroll pe-2">
+                <div *ngFor="let opt of poll?.options" class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>{{ opt.text }}</span>
+                        <span class="fw-bold">{{ stats.results[opt.option_id!] || 0 }}</span>
+                    </div>
+                    <div class="progress bg-secondary bg-opacity-25" style="height: 10px;">
+                        <!-- Calculamos porcentaje simple -->
+                        <div class="progress-bar bg-primary-grad"
+                            [style.width.%]="((stats.results[opt.option_id!] || 0) / (stats.totalVotes || 1)) * 100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. TEXTO -->
+        <div *ngIf="poll?.type === 'text'">
+            <div class="list-group list-group-flush bg-transparent max-h-300 overflow-auto custom-scroll">
+                <div *ngFor="let resp of stats.responses"
+                    class="list-group-item bg-transparent border-secondary border-opacity-25 d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="fw-bold text-neon small mb-1">{{ resp.name }}</div>
+                        <p class="text-white mb-0 small fst-italic">"{{ resp.text }}"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

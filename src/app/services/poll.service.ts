@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Poll } from '../models/poll.interface';
 import { Vote } from '../models/vote.interface';
 import { AuthService } from './auth.service';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { AuthService } from './auth.service';
 export class PollService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private baseUrl = 'http://localhost:3000/api';
+  private baseUrl = environment.apiUrl;
 
   private getHeaders() {
     return {

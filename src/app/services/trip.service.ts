@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Trip } from '../models/trip.interface';
 import { AuthService } from './auth.service';
 import { Participant } from '../models/trip.interface';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { Participant } from '../models/trip.interface';
 export class TripService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private apiUrl = 'http://localhost:3000/api/trips';
+  private apiUrl = `${environment.apiUrl}/trips`;
 
   // Helper para poner el token en los headers
   private getHeaders() {

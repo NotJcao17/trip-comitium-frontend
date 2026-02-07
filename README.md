@@ -15,13 +15,13 @@ This repository contains the Frontend client for **Trip Comitium**, a Full Stack
 
 ### Installation
 1. **Clone the repository:**
-   - git clone [https://github.com/NotJcao17/trip-comitium-frontend.git]
-   - cd trip-comitium-frontend
+- git clone [https://github.com/NotJcao17/trip-comitium-frontend.git]
+- cd trip-comitium-frontend
 2. **Install dependencies**
-   - npm install
+- npm install
 3. **Configuration**
-   - Update the API URL in `src/environments/environment.ts` to point to your backend.
+- Update the API URL in `src/environments/environment.ts` to point to your backend.
 4. **Run Development Server**
-   - ng serve
+- ng serve
 5. **Live Demo**
-   - Access the application here: https://trip-comitium.netlify.app/
+- Access the application here: https://trip-comitium.netlify.app/

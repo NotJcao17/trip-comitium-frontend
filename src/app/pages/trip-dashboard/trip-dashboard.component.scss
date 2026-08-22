@@ -1,27 +1,27 @@
 .dashboard-wrapper {
   min-height: 100vh;
-  padding: 110px 20px 80px;
+  padding: 130px 20px 80px;
 }
 
 .dashboard-container {
-  max-width: 1120px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .trip-header-banner {
-  background: linear-gradient(90deg, rgba(10, 13, 12, 0.95) 0%, rgba(10, 13, 12, 0.72) 60%, transparent 100%),
+  background: linear-gradient(90deg, rgba(10, 13, 12, 0.95) 0%, rgba(10, 13, 12, 0.7) 60%, transparent 100%),
               url('/images/pexels-kamil-szerlag-1972585-4413456.jpg');
   background-size: cover;
   background-position: center;
   border: 1px solid var(--liquid-glass-border);
   border-radius: 24px;
-  padding: 36px;
+  padding: 40px;
   margin-bottom: 36px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 20px;
   box-shadow: var(--liquid-glass-glow);
 }
 
@@ -30,7 +30,7 @@
 }
 
 .trip-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display) !important;
   font-size: clamp(1.8rem, 3.5vw, 2.5rem);
   font-weight: 700;
   color: var(--mono-white);
@@ -39,6 +39,7 @@
 }
 
 .trip-desc {
+  font-family: var(--font-body);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -64,8 +65,8 @@
   background: rgba(10, 13, 12, 0.85);
   border: 1px solid var(--sage-500);
   border-radius: 12px;
-  padding: 8px 16px;
-  font-size: 1.25rem;
+  padding: 10px 18px;
+  font-size: 1.3rem;
   color: var(--sage-300);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -80,6 +81,10 @@
 }
 
 @media (max-width: 768px) {
+  .dashboard-wrapper {
+    padding: 100px 14px 60px;
+  }
+
   .trip-header-banner {
     padding: 24px;
     flex-direction: column;

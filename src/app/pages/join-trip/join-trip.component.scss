@@ -1,15 +1,15 @@
 .join-page-wrapper {
   min-height: 100vh;
-  padding: 120px 20px 80px;
+  padding: 130px 20px 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 50% 10%, rgba(79, 126, 101, 0.15) 0%, transparent 60%);
 }
 
 .join-container {
   width: 100%;
-  max-width: 620px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .join-card {
@@ -18,21 +18,22 @@
 
 .form-group {
   position: relative;
+  margin-bottom: 20px;
 }
 
 .form-label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--mono-light);
   margin-bottom: 8px;
 }
 
 .form-input {
   width: 100%;
-  padding: 13px 18px;
+  padding: 14px 18px;
   background: rgba(10, 13, 12, 0.7);
   border: 1px solid var(--liquid-glass-border);
   border-radius: 12px;
@@ -132,7 +133,10 @@
   color: var(--sage-300) !important;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 600px) {
+  .join-page-wrapper {
+    padding: 100px 14px 60px;
+  }
   .join-card {
     padding: 24px 18px;
   }

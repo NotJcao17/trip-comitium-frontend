@@ -1,13 +1,13 @@
 /* ==========================================================================
-   TRIP COMITIUM — DESIGN SYSTEM (V2.0)
-   Display Typeface: Clash Display (Accented Spanish Support)
-   Body Typeface: Lato
-   Aesthetic: Full-Bleed Atmospheric Mountain & Fog, Liquid Glass, Sage/Pine Green
+   TRIP COMITIUM — DESIGN SYSTEM STYLESHEET (V2.2)
+   Display Typefaces: Clash Display & Syne (Perfect Spanish Accents & High Impact)
+   Body: Lato
+   Theme: Full-Bleed Atmospheric Mountain & Fog, Liquid Glass, Sage/Pine Green
    ========================================================================== */
 
 @import "bootstrap/scss/bootstrap";
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Syne:wght@700;800&display=swap');
-@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Syne:wght@700;800&family=Space+Grotesk:wght@700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&f[]=cabinet-grotesk@800,900&display=swap');
 
 :root {
   /* Atmosphere & Base Tones */
@@ -28,7 +28,7 @@
   --sage-900: #102119;
 
   /* Liquid Glass System */
-  --liquid-glass-bg: rgba(22, 28, 26, 0.72);
+  --liquid-glass-bg: rgba(22, 28, 26, 0.65);
   --liquid-glass-border: rgba(201, 222, 211, 0.18);
   --liquid-glass-highlight: rgba(255, 255, 255, 0.22);
   --liquid-glass-glow: 0 15px 35px rgba(16, 33, 25, 0.45);
@@ -49,9 +49,11 @@
   --anim-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Reset & Global */
+/* Reset */
 *, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -64,24 +66,42 @@ html {
 body {
   background-color: var(--bg-darkest);
   color: var(--mono-light);
-  font-family: var(--font-body);
   overflow-x: hidden;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  font-family: var(--font-body);
 }
 
-/* Headings & Typography */
-h1, h2, h3, h4, h5, h6, .font-display, .brand-font {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--mono-white);
+/* Typography Helpers */
+.font-display {
+  font-family: var(--font-display) !important;
   letter-spacing: -0.01em;
 }
 
-.text-sage { color: var(--sage-300) !important; }
-.text-muted { color: var(--mono-muted) !important; }
-.text-white { color: var(--mono-white) !important; }
+.font-body {
+  font-family: var(--font-body) !important;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-black {
+  font-weight: 900;
+}
+
+.text-white {
+  color: var(--mono-white) !important;
+}
+
+.text-sage {
+  color: var(--sage-300) !important;
+}
+
+.text-muted {
+  color: var(--mono-muted) !important;
+}
 
 .label-micro {
   font-size: 0.72rem;
@@ -96,31 +116,16 @@ a {
   color: inherit;
 }
 
-/* Liquid Glass Cards & Panels */
-.glass-panel, .bento-card, .liquid-card {
-  background: var(--liquid-glass-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid var(--liquid-glass-border);
-  border-radius: 20px;
-  box-shadow: var(--liquid-glass-glow);
-  position: relative;
-  overflow: hidden;
-  transition: var(--anim-smooth);
-}
-
-.glass-panel:hover, .bento-card:hover, .liquid-card:hover {
-  border-color: rgba(201, 222, 211, 0.35);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* Buttons */
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
 .btn-tc, .btn-custom {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
+  height: 44px;
   border-radius: 30px;
   font-family: var(--font-body);
   font-size: 0.88rem;
@@ -151,6 +156,7 @@ a {
   color: var(--mono-white);
   border-color: var(--liquid-glass-border);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .btn-tc-glass:hover, .btn-glass:hover {
@@ -161,20 +167,51 @@ a {
 }
 
 .btn-tc-sm {
-  padding: 8px 16px;
+  height: 36px;
+  padding: 0 16px;
   font-size: 0.8rem;
 }
 
 .btn-tc-lg {
-  padding: 15px 32px;
+  height: 50px;
+  padding: 0 32px;
   font-size: 0.95rem;
 }
 
-/* Bento Grid System */
+/* ==========================================================================
+   LIQUID GLASS & BENTO GRID SYSTEM
+   ========================================================================== */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 20px;
+}
+
+.bento-card, .glass-panel {
+  background: var(--liquid-glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--anim-smooth);
+}
+
+.bento-card:hover, .glass-panel:hover {
+  border-color: rgba(201, 222, 211, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.bento-card::before, .glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 .bento-col-8 { grid-column: span 8; }
@@ -182,26 +219,97 @@ a {
 .bento-col-6 { grid-column: span 6; }
 .bento-col-12 { grid-column: span 12; }
 
-@media (max-width: 900px) {
-  .bento-col-8, .bento-col-4, .bento-col-6 {
-    grid-column: span 12;
-  }
+/* Interactive Mini Heatmap */
+.mini-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+  background: rgba(10, 13, 12, 0.6);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--mono-border);
 }
 
-/* Avatars & Voter Stacks */
+.heatmap-day-header {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--mono-muted);
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--mono-light);
+  cursor: pointer;
+  transition: var(--anim-fast);
+}
+
+.heatmap-cell:hover { transform: scale(1.1); }
+.heatmap-cell.match-low { background: var(--sage-800); color: var(--sage-200); }
+.heatmap-cell.match-mid { background: var(--sage-600); color: var(--mono-white); }
+.heatmap-cell.match-high {
+  background: var(--sage-400);
+  color: var(--bg-darkest);
+  font-weight: 900;
+  box-shadow: 0 0 10px rgba(120, 163, 140, 0.5);
+}
+
+/* Bento Tier List */
+.bento-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.bento-tier-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: var(--bg-darkest);
+}
+
+.tier-s { background: #f59e0b; }
+.tier-a { background: var(--sage-400); }
+.tier-b { background: #60a5fa; }
+
+.bento-tier-item {
+  flex: 1;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--mono-border);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--mono-white);
+}
+
+/* Voter Avatars */
 .voter-avatars {
   display: flex;
   align-items: center;
 }
 
 .voter-avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--sage-700);
   border: 2px solid var(--bg-deep);
   color: var(--mono-white);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -220,20 +328,9 @@ a {
   z-index: 5;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-darkest);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--bg-elevated);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--sage-600);
+/* Responsive Queries */
+@media (max-width: 900px) {
+  .bento-col-8, .bento-col-4, .bento-col-6 {
+    grid-column: span 12;
+  }
 }

@@ -3,7 +3,9 @@
   overflow-x: hidden;
 }
 
-/* Full-Bleed Hero Depth Section */
+/* ==========================================================================
+   FULL-BLEED HERO DEPTH SECTION (EXACTLY FROM MOCKUPS)
+   ========================================================================== */
 .hero-depth-section {
   position: relative;
   min-height: 100vh;
@@ -14,6 +16,7 @@
   text-align: center;
   overflow: hidden;
   padding: 130px 20px 80px;
+  margin-top: 0;
 }
 
 .hero-bg-layer {
@@ -25,7 +28,7 @@
   background-image: url('/images/iniesta44-norway-4970080_1920.jpg');
   background-size: cover;
   background-position: center 30%;
-  filter: brightness(0.68) contrast(1.1);
+  filter: brightness(0.7) contrast(1.1);
   z-index: 1;
 }
 
@@ -40,6 +43,7 @@
   z-index: 2;
 }
 
+/* Giant Monumental Title in Clash Display */
 .hero-giant-text-wrapper {
   position: relative;
   z-index: 3;
@@ -50,7 +54,7 @@
 }
 
 .hero-giant-title {
-  font-family: var(--font-display);
+  font-family: var(--font-display) !important;
   font-size: clamp(3.4rem, 11vw, 9.2rem);
   font-weight: 700;
   line-height: 0.88;
@@ -78,15 +82,19 @@
   margin: 20px auto 0;
 }
 
+/* Slogan in Lato (Crisp, balanced, exactly like mockup) */
 .hero-tagline {
+  font-family: var(--font-body) !important;
   font-weight: 700;
   color: var(--mono-white);
-  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
   margin-bottom: 16px;
   line-height: 1.25;
+  letter-spacing: normal;
 }
 
 .hero-subtitle {
+  font-family: var(--font-body) !important;
   font-size: 1.15rem;
   color: var(--mono-light);
   font-weight: 400;
@@ -110,6 +118,7 @@
   border-radius: 30px;
   padding: 4px 6px 4px 18px;
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .hero-quick-join-input {
@@ -127,7 +136,9 @@
   color: var(--mono-muted);
 }
 
-/* Sections */
+/* ==========================================================================
+   SECTIONS & TYPOGRAPHY
+   ========================================================================== */
 .section-wrapper {
   padding: 80px 20px;
   max-width: 1200px;
@@ -141,15 +152,16 @@
 }
 
 .section-heading {
-  font-family: var(--font-display);
+  font-family: var(--font-display) !important;
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 700;
   color: var(--mono-white);
   margin-top: 8px;
   margin-bottom: 14px;
+  letter-spacing: -0.01em;
 }
 
-/* 3-Step Process */
+/* 3-Step Process Flow */
 .process-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -173,24 +185,25 @@
 }
 
 .process-step-num {
-  font-family: var(--font-display);
+  font-family: var(--font-display) !important;
   font-size: 2.2rem;
   font-weight: 700;
   color: var(--sage-400);
-  opacity: 0.85;
+  opacity: 0.8;
   margin-bottom: 12px;
 }
 
 .process-card-title {
+  font-family: var(--font-body) !important;
   font-size: 1.15rem;
   font-weight: 900;
   color: var(--mono-white);
   margin-bottom: 10px;
 }
 
-/* Bento Card Elements */
+/* Bento Tool Elements */
 .status-chip-match {
-  background: rgba(79, 126, 101, 0.35);
+  background: rgba(79, 126, 101, 0.3);
   border: 1px solid var(--sage-400);
   color: var(--sage-200);
   padding: 4px 10px;
@@ -202,88 +215,14 @@
   gap: 5px;
 }
 
-.mini-heatmap-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-top: 16px;
-  background: rgba(10, 13, 12, 0.65);
-  padding: 16px;
-  border-radius: 14px;
-  border: 1px solid var(--mono-border);
-}
-
-.heatmap-day-header {
-  text-align: center;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--mono-muted);
-}
-
-.heatmap-cell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.78rem;
-  font-weight: 700;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--mono-light);
-  transition: var(--anim-fast);
-}
-
-.heatmap-cell.match-low { background: var(--sage-800); color: var(--sage-200); }
-.heatmap-cell.match-mid { background: var(--sage-600); color: var(--mono-white); }
-.heatmap-cell.match-high {
-  background: var(--sage-400);
-  color: var(--bg-darkest);
-  font-weight: 900;
-  box-shadow: 0 0 10px rgba(120, 163, 140, 0.5);
-}
-
-/* Tier List in Bento */
 .bento-tier-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
-.bento-tier-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bento-tier-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 0.8rem;
-  color: var(--bg-darkest);
-}
-
-.tier-s { background: #f59e0b; }
-.tier-a { background: var(--sage-400); }
-.tier-b { background: #60a5fa; }
-
-.bento-tier-item {
-  flex: 1;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--mono-border);
-  border-radius: 6px;
-  font-size: 0.82rem;
-  color: var(--mono-white);
-}
-
-/* Budget Box */
+/* Budget Card */
 .budget-display-box {
-  background: rgba(10, 13, 12, 0.7);
+  background: rgba(10, 13, 12, 0.6);
   padding: 20px;
   border-radius: 14px;
   border: 1px solid var(--mono-border);
@@ -291,7 +230,7 @@
 }
 
 .budget-number {
-  font-family: var(--font-display);
+  font-family: var(--font-display) !important;
   font-size: 2.2rem;
   font-weight: 700;
   color: var(--mono-white);
@@ -305,13 +244,17 @@
   align-items: center;
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid var(--mono-border);
-  background: rgba(255, 255, 255, 0.03);
+  transition: var(--anim-fast);
 }
 
 .voter-transparency-row.selected {
-  background: rgba(79, 126, 101, 0.22);
-  border-color: var(--sage-500);
+  background: rgba(79, 126, 101, 0.2);
+  border: 1px solid var(--sage-500);
+}
+
+.voter-transparency-row.unselected {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--mono-border);
 }
 
 /* Archetypes Grid */
@@ -349,14 +292,20 @@
 /* Admin Feature Box */
 .admin-feature-box {
   background: rgba(10, 13, 12, 0.7);
-  padding: 28px;
+  padding: 24px;
   border-radius: 16px;
   border: 1px solid var(--liquid-glass-border);
   text-align: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .hero-giant-title {
+    font-size: clamp(2.4rem, 10vw, 4.5rem);
+  }
+}
+
+@media (max-width: 600px) {
   .hero-depth-section {
-    padding: 100px 16px 50px;
+    padding: 110px 14px 60px;
   }
 }

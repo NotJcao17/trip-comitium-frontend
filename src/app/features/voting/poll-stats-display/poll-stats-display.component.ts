@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Poll } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
@@ -7,18 +7,18 @@ import { PollService } from '../../../services/poll.service';
   selector: 'app-poll-stats-display',
   standalone: true,
   imports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './poll-stats-display.component.html',
   styleUrl: './poll-stats-display.component.scss'
 })
 export class PollStatsDisplayComponent implements OnChanges {
   @Input() poll: Poll | null = null;
-  pollService = inject(PollService);
+  private pollService = inject(PollService);
 
   stats: any = null;
   isLoading = false;
   error = '';
 
-  // Heatmap / Calendar
   heatmapDays: any[] = [];
   calendarDays: any[] = [];
   monthName: string = '';
@@ -38,16 +38,16 @@ export class PollStatsDisplayComponent implements OnChanges {
     this.error = '';
     this.stats = null;
 
-    this.pollService.getStats(this.poll.poll_id).subscribe({
+    this.pollService.getPollStats(this.poll.poll_id).subscribe({
       next: (data) => {
         this.stats = data;
         if (this.poll?.type === 'date') {
-          this.heatmapDays = data.days || []; // Assuming API returns 'days' array
-          // If API returns heatmap object, convert it:
-          if (data.heatmap) {
-            this.heatmapDays = Object.keys(data.heatmap).map(date => ({
+          this.heatmapDays = [];
+          if (data && data.heatmap) {
+            const h = data.heatmap;
+            this.heatmapDays = Object.keys(h).map(date => ({
               date,
-              ...data.heatmap[date]
+              ...h[date]
             }));
           }
           this.generateCalendar();
@@ -61,7 +61,6 @@ export class PollStatsDisplayComponent implements OnChanges {
     });
   }
 
-  // --- CALENDAR LOGIC ---
   generateCalendar() {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -72,26 +71,25 @@ export class PollStatsDisplayComponent implements OnChanges {
     const lastDay = new Date(year, month + 1, 0);
 
     const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay(); // 0 = Sunday
+    const startingDay = firstDay.getDay();
 
     this.calendarDays = [];
 
-    // Empty slots for previous month
     for (let i = 0; i < startingDay; i++) {
       this.calendarDays.push({ empty: true });
     }
 
-    // Days
     for (let i = 1; i <= daysInMonth; i++) {
       const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-      // Find data for this day
       const found = this.heatmapDays.find(d => d.date === dateStr);
+
+      const votersList = found?.voters ? found.voters.map((v: any) => typeof v === 'object' ? v.name : v) : [];
 
       this.calendarDays.push({
         date: i,
         fullDate: dateStr,
         count: found ? found.count : 0,
-        voters: found ? found.voters : [],
+        voters: votersList,
         empty: false
       });
     }
@@ -103,13 +101,10 @@ export class PollStatsDisplayComponent implements OnChanges {
   }
 
   getHeatmapColor(count: number): string {
-    if (count === 0) return 'rgba(255,255,255,0.05)';
-    // 5 phases of heatmap
-    if (count < 2) return '#1e1b4b'; // Phase 1
-    if (count < 4) return '#3730a3'; // Phase 2
-    if (count < 6) return '#4f46e5'; // Phase 3
-    if (count < 8) return '#818cf8'; // Phase 4
-    return '#c7d2fe';                // Phase 5
+    if (count === 0) return 'rgba(255,255,255,0.03)';
+    if (count === 1) return 'var(--sage-800)';
+    if (count <= 3) return 'var(--sage-600)';
+    return 'var(--sage-400)';
   }
 
   showDayDetails(day: any) {
@@ -117,6 +112,4 @@ export class PollStatsDisplayComponent implements OnChanges {
       this.selectedDayDetails = day.voters || [];
     }
   }
-
-  // --- DELETION LOGIC ---
 }

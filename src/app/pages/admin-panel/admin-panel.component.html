@@ -1,115 +1,108 @@
-<div class="container pt-5 mt-5 pb-5">
+<div class="admin-page-wrapper">
+  <div class="admin-container">
 
-  <!-- Header Admin -->
-  <div class="d-flex justify-content-between align-items-center mb-5">
-    <div>
-      <h2 class="text-white fw-bold mb-1">Panel de Control</h2>
-      <p class="text-white small mb-0">
-        Código del viaje: {{ tripCode }}
-      </p>
-    </div>
-    <div class="d-flex gap-2">
-      <a [routerLink]="['/trip', tripCode]" class="btn btn-outline-light btn-sm">
-        <i class="fa-solid fa-arrow-left me-1"></i> Ir a Votación
-      </a>
-      <button class="btn btn-primary-grad btn-sm" (click)="showCreator = !showCreator">
-        <i class="fa-solid" [class.fa-plus]="!showCreator" [class.fa-minus]="showCreator"></i>
-        {{ showCreator ? 'Cancelar' : 'Nueva Encuesta' }}
-      </button>
-    </div>
-  </div>
+    <!-- Header Admin -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <span class="label-micro">ORGANIZADOR</span>
+        <h2 class="font-bold text-white fs-2 mt-1 mb-0">Panel de Administración</h2>
+        <p class="text-muted small mb-0">Código del viaje: <span class="text-sage fw-bold font-monospace">{{ tripCode }}</span></p>
+      </div>
 
-  <!-- CREATOR SECTION (Expandable) -->
-  <div *ngIf="showCreator" class="mb-5 animate-fade-in">
-    <app-poll-creator (created)="onPollCreated()"></app-poll-creator>
-  </div>
-
-  <!-- LISTA DE ENCUESTAS -->
-  <div class="row g-4">
-
-    <!-- Columna Izq: Lista -->
-    <div class="col-lg-5" style="z-index: 2; position: relative;">
-      <h5 class="text-white mb-3 border-bottom border-secondary border-opacity-25 pb-2">Encuestas</h5>
-
-      <div class="d-grid gap-3">
-        <div *ngFor="let poll of polls"
-          class="glass-panel p-3 d-flex align-items-center justify-content-between admin-poll-card"
-          [class.active-card]="selectedPollStats?.poll_id === poll.poll_id">
-
-          <div class="d-flex align-items-center gap-3 clickable-area" (click)="openStats(poll)">
-            <div class="poll-icon-sm">
-              <i class="fa-solid" [class.fa-calendar]="poll.type === 'date'"
-                [class.fa-ranking-star]="poll.type === 'tier_list'" [class.fa-money-bill]="poll.type === 'slider'"
-                [class.fa-list]="poll.type === 'multiple_choice' || poll.type === 'text'"></i>
-            </div>
-            <div>
-              <h6 class="text-white mb-0 fw-bold">{{ poll.title }}</h6>
-              <span class="badge bg-opacity-10 border border-opacity-25" [ngClass]="{
-                                    'bg-success text-success border-success': poll.status === 'active',
-                                    'bg-secondary text-muted border-secondary': poll.status === 'locked'
-                                  }">
-                {{ poll.status === 'active' ? 'Activa' : 'Cerrada' }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Acciones Rápidas -->
-          <div class="dropdown">
-            <button class="btn btn-sm btn-glass text-white" type="button" data-bs-toggle="dropdown">
-              <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-dark">
-              <li>
-                <button class="dropdown-item" (click)="toggleStatus(poll)">
-                  <i class="fa-solid" [class.fa-lock]="poll.status === 'active'"
-                    [class.fa-unlock]="poll.status !== 'active'"></i>
-                  {{ poll.status === 'active' ? 'Cerrar Votación' : 'Reabrir Votación' }}
-                </button>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li>
-                <button class="dropdown-item text-danger" (click)="deletePoll(poll.poll_id!)">
-                  <i class="fa-solid fa-trash"></i> Eliminar
-                </button>
-              </li>
-            </ul>
-          </div>
-
-        </div>
-
-        <!-- Empty State -->
-        <div *ngIf="polls.length === 0 && !isLoading"
-          class="text-center py-4 text-muted border border-dashed border-secondary rounded">
-          No hay encuestas creadas.
-        </div>
+      <div class="d-flex gap-2">
+        <a [routerLink]="['/trip', tripCode]" class="btn-tc btn-tc-glass btn-tc-sm">
+          <iconify-icon icon="solar:eye-broken" width="16"></iconify-icon>
+          <span>Ver como Viajero</span>
+        </a>
+        <button class="btn-tc btn-tc-primary btn-tc-sm" (click)="showCreator = !showCreator">
+          <iconify-icon [icon]="showCreator ? 'solar:close-circle-bold' : 'solar:add-circle-bold'" width="16"></iconify-icon>
+          <span>{{ showCreator ? 'Cancelar' : 'Nueva Encuesta' }}</span>
+        </button>
       </div>
     </div>
 
-    <!-- Columna Der: Estadísticas (Sticky) -->
-    <div class="col-lg-7">
-      <div id="stats-section" class="sticky-lg-top" style="top: 100px; z-index: 1; min-height: 600px;">
-        <div *ngIf="selectedPollStats; else selectPrompt" class="animate-fade-in">
+    <!-- Creator Section -->
+    <div *ngIf="showCreator" class="mb-4">
+      <app-poll-creator (created)="onPollCreated()"></app-poll-creator>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="row g-4">
+      
+      <!-- Columna Izquierda: Encuestas Activas -->
+      <div class="col-lg-5">
+        <div class="glass-panel p-4 h-100">
+          
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-white border-opacity-10">
+            <span class="label-micro">GESTIÓN DE ENCUESTAS</span>
+            <span class="text-muted small">{{ polls.length }} creadas</span>
+          </div>
+
+          <div class="d-flex flex-column gap-3">
+            <div 
+              *ngFor="let poll of polls"
+              class="admin-poll-card p-3 rounded-3 d-flex align-items-center justify-content-between"
+              [class.active-card]="selectedPollStats?.poll_id === poll.poll_id"
+              (click)="openStats(poll)">
+
+              <div>
+                <h6 class="fw-bold text-white mb-1">{{ poll.title }}</h6>
+                <span class="poll-status-tag" [class.active-tag]="poll.status === 'active'" [class.locked-tag]="poll.status === 'locked'">
+                  {{ poll.status === 'active' ? 'Activa' : 'Cerrada' }}
+                </span>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="d-flex gap-2 align-items-center" (click)="$event.stopPropagation()">
+                <button 
+                  type="button" 
+                  class="btn-tc btn-tc-glass btn-tc-sm" 
+                  (click)="toggleStatus(poll)" 
+                  [title]="poll.status === 'active' ? 'Cerrar Votación' : 'Reabrir Votación'">
+                  <iconify-icon [icon]="poll.status === 'active' ? 'solar:lock-broken' : 'solar:lock-unlocked-broken'" width="14"></iconify-icon>
+                  <span class="d-none d-sm-inline">{{ poll.status === 'active' ? 'Cerrar' : 'Reabrir' }}</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  class="btn-delete-poll" 
+                  (click)="deletePoll(poll.poll_id!)" 
+                  title="Eliminar Encuesta">
+                  <iconify-icon icon="solar:trash-bin-trash-broken" width="16"></iconify-icon>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="polls.length === 0 && !isLoading" class="text-center py-4 text-muted small border border-dashed border-white border-opacity-10 rounded-3">
+              No hay encuestas creadas. Haz clic en "Nueva Encuesta" para comenzar.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Estadísticas y Participantes -->
+      <div class="col-lg-7 d-flex flex-column gap-4">
+        
+        <!-- Live Stats Display -->
+        <div *ngIf="selectedPollStats">
           <app-poll-stats-display [poll]="selectedPollStats"></app-poll-stats-display>
         </div>
 
-        <ng-template #selectPrompt>
-          <div
-            class="glass-panel p-5 text-center h-100 d-flex flex-column justify-content-center align-items-center text-muted"
-            style="min-height: 400px;">
-            <p>Selecciona una encuesta de la izquierda para ver sus resultados en tiempo real.</p>
-          </div>
-        </ng-template>
+        <div *ngIf="!selectedPollStats && polls.length > 0" class="glass-panel p-5 text-center text-muted">
+          <p class="mb-0">Selecciona una encuesta de la izquierda para ver los votos en vivo.</p>
+        </div>
 
-        <!-- SECCIÓN NUEVA: TABLA DE USUARIOS -->
-        <div class="mt-4">
+        <!-- Participants Table with Reset PIN -->
+        <div class="glass-panel p-4">
           <app-participants-table></app-participants-table>
         </div>
 
       </div>
+
     </div>
 
   </div>
-
 </div>

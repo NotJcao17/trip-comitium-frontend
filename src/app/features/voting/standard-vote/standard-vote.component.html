@@ -1,41 +1,94 @@
-<div class="standard-container glass-panel p-4 p-md-5">
+<div class="standard-vote-wrapper">
 
-    <!-- CASO A: OPCIÓN MÚLTIPLE -->
-    <div *ngIf="poll.type === 'multiple_choice'">
-        <p class="text-muted mb-4 text-center">Selecciona una opción:</p>
+  <!-- Success Toast -->
+  <div *ngIf="successMessage" class="success-banner mb-4">
+    <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+    <span>{{ successMessage }}</span>
+  </div>
 
-        <div class="options-list d-grid gap-3">
-            <div *ngFor="let opt of poll.options"
-                 class="option-card"
-                 [class.selected]="selectedOptionId === opt.option_id"
-                 (click)="selectOption(opt.option_id)">
-
-                <div class="d-flex align-items-center justify-content-between w-100">
-                    <span class="fw-bold">{{ opt.text }}</span>
-                    <div class="check-circle">
-                        <i class="fa-solid fa-check" *ngIf="selectedOptionId === opt.option_id"></i>
-                    </div>
-                </div>
-            </div>
+  <!-- Multiple Choice Mode -->
+  <div *ngIf="poll.type === 'multiple_choice'" class="options-container">
+    
+    <div 
+      *ngFor="let opt of poll.options" 
+      class="vote-option-card"
+      [class.selected]="selectedOptionId === opt.option_id"
+      [class.locked]="poll.status === 'locked'"
+      (click)="selectOption(opt.option_id)">
+      
+      <div class="d-flex align-items-center gap-3">
+        <iconify-icon 
+          [icon]="selectedOptionId === opt.option_id ? 'solar:check-circle-bold' : 'solar:check-circle-broken'" 
+          width="24" 
+          [class.text-sage]="selectedOptionId === opt.option_id"
+          [class.text-muted]="selectedOptionId !== opt.option_id">
+        </iconify-icon>
+        <div>
+          <div class="option-text fw-bold text-white">{{ opt.text }}</div>
+          <span class="text-muted small">
+            {{ getVotesCount(opt.option_id) }} {{ getVotesCount(opt.option_id) === 1 ? 'voto' : 'votos' }}
+          </span>
         </div>
+      </div>
+
+      <!-- Live Voter Avatars (Quién votó qué) -->
+      <div class="voter-avatars" *ngIf="getVotersForOption(opt.option_id).length > 0">
+        <div 
+          *ngFor="let v of getVotersForOption(opt.option_id)" 
+          class="voter-avatar" 
+          [title]="v.name">
+          {{ v.name ? (v.name.charAt(0) | uppercase) : '?' }}
+        </div>
+      </div>
+
     </div>
 
-    <!-- CASO B: TEXTO LIBRE -->
-    <div *ngIf="poll.type === 'text'">
-        <label class="text-white fw-bold mb-3 d-block">Tu Respuesta:</label>
-        <textarea class="form-control custom-input" rows="4"
-                  placeholder="Escribe aquí..."
-                  [(ngModel)]="textResponse"></textarea>
+    <!-- Submit Button for Multiple Choice -->
+    <div *ngIf="poll.status === 'active'" class="mt-4 pt-3 d-flex justify-content-between align-items-center border-top border-white border-opacity-10">
+      <span class="text-muted small">Selecciona tu opción preferida.</span>
+      <button 
+        class="btn-tc btn-tc-primary" 
+        [disabled]="!selectedOptionId || isSubmitting"
+        (click)="submitVote()">
+        <iconify-icon icon="solar:diskette-broken" width="16"></iconify-icon>
+        <span>{{ isSubmitting ? 'Guardando...' : 'Confirmar Voto' }}</span>
+      </button>
     </div>
 
-    <!-- Botón Guardar -->
-    <div class="mt-5 text-center">
-        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3">{{ successMessage }}</div>
-        <button class="btn btn-primary-grad btn-custom w-100"
-                (click)="submitVote()"
-                [disabled]="isSubmitting || (poll.type === 'multiple_choice' && !selectedOptionId) || (poll.type === 'text' && !textResponse)">
-            Enviar Respuesta
-        </button>
+  </div>
+
+  <!-- Text Proposal Mode -->
+  <div *ngIf="poll.type === 'text'" class="text-vote-container">
+    <div class="form-group mb-3">
+      <label class="form-label">Tu Propuesta o Respuesta</label>
+      <textarea 
+        [(ngModel)]="textResponse" 
+        class="form-input" 
+        rows="4" 
+        placeholder="Escribe tu propuesta o idea para el viaje..."
+        [disabled]="poll.status === 'locked'"></textarea>
     </div>
+
+    <div *ngIf="poll.status === 'active'" class="d-flex justify-content-end">
+      <button 
+        class="btn-tc btn-tc-primary" 
+        [disabled]="!textResponse.trim() || isSubmitting"
+        (click)="submitVote()">
+        <iconify-icon icon="solar:diskette-broken" width="16"></iconify-icon>
+        <span>{{ isSubmitting ? 'Enviando...' : 'Enviar Propuesta' }}</span>
+      </button>
+    </div>
+
+    <!-- Respuestas de otros participantes -->
+    <div *ngIf="stats?.responses && stats!.responses!.length > 0" class="responses-list mt-4 pt-4 border-top border-white border-opacity-10">
+      <span class="label-micro d-block mb-3">PROPUESTAS DE LA TRIPULACIÓN</span>
+      <div class="d-flex flex-column gap-2">
+        <div *ngFor="let r of stats!.responses" class="response-bubble">
+          <div class="response-author text-sage fw-bold small">{{ r.name }}</div>
+          <div class="response-text text-white small">{{ r.text }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>

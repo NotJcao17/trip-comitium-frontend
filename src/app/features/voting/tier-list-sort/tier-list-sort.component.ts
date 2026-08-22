@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Poll } from '../../../models/poll.interface';
@@ -8,34 +8,30 @@ import { PollService } from '../../../services/poll.service';
   selector: 'app-tier-list-sort',
   standalone: true,
   imports: [CommonModule, DragDropModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './tier-list-sort.component.html',
   styleUrl: './tier-list-sort.component.scss'
 })
 export class TierListSortComponent implements OnInit {
-  @Input() poll!: Poll;
-  pollService = inject(PollService);
+  @Input({ required: true }) poll!: Poll;
+  private pollService = inject(PollService);
 
-  // Estructura de Tiers
-  // Estructura de Tiers
   tiers = [
-    { id: 'S', label: 'S', color: 'var(--tier-s)', items: [] as string[] },
-    { id: 'A', label: 'A', color: 'var(--tier-a)', items: [] as string[] },
-    { id: 'B', label: 'B', color: 'var(--tier-b)', items: [] as string[] },
-    { id: 'D', label: 'D', color: 'var(--tier-d)', items: [] as string[] },
-    { id: 'E', label: 'E', color: 'var(--tier-e)', items: [] as string[] },
-    { id: 'Unranked', label: 'Pool', color: '#334155', items: [] as string[] } // Banco inicial
+    { id: 'S', label: 'S', color: '#f59e0b', items: [] as string[] },
+    { id: 'A', label: 'A', color: 'var(--sage-400)', items: [] as string[] },
+    { id: 'B', label: 'B', color: '#60a5fa', items: [] as string[] },
+    { id: 'C', label: 'C', color: '#a78bfa', items: [] as string[] },
+    { id: 'Unranked', label: 'Sin clasificar', color: 'var(--mono-muted)', items: [] as string[] }
   ];
 
-  // IDs de las listas conectadas para el Drag&Drop
-  connectedLists: string[] = ['pool-list', 'tier-S', 'tier-A', 'tier-B', 'tier-D', 'tier-E'];
+  connectedLists: string[] = ['tier-S', 'tier-A', 'tier-B', 'tier-C', 'tier-Unranked'];
 
   isSubmitting = false;
   successMessage = '';
 
   ngOnInit() {
-    // Llenar el banco inicial con las opciones de la encuesta
     if (this.poll.options) {
-      this.tiers[5].items = this.poll.options.map(o => o.text);
+      this.tiers[4].items = this.poll.options.map(o => o.text);
     }
     this.loadMyVote();
   }
@@ -44,20 +40,21 @@ export class TierListSortComponent implements OnInit {
     if (!this.poll.poll_id) return;
     this.pollService.getMyVote(this.poll.poll_id).subscribe(vote => {
       if (vote && vote.vote_value) {
-        // Reconstruir estado desde el JSON guardado { "Pizza": "S", "Sushi": "A" }
-        const savedTiers = vote.vote_value;
+        let savedTiers = vote.vote_value;
+        if (typeof savedTiers === 'string') {
+          try { savedTiers = JSON.parse(savedTiers); } catch { savedTiers = {}; }
+        }
 
-        // Limpiar banco
-        this.tiers[5].items = [];
+        this.tiers.forEach(t => t.items = []);
 
-        // Distribuir items
         this.poll.options?.forEach(opt => {
           const rank = savedTiers[opt.text];
           if (rank) {
             const targetTier = this.tiers.find(t => t.id === rank);
             if (targetTier) targetTier.items.push(opt.text);
+            else this.tiers[4].items.push(opt.text);
           } else {
-            this.tiers[5].items.push(opt.text); // Si no tenía rank, al banco
+            this.tiers[4].items.push(opt.text);
           }
         });
       }
@@ -65,6 +62,8 @@ export class TierListSortComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
+    if (this.poll.status === 'locked') return;
+
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -78,11 +77,10 @@ export class TierListSortComponent implements OnInit {
   }
 
   submitVote() {
-    if (!this.poll.poll_id) return;
+    if (!this.poll.poll_id || this.poll.status === 'locked' || this.isSubmitting) return;
 
     this.isSubmitting = true;
 
-    // Convertir la estructura visual a JSON para guardar { Item: Rank }
     const voteValue: any = {};
     this.tiers.forEach(tier => {
       if (tier.id !== 'Unranked') {
@@ -98,12 +96,12 @@ export class TierListSortComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.successMessage = '¡Ranking guardado!';
-        setTimeout(() => this.successMessage = '', 3000);
+        this.successMessage = '¡Tu clasificación ha sido guardada!';
+        setTimeout(() => this.successMessage = '', 3500);
       },
-      error: () => {
+      error: (err) => {
         this.isSubmitting = false;
-        alert('Error al guardar.');
+        alert(err.error?.error || 'Error al guardar.');
       }
     });
   }

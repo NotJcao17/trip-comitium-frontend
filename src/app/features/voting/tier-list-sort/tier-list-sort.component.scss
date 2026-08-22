@@ -1,59 +1,79 @@
+.tier-row {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--liquid-glass-border);
+  background: rgba(10, 13, 12, 0.6);
+}
+
 .tier-header {
-    width: 60px;
-    min-height: 80px;
-    font-size: 1.5rem;
+  width: 54px;
+  min-height: 58px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--bg-darkest) !important;
+  flex-shrink: 0;
 }
 
 .tier-drop-zone {
-    min-height: 80px;
-    border: 1px dashed rgba(255, 255, 255, 0.1);
+  min-height: 58px;
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.tier-item {
-    padding: 8px 16px;
-    background: #1e293b;
-    color: white;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: grab;
-    font-weight: 500;
-    display: inline-block;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.1s, box-shadow 0.1s;
-
-    &:active {
-        cursor: grabbing;
-        transform: scale(1.05);
-    }
+.tier-drag-item {
+  padding: 8px 14px;
+  background: rgba(22, 28, 26, 0.85);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 8px;
+  color: var(--mono-white);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: transform var(--anim-fast);
 }
 
-/* Estilos de Angular CDK Drag */
-.cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 50px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    background: #1e293b;
-    color: white;
-    padding: 8px 16px;
-    font-weight: 500;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 1000 !important;
+.tier-drag-item:active {
+  cursor: grabbing;
+  transform: scale(1.05);
 }
 
-.cdk-drag-placeholder {
-    opacity: 0.2;
-    background: white;
-    border-radius: 50px;
-    border: 2px dashed rgba(255, 255, 255, 0.5);
+.drag-handle-icon {
+  color: var(--mono-muted);
 }
 
-.cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+.empty-tier-hint {
+  font-size: 0.78rem;
+  color: var(--mono-muted);
+  font-style: italic;
 }
 
-.pool-zone {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    min-height: 60px;
+.pool-container {
+  background: rgba(10, 13, 12, 0.7);
+  border: 1px dashed var(--liquid-glass-border);
+  border-radius: 14px;
+}
+
+.pool-item {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tier-item-placeholder {
+  opacity: 0.3;
+  border: 1px dashed var(--sage-400);
+}
+
+.success-banner {
+  background: rgba(79, 126, 101, 0.25);
+  border: 1px solid var(--sage-500);
+  color: var(--sage-200);
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
 }

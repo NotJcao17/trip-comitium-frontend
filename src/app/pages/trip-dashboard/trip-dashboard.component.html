@@ -1,80 +1,114 @@
-<!-- Fondo Ambiental -->
-<div class="ambient-light">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-</div>
-
-<div class="container pt-5 mt-5 pb-5">
-
-    <!-- Header del Viaje -->
-    <div *ngIf="tripData" class="glass-panel p-4 mb-5 animate-up">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <span class="badge bg-white bg-opacity-10 border border-white border-opacity-10 text-white mb-2">
-                    <i class="fa-solid fa-plane-departure me-2"></i>Viaje en Planeación
-                </span>
-                <h1 class="fw-bold text-white mb-2">{{ tripData.name }}</h1>
-                <p class="text-muted mb-0">{{ tripData.description || 'Sin descripción.' }}</p>
-            </div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <div class="d-inline-block text-start">
-                    <label class="small text-muted d-block mb-1">CÓDIGO DE SALA</label>
-                    <div class="d-flex gap-2">
-                        <div
-                            class="bg-black bg-opacity-50 border border-secondary border-opacity-25 rounded px-3 py-2 text-white font-monospace fs-5">
-                            {{ tripData.share_code }}
-                        </div>
-                        <button class="btn btn-glass btn-sm" (click)="copyCode()" title="Copiar">
-                            <i class="fa-regular fa-copy"></i>
-                        </button>
-                    </div>
-                    <!-- Botón de Admin (Visible solo si es Admin) -->
-                    <div *ngIf="authService.isAdmin()" class="mt-2 text-end">
-                        <a [routerLink]="['/trip', tripCode, 'admin']"
-                            class="btn btn-primary-grad btn-sm rounded-pill px-3">
-                            <i class="fa-solid fa-user-shield me-2"></i>Mi Viaje
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Grid de Encuestas -->
-    <div *ngIf="!isLoading && !error">
-
-        <!-- Título Sección -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="text-white fw-bold mb-0">Encuestas Disponibles</h3>
-        </div>
-
-        <!-- Lista -->
-        <div class="row g-4" *ngIf="polls.length > 0; else emptyState">
-            <div class="col-md-6 col-lg-4" *ngFor="let poll of polls">
-                <app-poll-card [poll]="poll" [hasVoted]="myVotes.has(poll.poll_id!)" (voteClick)="goToVote($event)">
-                </app-poll-card>
-            </div>
-        </div>
-
-        <!-- Empty State (Si no hay encuestas) -->
-        <ng-template #emptyState>
-            <app-empty-state message="El administrador aún no ha creado votaciones." icon="fa-clipboard-list">
-            </app-empty-state>
-        </ng-template>
-
-    </div>
+<div class="dashboard-wrapper">
+  <div class="dashboard-container">
 
     <!-- Loading State -->
     <div *ngIf="isLoading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-        <p class="text-muted mt-3">Sincronizando viaje...</p>
+      <iconify-icon icon="solar:refresh-circle-broken" width="40" class="spin-icon text-sage"></iconify-icon>
+      <p class="text-muted mt-2">Cargando expedición...</p>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="error" class="alert alert-danger bg-danger bg-opacity-10 border-danger text-white text-center">
-        {{ error }}
+    <div *ngIf="!isLoading && error" class="error-banner text-center my-5">
+      <iconify-icon icon="solar:danger-triangle-broken" width="24"></iconify-icon>
+      <span>{{ error }}</span>
+      <div class="mt-3">
+        <a routerLink="/join" class="btn-tc btn-tc-glass btn-tc-sm">Buscar otra sala</a>
+      </div>
     </div>
 
+    <!-- Main Content -->
+    <div *ngIf="!isLoading && tripData">
+      
+      <!-- Expedition Hero Banner with Mountain Photography -->
+      <div class="trip-header-banner">
+        <div class="trip-banner-content">
+          
+          <div class="d-flex gap-2 align-items-center mb-2 flex-wrap">
+            <span class="status-chip-active">
+              <iconify-icon icon="solar:mountains-bold" width="14"></iconify-icon> SALA ACTIVA
+            </span>
+            <span class="label-micro text-white-50">
+              {{ participants.length > 0 ? (participants.length + ' TRIPULANTES') : 'EXPEDICIÓN' }}
+            </span>
+            <span *ngIf="tripData.room_type === 'closed'" class="label-micro text-sage">
+              • SALA CERRADA
+            </span>
+          </div>
+
+          <h1 class="trip-title">{{ tripData.name }}</h1>
+          <p *ngIf="tripData.description" class="trip-desc text-muted mb-0">
+            {{ tripData.description }}
+          </p>
+
+        </div>
+
+        <div class="trip-banner-meta">
+          
+          <span class="label-micro d-block mb-1">CÓDIGO DE SALA</span>
+          <div class="d-flex gap-2 align-items-center">
+            <div class="share-code-pill font-monospace">
+              {{ tripData.share_code || tripCode }}
+            </div>
+            <button class="btn-tc btn-tc-glass btn-tc-sm" (click)="copyCode()">
+              <iconify-icon [icon]="copiedCode ? 'solar:check-read-bold' : 'solar:copy-broken'" width="16"></iconify-icon>
+              <span>{{ copiedCode ? '¡Copiado!' : 'Copiar' }}</span>
+            </button>
+          </div>
+
+          <!-- Tripulantes Avatares -->
+          <div *ngIf="participants.length > 0" class="voter-avatars mt-3 justify-content-end">
+            <div 
+              *ngFor="let p of participants | slice:0:7" 
+              class="voter-avatar" 
+              [title]="p.name + (p.is_admin ? ' (Organizador)' : '')"
+              [style.background]="p.is_admin ? 'var(--sage-500)' : 'var(--sage-700)'">
+              {{ p.name ? (p.name.charAt(0) | uppercase) : '?' }}
+            </div>
+            <div *ngIf="participants.length > 7" class="voter-avatar" style="background: var(--bg-deep);">
+              +{{ participants.length - 7 }}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Quick Actions Bar -->
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+          <span class="label-micro">TABLERO DE DECISIONES</span>
+          <h3 class="font-bold text-white fs-4 mt-1 mb-0">Votaciones del Viaje</h3>
+        </div>
+
+        <div class="d-flex gap-2">
+          <a *ngIf="authService.isAdmin()" [routerLink]="['/trip', tripCode, 'admin']" class="btn-tc btn-tc-glass btn-tc-sm">
+            <iconify-icon icon="solar:shield-user-broken" width="16"></iconify-icon>
+            <span>Panel Admin</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Grid de Encuestas -->
+      <div *ngIf="polls.length > 0" class="row g-3">
+        <div *ngFor="let poll of polls" class="col-md-6 col-lg-4">
+          <app-poll-card 
+            [poll]="poll" 
+            [hasVoted]="myVotes.has(poll.poll_id || 0)"
+            (voteClick)="goToVote($event)">
+          </app-poll-card>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="polls.length === 0" class="bento-card text-center py-5">
+        <iconify-icon icon="solar:compass-broken" width="48" class="text-sage mb-3"></iconify-icon>
+        <h4 class="font-bold text-white mb-2">Aún no hay encuestas en este viaje</h4>
+        <p class="text-muted small mb-4">El organizador abrirá encuestas de fechas, presupuesto o destinos próximamente.</p>
+        <a *ngIf="authService.isAdmin()" [routerLink]="['/trip', tripCode, 'admin']" class="btn-tc btn-tc-primary btn-tc-sm">
+          <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon> Crear Primera Encuesta
+        </a>
+      </div>
+
+    </div>
+
+  </div>
 </div>

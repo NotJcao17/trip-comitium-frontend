@@ -1,272 +1,291 @@
-<!-- Ambient Background -->
-<div class="ambient-light">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-</div>
+<main class="landing-main">
 
-<!-- Hero Section -->
-<section class="hero-section">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6 mb-5 mb-lg-0 fade-in-up">
-        <h1 class="hero-title fw-bold text-white">
-          Organiza viajes grupales, <br>
-          <span>sin tener problemas.</span>
-        </h1>
-        <p class="hero-desc">
-          Olvida el caos de los chats de WhatsApp. Centraliza fechas, destinos y presupuestos con encuestas
-          interactivas. Sin registros obligatorios.
-        </p>
-        <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-          <a routerLink="/create" class="btn btn-primary-grad btn-custom">
-            <i class="fa-solid fa-plus me-2"></i>Crear Viaje
-          </a>
-          <a routerLink="/join" class="btn btn-glass btn-custom">
-            <i class="fa-solid fa-ticket me-2"></i>Unirme a Viaje
-          </a>
-        </div>
-        <div class="mt-4 text-white-50 small">
-          <i class="fa-solid fa-shield-halved me-1"></i> No requiere email
-        </div>
-      </div>
+  <!-- ========================================================================
+       HERO FULL-BLEED CON EFECTO DE PROFUNDIDAD Y MONTAÑA
+       ======================================================================== -->
+  <section class="hero-depth-section">
+    <div class="hero-bg-layer"></div>
+    <div class="hero-fog-overlay"></div>
 
-      <!-- Mockups Visuales -->
-      <div class="col-lg-6 fade-in-up" style="animation-delay: 0.2s;">
-        <div class="mockup-grid">
-          <!-- Card 1: Calendar -->
-          <div class="glass-panel mockup-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="fw-bold text-white small"><i class="fa-regular fa-calendar me-2"></i>Disponibilidad</span>
-              <span class="badge bg-success small">Ganador: 10-12</span>
-            </div>
-
-            <div class="landing-heatmap-grid w-100" style="max-width: 200px;">
-
-              <div class="landing-day-header">D</div>
-              <div class="landing-day-header">L</div>
-              <div class="landing-day-header">M</div>
-              <div class="landing-day-header">M</div>
-              <div class="landing-day-header">J</div>
-              <div class="landing-day-header">V</div>
-              <div class="landing-day-header">S</div>
-
-              <div class="landing-day-box empty"></div>
-              <div class="landing-day-box empty"></div>
-              <div class="landing-day-box">1</div>
-              <div class="landing-day-box heat-low">2</div>
-              <div class="landing-day-box heat-mid">3</div>
-              <div class="landing-day-box heat-low">4</div>
-              <div class="landing-day-box">5</div>
-
-              <div class="landing-day-box">6</div>
-              <div class="landing-day-box heat-low">7</div>
-              <div class="landing-day-box heat-mid">8</div>
-              <div class="landing-day-box heat-high">9</div>
-              <div class="landing-day-box heat-max">10</div>
-              <div class="landing-day-box heat-max">11</div>
-              <div class="landing-day-box heat-max">12</div>
-              <div class="landing-day-box heat-mid">13</div>
-              <div class="landing-day-box heat-low">14</div>
-              <div class="landing-day-box">15</div>
-              <div class="landing-day-box">16</div>
-              <div class="landing-day-box">17</div>
-              <div class="landing-day-box">18</div>
-              <div class="landing-day-box">19</div>
-            </div>
-          </div>
-
-          <!-- Card 2: Tier List -->
-          <div class="glass-panel mockup-card">
-            <div class="mb-2 fw-bold text-white">Tier List de Destinos</div>
-            <div class="tier-row">
-              <div class="tier-label tier-s">S</div>
-              <div class="tier-content"></div>
-            </div>
-            <div class="tier-row">
-              <div class="tier-label tier-a">A</div>
-              <div class="tier-content"></div>
-            </div>
-            <div class="tier-row">
-              <div class="tier-label tier-b">B</div>
-              <div class="tier-content"></div>
-            </div>
-          </div>
-
-          <!-- Card 3: Budget -->
-          <div class="glass-panel mockup-card text-center mt-2">
-            <div class="mb-2 fw-bold text-white">Presupuesto</div>
-            <h3 class="text-white">$450 - $600</h3>
-            <input type="range" class="form-range" disabled>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- How It Works -->
-<section id="how-it-works" class="py-5">
-  <div class="container">
-    <div class="row text-center mb-5 fade-in-up">
-      <div class="col-lg-8 mx-auto">
-        <h2 class="display-5 fw-bold mb-3">¿Cómo Funciona?</h2>
-        <p class="text-muted">Tres simples pasos para pasar de "¿Hacemos algo?" a "¡Ya hice la reservación!".</p>
-      </div>
+    <!-- Título Monumental TRIP COMITIUM (Plano de profundidad) -->
+    <div class="hero-giant-text-wrapper">
+      <h1 class="hero-giant-title">TRIP COMITIUM</h1>
     </div>
 
-    <div class="row g-4">
-      <div class="col-md-4 fade-in-up" style="animation-delay: 0.1s;">
-        <div class="step-card">
-          <span class="step-number">01</span>
-          <div class="step-icon"><i class="fa-solid fa-rocket"></i></div>
-          <h4 class="fw-bold text-white">Crea tu Sala</h4>
-          <p class="text-muted small">Configura las opciones básicas: propón destinos iniciales o deja que el
-            grupo decida. Sin formularios largos.</p>
-        </div>
-      </div>
-      <div class="col-md-4 fade-in-up" style="animation-delay: 0.2s;">
-        <div class="step-card">
-          <span class="step-number">02</span>
-          <div class="step-icon"><i class="fa-solid fa-key"></i></div>
-          <h4 class="fw-bold text-white">Genera el Código</h4>
-          <p class="text-muted small">Recibes un código único (ej: J9P3A). Compártelo en el chat y tus
-            amigos se unen al instante.</p>
-        </div>
-      </div>
-      <div class="col-md-4 fade-in-up" style="animation-delay: 0.3s;">
-        <div class="step-card">
-          <span class="step-number">03</span>
-          <div class="step-icon"><i class="fa-solid fa-check-to-slot"></i></div>
-          <h4 class="fw-bold text-white">Voten y Decidan</h4>
-          <p class="text-muted small">Encuestas interactivas, calendarios de calor y votaciones de presupuesto
-            en tiempo real.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Capa de neblina de corte inferior -->
+    <div class="hero-foreground-mist"></div>
 
-<!-- Features Asymmetric Grid -->
-<section id="features" class="py-5">
-  <div class="container">
-    <div class="row mb-5 text-center fade-in-up">
-      <div class="col-lg-8 mx-auto">
-        <h2 class="fw-bold display-5 mb-3">Herramientas Visuales</h2>
-        <p class="text-muted">Hemos gamificado la toma de decisiones para que planear sea tan divertido como
-          viajar.</p>
-      </div>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-lg-8 fade-in-up">
-        <div class="glass-panel p-4 h-tall d-flex flex-column justify-content-between">
-          <div>
-            <div class="feature-icon"><i class="fa-regular fa-calendar-check"></i></div>
-            <h3 class="text-white">Calendario de Calor</h3>
-            <p class="text-muted">Cada usuario marca su disponibilidad. El mapa de calor te muestra
-              instantáneamente las fechas donde todos coinciden.</p>
-          </div>
-          <div class="feature-img-placeholder heatmap-preview-container p-3">
-
-            <div class="landing-heatmap-grid mb-2">
-              <div class="landing-day-header">D</div>
-              <div class="landing-day-header">L</div>
-              <div class="landing-day-header">M</div>
-              <div class="landing-day-header">M</div>
-              <div class="landing-day-header">J</div>
-              <div class="landing-day-header">V</div>
-              <div class="landing-day-header">S</div>
-
-              <div class="landing-day-box empty"></div>
-              <div class="landing-day-box empty"></div>
-              <div class="landing-day-box empty"></div>
-              <div class="landing-day-box heat-low">1</div>
-              <div class="landing-day-box heat-low">2</div>
-              <div class="landing-day-box heat-mid">3</div>
-              <div class="landing-day-box heat-high">4</div>
-
-              <div class="landing-day-box heat-mid">5</div>
-              <div class="landing-day-box heat-high">6</div>
-              <div class="landing-day-box heat-max select-simulate">7</div>
-              <div class="landing-day-box heat-high">8</div>
-              <div class="landing-day-box heat-max">9</div>
-              <div class="landing-day-box heat-mid">10</div>
-              <div class="landing-day-box heat-low">11</div>
-
-              <div class="landing-day-box">12</div>
-              <div class="landing-day-box heat-low">13</div>
-              <div class="landing-day-box heat-mid">14</div>
-              <div class="landing-day-box heat-mid">15</div>
-              <div class="landing-day-box heat-high">16</div>
-              <div class="landing-day-box heat-mid">17</div>
-              <div class="landing-day-box">18</div>
-            </div>
-
-            <div class="text-center small text-white heatmap-result-simulate fade-in-up" style="animation-delay: 0.5s;">
-              <span class="badge bg-primary-grad mb-1">Día Ganador</span><br>
-              <strong>Martes 7:</strong> 12 votos
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 fade-in-up" style="animation-delay: 0.1s;">
-        <div class="glass-panel p-4 h-tall d-flex flex-column">
-          <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
-          <h3 class="text-white">Acceso por Código</h3>
-          <p class="text-muted">Sin crear cuentas. Genera un código de sala y compártelo. Privacidad total.
-          </p>
-          <div class="mt-auto pt-4 text-center">
-            <label class="small text-muted mb-2 text-start d-block">Ingresa el código</label>
-            <div class="d-flex gap-2">
-              <div
-                class="bg-black bg-opacity-25 border border-secondary border-opacity-50 rounded px-3 py-2 text-white flex-grow-1 font-monospace letter-spacing-2">
-                TRIP-8392</div>
-              <button class="btn btn-primary-grad btn-sm rounded"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-5 fade-in-up" style="animation-delay: 0.2s;">
-        <div class="glass-panel p-4 h-short">
-          <div class="feature-icon"><i class="fa-solid fa-ranking-star"></i></div>
-          <h3 class="text-white">Tier Maker Integrado</h3>
-          <p class="text-muted">¿Playa o Montaña? No discutan, rankeen. Arrastra y suelta destinos.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-7 fade-in-up" style="animation-delay: 0.3s;">
-        <div class="glass-panel p-4 h-short d-flex align-items-center">
-          <div class="row w-100 align-items-center">
-            <div class="col-md-6">
-              <div class="feature-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-              <h3 class="text-white">Control de Presupuesto</h3>
-              <p class="text-muted">Sliders interactivos para definir rangos monetarios aceptables.
-              </p>
-            </div>
-            <div class="col-md-6 d-flex align-items-center justify-content-center">
-              <div class="w-100 p-3 bg-white bg-opacity-10 rounded text-center border border-white border-opacity-10">
-                <span class="d-block mb-2 text-white-50">Promedio Grupal</span>
-                <h4 class="mb-0 fw-bold text-white">$ 12,500 MXN</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Final CTA -->
-<section class="final-cta py-5">
-  <div class="container">
-    <div class="glass-panel p-5 mx-auto text-center fade-in-up"
-      style="max-width: 800px; background: rgba(15, 23, 42, 0.9);">
-      <h2 class="display-6 fw-bold mb-4 text-white">¿Listo para el viaje de tu vida?</h2>
-      <p class="text-muted mb-4">Únete a cientos de grupos que ya han dejado de pelear y han empezado a disfrutar.
+    <!-- Contenido Frontal -->
+    <div class="hero-content-front">
+      <h2 class="hero-tagline">
+        Decidan fechas, lugares y presupuesto sin discusiones en chats.
+      </h2>
+      
+      <p class="hero-subtitle">
+        Crea una sala, comparte el código con tus amigos y voten de forma visual en segundos. Sin crear cuentas de correo ni formularios largos.
       </p>
-      <a routerLink="/create" class="btn btn-primary-grad btn-custom btn-lg px-5">Comenzar Ahora - Gratis</a>
+
+      <!-- CTA & Quick Join Input -->
+      <div class="hero-cta-group">
+        <a routerLink="/create" class="btn-tc btn-tc-primary btn-tc-lg">
+          <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
+          Crear Nueva Sala
+        </a>
+
+        <form (ngSubmit)="onQuickJoin()" class="hero-quick-join-box">
+          <input 
+            type="text" 
+            [(ngModel)]="quickCode" 
+            name="quickCode" 
+            class="hero-quick-join-input" 
+            placeholder="CÓDIGO DE SALA" 
+            maxlength="8">
+          <button type="submit" class="btn-tc btn-tc-glass btn-tc-sm">
+            <iconify-icon icon="solar:arrow-right-broken" width="16"></iconify-icon> Unirse
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <!-- ========================================================================
+       PASO A PASO: ¿CÓMO FUNCIONA?
+       ======================================================================== -->
+  <section id="como-funciona" class="section-wrapper">
+    <div class="section-title-group">
+      <span class="label-micro">FLUJO SIMPLE</span>
+      <h2 class="section-heading">¿CÓMO FUNCIONA?</h2>
+      <p class="text-muted">Tres pasos para pasar de la idea al itinerario definido sin fricción.</p>
+    </div>
+
+    <div class="process-grid">
+      <div class="process-card">
+        <div class="process-step-num">01</div>
+        <div class="process-card-title">Crea tu sala</div>
+        <p class="text-muted">
+          Elige el nombre de la expedición y define qué votará el grupo: fechas en calendario, destinos en tier list o rango de presupuesto.
+        </p>
+      </div>
+
+      <div class="process-card">
+        <div class="process-step-num">02</div>
+        <div class="process-card-title">Comparte el enlace</div>
+        <p class="text-muted">
+          Pasa el código corto a tu grupo de WhatsApp. Puedes habilitar sala abierta o predefinir la lista con los nombres de tus amigos.
+        </p>
+      </div>
+
+      <div class="process-card">
+        <div class="process-step-num">03</div>
+        <div class="process-card-title">Voten y vean el resultado</div>
+        <p class="text-muted">
+          Cada quien entra desde su teléfono, vota en menos de un minuto y la aplicación calcula automáticamente las opciones ganadoras.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       BENTO GRID: HERRAMIENTAS INTEGRADAS CON FOTOGRAFÍAS REALES
+       ======================================================================== -->
+  <section id="herramientas" class="section-wrapper" style="padding-top: 0;">
+    <div class="section-title-group">
+      <span class="label-micro">SISTEMA VISUAL</span>
+      <h2 class="section-heading">HERRAMIENTAS INTEGRADAS</h2>
+      <p class="text-muted">Diseñadas para resolver los desacuerdos habituales en cualquier viaje.</p>
+    </div>
+
+    <div class="bento-grid">
+      
+      <!-- Bento 1: Heatmap de Calendario con fotografía de bosque -->
+      <div class="bento-card bento-col-8 bento-photo-card" style="background-image: linear-gradient(135deg, rgba(16, 24, 21, 0.92) 0%, rgba(10, 13, 12, 0.85) 100%), url('images/pexels-forest-1866837_1920.jpg'); background-size: cover; background-position: center;">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <span class="label-micro">DISPONIBILIDAD</span>
+            <h3 class="font-bold text-white mt-1 fs-4">Mapa de Calor de Fechas</h3>
+          </div>
+          <span class="status-chip-match">
+            <iconify-icon icon="solar:check-circle-bold" width="14"></iconify-icon> Coincidencia: 14-18 Ago
+          </span>
+        </div>
+        <p class="text-muted mb-3" style="font-size: 0.9rem;">
+          Cada integrante marca los días que tiene libres. Los días con más votos se iluminan en verde para identificar el fin de semana perfecto.
+        </p>
+
+        <!-- Mini Heatmap Preview -->
+        <div class="mini-heatmap-grid">
+          <div class="heatmap-day-header">D</div>
+          <div class="heatmap-day-header">L</div>
+          <div class="heatmap-day-header">M</div>
+          <div class="heatmap-day-header">M</div>
+          <div class="heatmap-day-header">J</div>
+          <div class="heatmap-day-header">V</div>
+          <div class="heatmap-day-header">S</div>
+
+          <div class="heatmap-cell">10</div>
+          <div class="heatmap-cell">11</div>
+          <div class="heatmap-cell match-low">12</div>
+          <div class="heatmap-cell match-mid">13</div>
+          <div class="heatmap-cell match-high">14</div>
+          <div class="heatmap-cell match-high">15</div>
+          <div class="heatmap-cell match-high">16</div>
+          <div class="heatmap-cell match-high">17</div>
+          <div class="heatmap-cell match-mid">18</div>
+          <div class="heatmap-cell match-low">19</div>
+          <div class="heatmap-cell">20</div>
+          <div class="heatmap-cell">21</div>
+          <div class="heatmap-cell">22</div>
+          <div class="heatmap-cell">23</div>
+        </div>
+      </div>
+
+      <!-- Bento 2: Tier Maker con foto de ruta de montaña -->
+      <div class="bento-card bento-col-4 bento-photo-card" style="background-image: linear-gradient(135deg, rgba(16, 24, 21, 0.94) 0%, rgba(10, 13, 12, 0.88) 100%), url('images/michael_pointner-road-7525091_1920.jpg'); background-size: cover; background-position: center;">
+        <span class="label-micro">RANKING</span>
+        <h3 class="font-bold text-white mt-1 mb-2 fs-4">Tier List de Destinos</h3>
+        <p class="text-muted mb-3" style="font-size: 0.85rem;">
+          Arrastra cabañas, playas y senderos. El sistema calcula los puntos ponderados del grupo.
+        </p>
+
+        <div class="bento-tier-stack">
+          <div class="bento-tier-row">
+            <div class="bento-tier-badge tier-s">S</div>
+            <div class="bento-tier-item">Cabaña en el Bosque</div>
+          </div>
+          <div class="bento-tier-row">
+            <div class="bento-tier-badge tier-a">A</div>
+            <div class="bento-tier-item">Glamping en la Laguna</div>
+          </div>
+          <div class="bento-tier-row">
+            <div class="bento-tier-badge tier-b">B</div>
+            <div class="bento-tier-item">Hotel en el Centro</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento 3: Presupuesto Promedio -->
+      <div class="bento-card bento-col-6">
+        <span class="label-micro">FINANZAS</span>
+        <h3 class="font-bold text-white mt-1 mb-2 fs-4">Control de Presupuesto</h3>
+        <p class="text-muted mb-3" style="font-size: 0.85rem;">
+          Cada quien define su rango cómodo y el grupo obtiene el promedio consensuado de gastos.
+        </p>
+
+        <div class="budget-display-box">
+          <span class="label-micro">PROMEDIO GRUPAL ESTIMADO</span>
+          <div class="budget-number">$ 14,800 MXN</div>
+          <div class="d-flex justify-content-between text-muted" style="font-size: 0.78rem;">
+            <span>Mínimo: $ 9,000</span>
+            <span>Máximo: $ 22,000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento 4: Transparencia en Opción Múltiple -->
+      <div class="bento-card bento-col-6">
+        <span class="label-micro">TRANSPARENCIA</span>
+        <h3 class="font-bold text-white mt-1 mb-2 fs-4">Quién votó qué</h3>
+        <p class="text-muted mb-3" style="font-size: 0.85rem;">
+          Visualiza con claridad los nombres y avatares de quiénes apoyan cada propuesta.
+        </p>
+
+        <div class="d-flex flex-column gap-2">
+          <div class="voter-transparency-row selected">
+            <span class="fw-bold text-white" style="font-size: 0.88rem;">Renta de Van (4 votos)</span>
+            <div class="voter-avatars">
+              <div class="voter-avatar" title="Carlos">C</div>
+              <div class="voter-avatar" title="Sofia">S</div>
+              <div class="voter-avatar" title="Mateo">M</div>
+              <div class="voter-avatar" title="Andrea">A</div>
+            </div>
+          </div>
+
+          <div class="voter-transparency-row">
+            <span class="text-muted" style="font-size: 0.88rem;">Vuelos separados (1 voto)</span>
+            <div class="voter-avatars">
+              <div class="voter-avatar" style="background: var(--mono-dark);">R</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       GALERÍA DE EXPEDICIONES (INSPIRACIÓN CON FOTOGRAFÍAS REALES)
+       ======================================================================== -->
+  <section class="section-wrapper" style="padding-top: 0;">
+    <div class="section-title-group">
+      <span class="label-micro">INSPIRACIÓN</span>
+      <h2 class="section-heading">DISEÑADO PARA CUALQUIER ESCAPADA</h2>
+      <p class="text-muted">Desde campamentos de montaña hasta viajes de graduación o roadtrips.</p>
+    </div>
+
+    <div class="archetypes-grid">
+      
+      <div class="archetype-card" style="background-image: linear-gradient(180deg, transparent 40%, rgba(10, 13, 12, 0.95) 100%), url('images/bergadder-trees-975091_1920.jpg');">
+        <div class="archetype-info">
+          <span class="label-micro">OUTDOOR</span>
+          <h4 class="text-white fw-bold mb-1">Senderismo & Montaña</h4>
+          <p class="text-muted small mb-0">Rutas de senderos, refugios y cumbres.</p>
+        </div>
+      </div>
+
+      <div class="archetype-card" style="background-image: linear-gradient(180deg, transparent 40%, rgba(10, 13, 12, 0.95) 100%), url('images/jplenio-forest-3082836_1920.jpg');">
+        <div class="archetype-info">
+          <span class="label-micro">RELAX</span>
+          <h4 class="text-white fw-bold mb-1">Cabañas & Bosque</h4>
+          <p class="text-muted small mb-0">Fogatas, descanso y desconexión grupal.</p>
+        </div>
+      </div>
+
+      <div class="archetype-card" style="background-image: linear-gradient(180deg, transparent 40%, rgba(10, 13, 12, 0.95) 100%), url('images/michael_pointner-road-7525091_1920.jpg');">
+        <div class="archetype-info">
+          <span class="label-micro">AVENTURA</span>
+          <h4 class="text-white fw-bold mb-1">Roadtrips & Rutas</h4>
+          <p class="text-muted small mb-0">Itinerarios flexibles en camioneta.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       MODOS DE SALA (ABIERTA VS CERRADA)
+       ======================================================================== -->
+  <section class="section-wrapper" style="padding-top: 0;">
+    <div class="bento-card bento-col-12" style="background: linear-gradient(135deg, rgba(22, 28, 26, 0.85) 0%, rgba(16, 33, 25, 0.7) 100%);">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <span class="label-micro">FLEXIBILIDAD DE ACCESO</span>
+          <h2 class="font-bold text-white mt-2 mb-3 fs-3">Elige el modo de sala para tu grupo</h2>
+          <p class="text-muted mb-3" style="font-size: 0.95rem; line-height: 1.7;">
+            Como organizador puedes decidir la dinámica de entrada de tus amigos:
+          </p>
+          <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+            <li class="d-flex gap-2 align-items-start">
+              <iconify-icon icon="solar:check-circle-bold" width="18" style="color: var(--sage-400); margin-top: 3px; flex-shrink: 0;"></iconify-icon>
+              <span><strong>Sala Cerrada (Recomendada para amigos):</strong> Escribes la lista con los nombres de tu grupo y al entrar solo eligen su nombre de un menú desplegable.</span>
+            </li>
+            <li class="d-flex gap-2 align-items-start">
+              <iconify-icon icon="solar:check-circle-bold" width="18" style="color: var(--sage-400); margin-top: 3px; flex-shrink: 0;"></iconify-icon>
+              <span><strong>Sala Abierta:</strong> Cualquier persona con el código puede unirse escribiendo su apodo libremente.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="admin-feature-box">
+            <iconify-icon icon="solar:shield-check-broken" width="42" style="color: var(--sage-400); margin-bottom: 12px;"></iconify-icon>
+            <h4 class="font-bold text-white fs-5 mb-2">Recuperación de PIN por el Admin</h4>
+            <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.6;">
+              ¿Un amigo cambió de teléfono u olvidó su clave? Desde el panel de administración puedes restablecer su PIN con un solo clic para que ingrese una nueva clave de inmediato.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

@@ -1,117 +1,239 @@
-/* 1. Importar Bootstrap y Fuentes */
+/* ==========================================================================
+   TRIP COMITIUM — DESIGN SYSTEM (V2.0)
+   Display Typeface: Clash Display (Accented Spanish Support)
+   Body Typeface: Lato
+   Aesthetic: Full-Bleed Atmospheric Mountain & Fog, Liquid Glass, Sage/Pine Green
+   ========================================================================== */
+
 @import "bootstrap/scss/bootstrap";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-/* FontAwesome via CDN en index.html */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Syne:wght@700;800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&display=swap');
 
-/* 2. Variables Globales  */
 :root {
-    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-    --glass-bg: rgba(15, 23, 42, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-highlight: rgba(255, 255, 255, 0.2);
-    --dark-bg: #0f172a;
-    --text-main: #ffffff;
-    --text-secondary: #cbd5e1;
+  /* Atmosphere & Base Tones */
+  --bg-darkest: #0a0d0c;
+  --bg-deep: #0f1412;
+  --bg-slate: #161c1a;
+  --bg-elevated: #1e2623;
 
-    /* Colores Tier List */
-    --tier-s: #ff7f7f;
-    --tier-a: #ffbf7f;
-    --tier-b: #ffdf7f;
-    --tier-d: #bfff7f;
-    --tier-e: #7fffff;
+  /* Official Brand Palette */
+  --sage-100: #e8f0ec;
+  --sage-200: #c9ded3;
+  --sage-300: #a2c4b2;
+  --sage-400: #78a38c;
+  --sage-500: #4f7e65; /* Primary Brand Green */
+  --sage-600: #3a624e;
+  --sage-700: #294738;
+  --sage-800: #1a3025;
+  --sage-900: #102119;
+
+  /* Liquid Glass System */
+  --liquid-glass-bg: rgba(22, 28, 26, 0.72);
+  --liquid-glass-border: rgba(201, 222, 211, 0.18);
+  --liquid-glass-highlight: rgba(255, 255, 255, 0.22);
+  --liquid-glass-glow: 0 15px 35px rgba(16, 33, 25, 0.45);
+
+  /* Monochromes */
+  --mono-white: #ffffff;
+  --mono-offwhite: #f5f7f6;
+  --mono-light: #d6deda;
+  --mono-muted: #8e9e96;
+  --mono-border: rgba(255, 255, 255, 0.08);
+
+  /* Fonts */
+  --font-display: 'Clash Display', 'Syne', sans-serif;
+  --font-body: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Transitions */
+  --anim-fast: 0.2s ease;
+  --anim-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 3. Reset y Base */
+/* Reset & Global */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-darkest);
+  color: var(--mono-light);
+  font-family: var(--font-body);
+}
+
 body {
-    background-color: var(--dark-bg);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
+  background-color: var(--bg-darkest);
+  color: var(--mono-light);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-.brand-font {
-    font-family: 'Space Grotesk', sans-serif;
-    color: #fff;
+/* Headings & Typography */
+h1, h2, h3, h4, h5, h6, .font-display, .brand-font {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--mono-white);
+  letter-spacing: -0.01em;
 }
 
-.text-muted {
-    color: var(--text-secondary) !important;
+.text-sage { color: var(--sage-300) !important; }
+.text-muted { color: var(--mono-muted) !important; }
+.text-white { color: var(--mono-white) !important; }
+
+.label-micro {
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--sage-300);
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
+  color: inherit;
 }
 
-/* 4. Glassmorphism */
-.glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-    border-radius: 24px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+/* Liquid Glass Cards & Panels */
+.glass-panel, .bento-card, .liquid-card {
+  background: var(--liquid-glass-bg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 20px;
+  box-shadow: var(--liquid-glass-glow);
+  position: relative;
+  overflow: hidden;
+  transition: var(--anim-smooth);
 }
 
-.glass-panel:hover {
-    border-color: var(--glass-highlight);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
-    transform: translateY(-5px);
+.glass-panel:hover, .bento-card:hover, .liquid-card:hover {
+  border-color: rgba(201, 222, 211, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* 5. Botones Personalizados */
-.btn-custom {
-    padding: 0.6rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 600;
-    transition: all 0.3s;
-    border: none;
+/* Buttons */
+.btn-tc, .btn-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--anim-smooth);
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 
-.btn-primary-grad {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+.btn-tc-primary, .btn-primary-grad {
+  background: linear-gradient(135deg, var(--sage-500) 0%, var(--sage-700) 100%);
+  color: var(--mono-white);
+  border-color: var(--sage-400);
+  box-shadow: 0 4px 18px rgba(79, 126, 101, 0.35);
 }
 
-.btn-primary-grad:hover {
-    box-shadow: 0 0 25px rgba(99, 102, 241, 0.6);
-    transform: scale(1.02);
-    color: white;
+.btn-tc-primary:hover, .btn-primary-grad:hover {
+  background: linear-gradient(135deg, var(--sage-400) 0%, var(--sage-600) 100%);
+  box-shadow: 0 6px 24px rgba(120, 163, 140, 0.45);
+  transform: translateY(-2px);
+  color: var(--mono-white);
 }
 
-.btn-glass {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--glass-border);
-    color: white;
+.btn-tc-glass, .btn-glass {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--mono-white);
+  border-color: var(--liquid-glass-border);
+  backdrop-filter: blur(16px);
 }
 
-.btn-glass:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
-    color: white;
+.btn-tc-glass:hover, .btn-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--sage-400);
+  transform: translateY(-2px);
+  color: var(--mono-white);
 }
 
-/* 6. Scrollbar */
+.btn-tc-sm {
+  padding: 8px 16px;
+  font-size: 0.8rem;
+}
+
+.btn-tc-lg {
+  padding: 15px 32px;
+  font-size: 0.95rem;
+}
+
+/* Bento Grid System */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+.bento-col-8 { grid-column: span 8; }
+.bento-col-4 { grid-column: span 4; }
+.bento-col-6 { grid-column: span 6; }
+.bento-col-12 { grid-column: span 12; }
+
+@media (max-width: 900px) {
+  .bento-col-8, .bento-col-4, .bento-col-6 {
+    grid-column: span 12;
+  }
+}
+
+/* Avatars & Voter Stacks */
+.voter-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.voter-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--sage-700);
+  border: 2px solid var(--bg-deep);
+  color: var(--mono-white);
+  font-size: 0.72rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -8px;
+  transition: var(--anim-fast);
+}
+
+.voter-avatar:first-child {
+  margin-left: 0;
+}
+
+.voter-avatar:hover {
+  transform: translateY(-3px) scale(1.15);
+  border-color: var(--sage-300);
+  z-index: 5;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--dark-bg);
+  background: var(--bg-darkest);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 4px;
+  background: var(--bg-elevated);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+  background: var(--sage-600);
 }

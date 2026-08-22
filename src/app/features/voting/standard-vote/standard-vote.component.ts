@@ -1,28 +1,31 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Poll } from '../../../models/poll.interface';
+import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 
 @Component({
   selector: 'app-standard-vote',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './standard-vote.component.html',
   styleUrl: './standard-vote.component.scss'
 })
 export class StandardVoteComponent implements OnInit {
-  @Input() poll!: Poll;
-  pollService = inject(PollService);
+  @Input({ required: true }) poll!: Poll;
+  private pollService = inject(PollService);
 
   selectedOptionId: number | null = null;
   textResponse: string = '';
+  stats: PollStats | null = null;
 
   isSubmitting = false;
   successMessage = '';
 
   ngOnInit() {
     this.loadMyVote();
+    this.loadStats();
   }
 
   loadMyVote() {
@@ -38,12 +41,35 @@ export class StandardVoteComponent implements OnInit {
     });
   }
 
-  submitVote() {
+  loadStats() {
     if (!this.poll.poll_id) return;
+    this.pollService.getPollStats(this.poll.poll_id).subscribe({
+      next: (data) => {
+        this.stats = data;
+      },
+      error: (err) => console.warn('Could not load poll stats:', err)
+    });
+  }
 
-    this.isSubmitting = true;
+  selectOption(id: number | undefined) {
+    if (id && this.poll.status !== 'locked') {
+      this.selectedOptionId = id;
+    }
+  }
 
-    // Preparamos el payload según el tipo
+  getVotersForOption(optionId: number | undefined): Array<{ id: number; name: string }> {
+    if (!optionId || !this.stats?.votersByOption) return [];
+    return this.stats.votersByOption[optionId] || [];
+  }
+
+  getVotesCount(optionId: number | undefined): number {
+    if (!optionId || !this.stats?.results) return 0;
+    return this.stats.results[optionId] || 0;
+  }
+
+  submitVote() {
+    if (!this.poll.poll_id || this.poll.status === 'locked' || this.isSubmitting) return;
+
     const voteData: any = { pollId: this.poll.poll_id };
 
     if (this.poll.type === 'multiple_choice') {
@@ -51,23 +77,22 @@ export class StandardVoteComponent implements OnInit {
       voteData.optionId = this.selectedOptionId;
     } else {
       if (!this.textResponse.trim()) return;
-      voteData.textResponse = this.textResponse;
+      voteData.textResponse = this.textResponse.trim();
     }
+
+    this.isSubmitting = true;
 
     this.pollService.submitVote(voteData).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.successMessage = '¡Voto registrado!';
-        setTimeout(() => this.successMessage = '', 3000);
+        this.successMessage = '¡Tu voto ha sido registrado correctamente!';
+        this.loadStats();
+        setTimeout(() => this.successMessage = '', 3500);
       },
-      error: () => {
+      error: (err) => {
         this.isSubmitting = false;
-        alert('Error al guardar.');
+        alert(err.error?.error || 'Error al guardar el voto.');
       }
     });
-  }
-
-  selectOption(id: number | undefined) {
-    if (id) this.selectedOptionId = id;
   }
 }

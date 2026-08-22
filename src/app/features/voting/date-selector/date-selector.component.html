@@ -1,48 +1,75 @@
-<div class="calendar-wrapper glass-panel p-4">
+<div class="date-selector-wrapper">
 
-    <!-- Header Mes -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <button class="btn btn-sm btn-glass rounded-circle" (click)="changeMonth(-1)">
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <h4 class="text-white fw-bold mb-0 text-capitalize">
-            {{ currentMonth | date:'MMMM yyyy' }}
-        </h4>
-        <button class="btn btn-sm btn-glass rounded-circle" (click)="changeMonth(1)">
-            <i class="fa-solid fa-chevron-right"></i>
-        </button>
+  <!-- Success Toast -->
+  <div *ngIf="successMessage" class="success-banner mb-4">
+    <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <!-- Month Navigation Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(-1)">
+      <iconify-icon icon="solar:arrow-left-broken" width="16"></iconify-icon>
+    </button>
+    
+    <div class="text-center">
+      <span class="label-micro">MES A VOTAR</span>
+      <h4 class="font-bold text-white fs-5 mb-0 text-capitalize">
+        {{ currentMonth | date:'MMMM yyyy':'':'es' }}
+      </h4>
     </div>
 
-    <!-- Días Semana -->
-    <div class="weekdays-grid mb-2">
-        <div class="text-muted small text-center fw-bold">D</div>
-        <div class="text-muted small text-center fw-bold">L</div>
-        <div class="text-muted small text-center fw-bold">M</div>
-        <div class="text-muted small text-center fw-bold">M</div>
-        <div class="text-muted small text-center fw-bold">J</div>
-        <div class="text-muted small text-center fw-bold">V</div>
-        <div class="text-muted small text-center fw-bold">S</div>
-    </div>
+    <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(1)">
+      <iconify-icon icon="solar:arrow-right-broken" width="16"></iconify-icon>
+    </button>
+  </div>
 
-    <!-- Grid Días -->
-    <div class="days-grid">
-        <div *ngFor="let day of calendarDays" class="day-cell" [class.empty]="!day.date" [class.selected]="day.selected"
-            [class.disabled]="day.disabled" [class.today]="day.isToday" (click)="toggleDate(day)">
-            <span *ngIf="day.date">{{ day.day }}</span>
-        </div>
-    </div>
+  <!-- Calendar Grid -->
+  <div class="calendar-grid">
+    <div class="calendar-header-day">Dom</div>
+    <div class="calendar-header-day">Lun</div>
+    <div class="calendar-header-day">Mar</div>
+    <div class="calendar-header-day">Mié</div>
+    <div class="calendar-header-day">Jue</div>
+    <div class="calendar-header-day">Vie</div>
+    <div class="calendar-header-day">Sáb</div>
 
-    <!-- Botón Guardar -->
-    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
-        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3 text-small">
-            <i class="fa-solid fa-check-circle me-2"></i>{{ successMessage }}
-        </div>
-
-        <button class="btn btn-primary-grad btn-custom w-100" [disabled]="selectedDates.size === 0 || isSubmitting"
-            (click)="submitVote()">
-            <span *ngIf="!isSubmitting">Confirmar Fechas ({{ selectedDates.size }})</span>
-            <span *ngIf="isSubmitting"><i class="fa-solid fa-spinner fa-spin"></i> Guardando...</span>
-        </button>
+    <div 
+      *ngFor="let day of calendarDays" 
+      class="calendar-day-cell"
+      [class.empty]="!day.date"
+      [class.disabled]="day.disabled"
+      [class.selected]="day.selected"
+      [class.is-today]="day.isToday"
+      [class.has-votes]="day.voteCount > 0"
+      [class.high-match]="day.voteCount >= 3"
+      (click)="toggleDate(day)">
+      
+      <span *ngIf="day.day" class="day-number">{{ day.day }}</span>
+      <span *ngIf="day.voteCount > 0" class="vote-count-dot">{{ day.voteCount }}v</span>
     </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="d-flex justify-content-between align-items-center mt-4 text-muted small flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <span class="legend-box selected"></span> <span>Tus días marcados</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="legend-box high-match"></span> <span>Mayor coincidencia grupal</span>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div *ngIf="poll.status === 'active'" class="mt-4 pt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
+    <span class="text-muted small">Haz clic en los días que tengas libres.</span>
+    <button 
+      class="btn-tc btn-tc-primary" 
+      [disabled]="selectedDates.size === 0 || isSubmitting"
+      (click)="submitVote()">
+      <iconify-icon icon="solar:diskette-broken" width="16"></iconify-icon>
+      <span>{{ isSubmitting ? 'Guardando...' : 'Confirmar Fechas (' + selectedDates.size + ')' }}</span>
+    </button>
+  </div>
 
 </div>

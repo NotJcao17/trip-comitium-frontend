@@ -1,33 +1,82 @@
-.footer {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--glass-border);
-    padding-top: 4rem;
-    padding-bottom: 2rem;
-    margin-top: 4rem;
+.app-footer {
+  border-top: 1px solid var(--mono-border);
+  background: linear-gradient(180deg, rgba(10, 13, 12, 0.4) 0%, rgba(10, 13, 12, 0.95) 100%);
+  padding: 60px 20px 40px;
+  margin-top: 80px;
+  position: relative;
+}
+
+.footer-container {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--mono-white);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.footer-logo-img {
+  width: 28px;
+  height: 28px;
+}
+
+.footer-tagline {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  max-width: 420px;
+  margin-bottom: 16px;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: var(--mono-muted);
+}
+
+.footer-col-title {
+  font-size: 0.85rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--sage-300);
+  margin-bottom: 16px;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .footer-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    margin-bottom: 0.5rem;
-    display: block;
-    transition: color 0.3s;
+  color: var(--mono-light);
+  font-size: 0.85rem;
+  transition: var(--anim-fast);
 }
 
 .footer-link:hover {
-    color: var(--text-main);
+  color: var(--sage-300);
 }
 
-.footer-social-icon {
-    width: 35px; height: 35px; border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    display: inline-flex; align-items: center; justify-content: center;
-    color: white; margin-right: 0.5rem;
-    transition: all 0.3s; border: 1px solid var(--glass-border);
-}
-
-.footer-social-icon:hover {
-    background: var(--primary-gradient);
-    border-color: transparent;
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
 }

@@ -1,59 +1,80 @@
-.stats-container {
-    min-height: 400px;
-    background: rgba(10, 10, 10, 0.8);
-    /* Un poco más oscuro para contraste */
+.stats-option-row {
+  background: rgba(10, 13, 12, 0.6);
+  border: 1px solid var(--mono-border);
 }
 
-/* Heatmap */
-/* Heatmap / Calendar */
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.day-box {
-    aspect-ratio: 1;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-
-    &.empty {
-        background: transparent;
-        cursor: default;
-    }
-
-    &:not(.empty):hover {
-        transform: scale(1.1);
-        border-color: white;
-        z-index: 2;
-    }
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sage-600) 0%, var(--sage-400) 100%);
+  border-radius: 4px;
+  transition: width var(--anim-smooth);
 }
 
-/* Scrollbars */
-.max-h-200 {
-    max-height: 200px;
+.calendar-grid-admin {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
 }
 
-.max-h-300 {
-    max-height: 300px;
+.admin-day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  border: 1px solid var(--mono-border);
+  transition: var(--anim-fast);
 }
 
-.custom-scroll::-webkit-scrollbar {
-    width: 6px;
+.admin-day-cell:hover:not(.empty) {
+  transform: scale(1.08);
+  border-color: var(--sage-400);
 }
 
-.custom-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+.admin-day-cell.empty {
+  background: transparent !important;
+  border-color: transparent;
+  cursor: default;
 }
 
-.bg-primary-grad {
-    background: var(--primary-gradient);
+.ranking-position-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mono-light);
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ranking-position-badge.gold {
+  background: #f59e0b;
+  color: var(--bg-darkest);
+}
+
+.status-chip-match {
+  background: rgba(79, 126, 101, 0.25);
+  border: 1px solid var(--sage-500);
+  color: var(--sage-200);
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }

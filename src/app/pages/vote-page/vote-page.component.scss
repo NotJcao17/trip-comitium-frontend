@@ -1,24 +1,39 @@
-/* Reutilizamos estilos de ambiente */
-.ambient-light {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    overflow: hidden; z-index: -1; pointer-events: none;
-}
-.orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; }
-.orb-1 { top: 10%; right: 10%; width: 400px; height: 400px; background: #ec4899; }
-.orb-2 { bottom: 10%; left: 10%; width: 500px; height: 500px; background: #6366f1; }
-
-.letter-spacing-2 { letter-spacing: 2px; }
-
-.animate-up {
-    animation: slideUp 0.6s ease-out;
+.vote-page-wrapper {
+  min-height: 100vh;
+  padding: 110px 20px 80px;
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.vote-container {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.container {
-    padding-top: 100px !important;
-    padding-bottom: 50px;
+.vote-card {
+  padding: 36px;
+}
+
+.error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 14px 18px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 576px) {
+  .vote-card {
+    padding: 24px 18px;
+  }
 }

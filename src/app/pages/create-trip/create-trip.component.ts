@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -9,21 +9,25 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-create-trip',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './create-trip.component.html',
   styleUrl: './create-trip.component.scss'
 })
 export class CreateTripComponent {
-  tripService = inject(TripService);
-  authService = inject(AuthService);
-  router = inject(Router);
+  private tripService = inject(TripService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  // Modelo del formulario
   formData = {
     tripName: '',
     tripDescription: '',
     adminName: '',
-    adminPin: ''
+    adminPin: '',
+    roomType: 'closed' as 'closed' | 'open'
   };
+
+  rosterList: string[] = [];
+  newFriendName: string = '';
 
   isLoading = false;
   errorMessage = '';
@@ -33,36 +37,61 @@ export class CreateTripComponent {
     this.showPin = !this.showPin;
   }
 
+  setRoomType(type: 'closed' | 'open') {
+    this.formData.roomType = type;
+  }
+
+  addFriend() {
+    const trimmed = this.newFriendName.trim();
+    if (trimmed && !this.rosterList.includes(trimmed)) {
+      this.rosterList.push(trimmed);
+      this.newFriendName = '';
+    }
+  }
+
+  removeFriend(index: number) {
+    this.rosterList.splice(index, 1);
+  }
+
   onSubmit() {
     if (this.isLoading) return;
 
-    // Validación simple
     if (!this.formData.tripName || !this.formData.adminName || !this.formData.adminPin) {
       this.errorMessage = 'Por favor completa los campos obligatorios.';
       return;
     }
 
-    // Validar PIN de 4 dígitos
     if (!/^\d{4}$/.test(this.formData.adminPin)) {
-      this.errorMessage = 'El PIN debe ser de 4 números exactos.';
+      this.errorMessage = 'El PIN debe ser exactamente de 4 dígitos numéricos.';
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.tripService.createTrip(this.formData).subscribe({
+    this.tripService.createTrip({
+      tripName: this.formData.tripName,
+      tripDescription: this.formData.tripDescription,
+      adminName: this.formData.adminName,
+      adminPin: this.formData.adminPin,
+      roomType: this.formData.roomType,
+      roster: this.formData.roomType === 'closed' ? this.rosterList : []
+    }).subscribe({
       next: (res) => {
-        // El backend devuelve el token, lo guardamos
         if (res.token) {
-          localStorage.setItem('trip_token', res.token); // O usar authService.saveToken si lo hiciste público
+          this.authService.saveToken(res.token);
+          this.authService.saveRecentTrip({
+            shareCode: res.trip.shareCode,
+            tripName: res.trip.name,
+            participantName: this.formData.adminName,
+            lastVisited: Date.now()
+          });
         }
-        // Redirigir al panel de admin del nuevo viaje
-        this.router.navigate(['/trip', res.trip.shareCode, 'admin']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.error || 'Error al crear el viaje. Intenta de nuevo.';
+        this.errorMessage = err.error?.error || 'Error al crear la sala. Intenta de nuevo.';
       }
     });
   }

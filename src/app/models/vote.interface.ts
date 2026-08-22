@@ -6,3 +6,11 @@ export interface Vote {
     vote_value?: any;      // Para JSON (fechas, tier list, slider)
     text_response?: string; // Para texto
 }
+
+export interface VoteSubmitPayload {
+    pollId: number;
+    optionId?: number | null;
+    voteValue?: any;
+    textResponse?: string | null;
+}
+

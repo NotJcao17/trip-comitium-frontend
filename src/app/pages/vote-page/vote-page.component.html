@@ -1,46 +1,42 @@
-<!-- Fondo Ambiental -->
-<div class="ambient-light">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-</div>
-
-<div class="container pt-5 mt-5 pb-5">
+<div class="vote-page-wrapper">
+  <div class="vote-container">
 
     <!-- Botón Volver -->
     <div class="mb-4">
-        <a [routerLink]="['/trip', tripCode]" class="btn btn-glass btn-sm text-white rounded-pill px-3">
-            <i class="fa-solid fa-arrow-left me-2"></i>Volver al Dashboard
-        </a>
+      <a [routerLink]="['/trip', tripCode]" class="btn-tc btn-tc-glass btn-tc-sm">
+        <iconify-icon icon="solar:arrow-left-broken" width="16"></iconify-icon>
+        <span>Volver al Dashboard</span>
+      </a>
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="text-center text-white py-5">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-3 text-muted">Cargando votación...</p>
+    <div *ngIf="isLoading" class="text-center py-5">
+      <iconify-icon icon="solar:refresh-circle-broken" width="40" class="spin-icon text-sage"></iconify-icon>
+      <p class="text-muted mt-2">Cargando encuesta...</p>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="error" class="alert alert-danger bg-danger bg-opacity-10 border-danger text-white">
-        <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ error }}
+    <div *ngIf="error" class="error-banner mb-4">
+      <iconify-icon icon="solar:danger-triangle-broken" width="20"></iconify-icon>
+      <span>{{ error }}</span>
     </div>
 
     <!-- Contenido Principal -->
-    <div *ngIf="poll && !isLoading" class="glass-panel p-4 p-md-5 animate-up mx-auto" style="max-width: 800px;">
+    <div *ngIf="poll && !isLoading" class="vote-card glass-panel">
 
-        <div class="text-center mb-5">
-            <!-- Badge Tipo -->
-            <span
-                class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 mb-3 px-3 py-2 rounded-pill text-uppercase letter-spacing-2">
-                {{ poll.type.replace('_', ' ') }}
-            </span>
+      <!-- Encabezado de Encuesta -->
+      <div class="text-center mb-4">
+        <span class="label-micro">{{ getPollTypeLabel() }}</span>
+        <h1 class="font-bold text-white fs-2 mt-2 mb-2">{{ poll.title }}</h1>
+        <p class="text-muted small mb-0">
+          {{ poll.status === 'locked' ? 'Esta encuesta ha sido cerrada por el organizador.' : 'Tu voto se guarda y puedes cambiarlo antes de que cierre la encuesta.' }}
+        </p>
+      </div>
 
-            <!-- Título -->
-            <h1 class="fw-bold text-white mb-2">{{ poll.title }}</h1>
-            <p class="text-muted">Tu opinión cuenta. Elige sabiamente.</p>
-        </div>
-
-        <!-- AQUÍ VA EL CONTENEDOR INTELIGENTE -->
-        <app-poll-container [poll]="poll"></app-poll-container>
+      <!-- Contenedor del tipo de encuesta -->
+      <app-poll-container [poll]="poll"></app-poll-container>
 
     </div>
+
+  </div>
 </div>

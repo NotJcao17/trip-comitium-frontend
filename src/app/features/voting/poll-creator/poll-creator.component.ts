@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Output, EventEmitter, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PollService } from '../../../services/poll.service';
@@ -7,46 +7,37 @@ import { PollService } from '../../../services/poll.service';
   selector: 'app-poll-creator',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './poll-creator.component.html',
   styleUrl: './poll-creator.component.scss'
 })
 export class PollCreatorComponent {
-  pollService = inject(PollService);
+  private pollService = inject(PollService);
   @Output() created = new EventEmitter<void>();
 
-  // Modelo del formulario
   title = '';
-  type = 'multiple_choice'; // Default
-
-  // Opciones dinámicas (para Multiple Choice / Tier List)
+  type = 'multiple_choice';
   optionsText = '';
-
-  // Configuración (para Slider / Date)
-  sliderMin = 0;
-  sliderMax = 10000;
-  sliderStep = 100;
-
+  sliderMin = 1000;
+  sliderMax = 30000;
+  sliderStep = 500;
   dateStart = '';
   dateEnd = '';
-
   isSubmitting = false;
 
   submit() {
-    if (!this.title) return;
+    if (!this.title.trim()) return;
     this.isSubmitting = true;
 
-    // Preparar payload
     const payload: any = {
-      title: this.title,
+      title: this.title.trim(),
       type: this.type,
       config: {},
       options: []
     };
 
-    // Lógica específica por tipo
     if (this.type === 'multiple_choice' || this.type === 'tier_list') {
-      // Convertir texto de opciones (separado por enters) a array
-      payload.options = this.optionsText.split('\n').filter(o => o.trim() !== '');
+      payload.options = this.optionsText.split('\n').map(o => o.trim()).filter(o => o !== '');
     }
 
     if (this.type === 'slider') {
@@ -59,7 +50,6 @@ export class PollCreatorComponent {
     }
 
     if (this.type === 'date') {
-      // Configurar fechas bloqueadas o rangos aquí si quisiéramos
       payload.config = {
         startDate: this.dateStart,
         endDate: this.dateEnd
@@ -70,11 +60,11 @@ export class PollCreatorComponent {
       next: () => {
         this.isSubmitting = false;
         this.resetForm();
-        this.created.emit(); // Avisar al padre
+        this.created.emit();
       },
-      error: () => {
+      error: (err) => {
         this.isSubmitting = false;
-        alert('Error al crear encuesta');
+        alert(err.error?.error || 'Error al crear la encuesta');
       }
     });
   }

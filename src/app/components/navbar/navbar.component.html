@@ -1,42 +1,89 @@
-<nav class="navbar fixed-top navbar-expand-lg">
-    <div class="container-fluid justify-content-center">
+<div class="floating-nav-wrapper" [class.scrolled]="isScrolled">
+  <nav class="liquid-navbar">
+    
+    <!-- Brand Logo -->
+    <a routerLink="/" class="nav-logo" (click)="closeMenu()">
+      <img src="images/logo512.png" alt="Trip Comitium" class="nav-logo-img">
+      <span class="nav-logo-text">TRIP COMITIUM</span>
+    </a>
 
-        <!-- CONTENEDOR DE VIDRIO -->
-        <div class="nav-glass-container">
+    <!-- Desktop Nav Links -->
+    <ul class="nav-links d-none d-lg-flex">
+      <li>
+        <a routerLink="/" class="nav-link-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <iconify-icon icon="solar:home-2-broken" width="16"></iconify-icon> Inicio
+        </a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="como-funciona" class="nav-link-item">
+          <iconify-icon icon="solar:route-broken" width="16"></iconify-icon> Cómo funciona
+        </a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="herramientas" class="nav-link-item">
+          <iconify-icon icon="solar:widget-broken" width="16"></iconify-icon> Herramientas
+        </a>
+      </li>
+      <li *ngIf="authService.isLoggedIn()">
+        <a routerLink="/dashboard" class="nav-link-item" routerLinkActive="active">
+          <iconify-icon icon="solar:compass-broken" width="16"></iconify-icon> Mi Sala
+        </a>
+      </li>
+      <li *ngIf="authService.isAdmin()">
+        <a routerLink="/admin" class="nav-link-item" routerLinkActive="active">
+          <iconify-icon icon="solar:shield-user-broken" width="16"></iconify-icon> Admin
+        </a>
+      </li>
+    </ul>
 
-            <a class="navbar-brand" routerLink="/">
-                <i class="fa-solid fa-earth-americas me-2"></i>Trip Comitium
-            </a>
+    <!-- Action Buttons (Desktop & Mobile Unified) -->
+    <div class="nav-actions">
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/join" class="btn-tc btn-tc-glass btn-tc-sm nav-btn" (click)="closeMenu()">
+          <iconify-icon icon="solar:login-2-broken" width="15"></iconify-icon>
+          <span>Entrar</span>
+        </a>
+        <a routerLink="/create" class="btn-tc btn-tc-primary btn-tc-sm nav-btn" (click)="closeMenu()">
+          <iconify-icon icon="solar:add-circle-broken" width="15"></iconify-icon>
+          <span>Crear Viaje</span>
+        </a>
+      </ng-container>
 
-            <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
-                <span class="text-white"><i class="fa-solid fa-bars"></i></span>
-            </button>
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <a routerLink="/dashboard" class="btn-tc btn-tc-primary btn-tc-sm nav-btn d-none d-sm-inline-flex" (click)="closeMenu()">
+          <iconify-icon icon="solar:compass-bold" width="15"></iconify-icon>
+          <span>Mi Sala</span>
+        </a>
+        <button class="btn-tc btn-tc-glass btn-tc-sm nav-btn" (click)="logout()">
+          <iconify-icon icon="solar:logout-2-broken" width="15"></iconify-icon>
+          <span class="d-none d-sm-inline">Salir</span>
+        </button>
+      </ng-container>
 
-            <!-- Menú -->
-            <div class="collapse navbar-collapse flex-grow-1" id="navbarNav">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" routerLink="/" routerLinkActive="active"
-                            [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
-                    <!-- Usamos fragmentos para scroll interno en la misma página -->
-                    <li class="nav-item"><a class="nav-link" routerLink="/" fragment="how-it-works">Cómo Funciona</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" routerLink="/" fragment="features">Funciones</a></li>
-                </ul>
-
-                <div class="d-flex gap-2 justify-content-lg-end">
-                    <!-- Lógica de Auth: Si no está logueado -->
-                    <ng-container *ngIf="!authService.isLoggedIn()">
-                        <a routerLink="/join" class="btn btn-glass btn-custom btn-sm">Unirse</a>
-                    </ng-container>
-
-                    <!-- Si está logueado -->
-                    <ng-container *ngIf="authService.isLoggedIn()">
-                        <!-- Botón Dashboard del Viaje -->
-                    </ng-container>
-                </div>
-            </div>
-
-        </div>
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-toggle-btn d-lg-none" (click)="toggleMenu()" aria-label="Abrir Menú">
+        <iconify-icon [icon]="isMenuOpen ? 'solar:close-circle-broken' : 'solar:hamburger-menu-broken'" width="22"></iconify-icon>
+      </button>
     </div>
-</nav>
+
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div class="mobile-menu-drawer d-lg-none" [class.open]="isMenuOpen">
+    <a routerLink="/" class="mobile-menu-item" (click)="closeMenu()">
+      <iconify-icon icon="solar:home-2-broken" width="18"></iconify-icon> Inicio
+    </a>
+    <a routerLink="/" fragment="como-funciona" class="mobile-menu-item" (click)="closeMenu()">
+      <iconify-icon icon="solar:route-broken" width="18"></iconify-icon> Cómo funciona
+    </a>
+    <a routerLink="/" fragment="herramientas" class="mobile-menu-item" (click)="closeMenu()">
+      <iconify-icon icon="solar:widget-broken" width="18"></iconify-icon> Herramientas
+    </a>
+    <a *ngIf="authService.isLoggedIn()" routerLink="/dashboard" class="mobile-menu-item" (click)="closeMenu()">
+      <iconify-icon icon="solar:compass-broken" width="18"></iconify-icon> Mi Sala
+    </a>
+    <a *ngIf="authService.isAdmin()" routerLink="/admin" class="mobile-menu-item" (click)="closeMenu()">
+      <iconify-icon icon="solar:shield-user-broken" width="18"></iconify-icon> Panel de Administración
+    </a>
+  </div>
+</div>

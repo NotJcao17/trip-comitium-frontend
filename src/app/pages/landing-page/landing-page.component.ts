@@ -1,32 +1,25 @@
-import { Component, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
-export class LandingPageComponent implements AfterViewInit {
+export class LandingPageComponent {
+  private router = inject(Router);
+  quickCode = '';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
-
-  ngAfterViewInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      // Intersection Observer para animar elementos al hacer scroll
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const element = entry.target as HTMLElement;
-            element.style.opacity = '1';
-            element.style.transform = 'translateY(0)';
-          }
-        });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+  onQuickJoin() {
+    if (this.quickCode && this.quickCode.trim()) {
+      this.router.navigate(['/join'], { queryParams: { code: this.quickCode.trim().toUpperCase() } });
+    } else {
+      this.router.navigate(['/join']);
     }
   }
 }

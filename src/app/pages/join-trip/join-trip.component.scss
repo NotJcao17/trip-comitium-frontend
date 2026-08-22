@@ -1,38 +1,139 @@
-/* Reutilizamos estilos para consistencia */
-.ambient-light {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    overflow: hidden; z-index: -1; pointer-events: none;
-}
-.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; }
-.orb-1 { top: 10%; left: 10%; width: 400px; height: 400px; background: #ec4899; }
-.orb-2 { bottom: 10%; right: 10%; width: 500px; height: 500px; background: #6366f1; }
-
-.custom-input {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    border-radius: 12px;
-    padding: 12px 15px;
-    transition: all 0.3s;
-
-    &:focus {
-        background: rgba(0, 0, 0, 0.5);
-        border-color: #ec4899; /* Rosa para variar un poco o mantener morado */
-        box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
-        color: white;
-    }
-    &::placeholder { color: rgba(255, 255, 255, 0.3); }
+.join-page-wrapper {
+  min-height: 100vh;
+  padding: 120px 20px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 10%, rgba(79, 126, 101, 0.15) 0%, transparent 60%);
 }
 
-.letter-spacing-2 { letter-spacing: 2px; }
-
-.animate-up { animation: slideUp 0.6s ease-out; }
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.join-container {
+  width: 100%;
+  max-width: 620px;
 }
 
-.container {
-    padding-top: 130px !important;
-    padding-bottom: 50px;
+.join-card {
+  padding: 36px;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mono-light);
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 13px 18px;
+  background: rgba(10, 13, 12, 0.7);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 12px;
+  color: var(--mono-white);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: var(--anim-fast);
+}
+
+.form-input:focus {
+  border-color: var(--sage-400);
+  box-shadow: 0 0 0 2px rgba(120, 163, 140, 0.2);
+}
+
+.custom-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2378a38c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.room-type-tag {
+  background: rgba(79, 126, 101, 0.2);
+  border: 1px solid var(--sage-500);
+  color: var(--sage-200);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-spinner {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--sage-400);
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.pin-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--mono-muted);
+  cursor: pointer;
+}
+
+.error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.recent-trips-section {
+  border-top: 1px solid var(--mono-border);
+}
+
+.recent-trips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recent-trip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(10, 13, 12, 0.6);
+  border: 1px solid var(--mono-border);
+  border-radius: 12px;
+}
+
+.link-hover:hover {
+  color: var(--sage-300) !important;
+}
+
+@media (max-width: 576px) {
+  .join-card {
+    padding: 24px 18px;
+  }
 }

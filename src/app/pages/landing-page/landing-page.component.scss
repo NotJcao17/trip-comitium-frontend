@@ -1,367 +1,362 @@
-/* Ambient Background */
-.ambient-light {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1;
-    pointer-events: none;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/playa.jpg');
-    background-size: cover;
-    background-position: center;
+.landing-main {
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-.orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.4;
-    animation: floatOrb 10s infinite ease-in-out alternate;
+/* Full-Bleed Hero Depth Section */
+.hero-depth-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 130px 20px 80px;
 }
 
-.orb-1 {
-    top: -10%;
-    left: -10%;
-    width: 600px;
-    height: 600px;
-    background: #6366f1;
+.hero-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/images/iniesta44-norway-4970080_1920.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  filter: brightness(0.68) contrast(1.1);
+  z-index: 1;
 }
 
-.orb-2 {
-    bottom: -10%;
-    right: -10%;
-    width: 500px;
-    height: 500px;
-    background: #ec4899;
-    animation-delay: -5s;
+.hero-fog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(79, 126, 101, 0.22) 0%, transparent 65%),
+              linear-gradient(180deg, rgba(10, 13, 12, 0.35) 0%, rgba(10, 13, 12, 0.1) 40%, rgba(10, 13, 12, 0.85) 85%, var(--bg-darkest) 100%);
+  z-index: 2;
 }
 
-@keyframes floatOrb {
-    0% {
-        transform: translate(0, 0);
-    }
-
-    100% {
-        transform: translate(30px, 50px);
-    }
+.hero-giant-text-wrapper {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  pointer-events: none;
 }
 
-/* Hero Section */
-.hero-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding-top: 100px;
-    position: relative;
+.hero-giant-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 11vw, 9.2rem);
+  font-weight: 700;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--mono-white);
+  opacity: 0.95;
+  text-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
 }
 
-.hero-title {
-    font-size: 3.5rem;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
+.hero-foreground-mist {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  background: linear-gradient(0deg, var(--bg-darkest) 15%, rgba(10, 13, 12, 0.8) 45%, transparent 100%);
+  z-index: 4;
+  pointer-events: none;
 }
 
-.hero-title span {
-    display: block;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.hero-content-front {
+  position: relative;
+  z-index: 5;
+  max-width: 720px;
+  margin: 20px auto 0;
 }
 
-.hero-desc {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    font-weight: 300;
+.hero-tagline {
+  font-weight: 700;
+  color: var(--mono-white);
+  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+  margin-bottom: 16px;
+  line-height: 1.25;
 }
 
-/* Mockups Animation */
-.mockup-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--mono-light);
+  font-weight: 400;
+  margin-bottom: 32px;
+  line-height: 1.7;
 }
 
-.mockup-card {
-    padding: 20px;
-    animation: floatCard 6s ease-in-out infinite;
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.mockup-card:nth-child(2) {
-    margin-top: 50px;
-    animation-delay: 1s;
+.hero-quick-join-box {
+  display: flex;
+  align-items: center;
+  background: rgba(10, 13, 12, 0.75);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 30px;
+  padding: 4px 6px 4px 18px;
+  backdrop-filter: blur(16px);
 }
 
-.mockup-card:nth-child(3) {
-    margin-top: -50px;
-    animation-delay: 2s;
+.hero-quick-join-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--mono-white);
+  font-size: 0.9rem;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  width: 140px;
 }
 
-@keyframes floatCard {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-15px);
-    }
+.hero-quick-join-input::placeholder {
+  color: var(--mono-muted);
 }
 
-@media (max-width: 991px) {
-    .hero-section {
-        text-align: center;
-        padding-top: 120px;
-        flex-direction: column;
-    }
-
-    .mockup-grid {
-        margin-top: 3rem;
-        transform: none;
-        grid-template-columns: 1fr;
-    }
-
-    .hero-title {
-        font-size: 2.5rem;
-    }
-
-    .mockup-card:nth-child(2),
-    .mockup-card:nth-child(3) {
-        margin-top: 0;
-    }
+/* Sections */
+.section-wrapper {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Features */
-.step-card {
-    position: relative;
-    padding: 2rem;
-    height: 100%;
-    border: 1px solid var(--glass-border);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-    border-radius: 20px;
-    transition: 0.3s;
+.section-title-group {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 50px;
 }
 
-.step-card:hover {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: var(--mono-white);
+  margin-top: 8px;
+  margin-bottom: 14px;
 }
 
-.step-number {
-    font-size: 4rem;
-    font-weight: 800;
-    line-height: 1;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    position: absolute;
-    top: 10px;
-    right: 20px;
+/* 3-Step Process */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
 }
 
-.step-icon {
-    font-size: 2rem;
-    color: #a855f7;
-    margin-bottom: 1.5rem;
+.process-card {
+  background: var(--liquid-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  transition: var(--anim-smooth);
 }
 
-.feature-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--glass-border);
-    color: #fff;
+.process-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--sage-400);
 }
 
-.feature-icon i {
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.process-step-num {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--sage-400);
+  opacity: 0.85;
+  margin-bottom: 12px;
 }
 
-.h-tall {
-    height: 100%;
-    min-height: 400px;
+.process-card-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--mono-white);
+  margin-bottom: 10px;
 }
 
-.h-short {
-    height: 100%;
-    min-height: 250px;
+/* Bento Card Elements */
+.status-chip-match {
+  background: rgba(79, 126, 101, 0.35);
+  border: 1px solid var(--sage-400);
+  color: var(--sage-200);
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.feature-img-placeholder {
-    width: 100%;
-    height: 150px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
-    margin-top: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+.mini-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+  background: rgba(10, 13, 12, 0.65);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--mono-border);
 }
 
-/* Tier List UI */
-.tier-row {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 5px;
+.heatmap-day-header {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--mono-muted);
 }
 
-.tier-label {
-    width: 40px;
-    height: 30px;
-    border-radius: 4px;
-    display: grid;
-
-    place-items: center;
-    font-weight: bold;
-    font-size: 0.7rem;
-    color: #000;
+.heatmap-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--mono-light);
+  transition: var(--anim-fast);
 }
 
-.tier-s {
-    background: var(--tier-s);
+.heatmap-cell.match-low { background: var(--sage-800); color: var(--sage-200); }
+.heatmap-cell.match-mid { background: var(--sage-600); color: var(--mono-white); }
+.heatmap-cell.match-high {
+  background: var(--sage-400);
+  color: var(--bg-darkest);
+  font-weight: 900;
+  box-shadow: 0 0 10px rgba(120, 163, 140, 0.5);
 }
 
-.tier-a {
-    background: var(--tier-a);
+/* Tier List in Bento */
+.bento-tier-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.tier-b {
-    background: var(--tier-b);
+.bento-tier-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.tier-content {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+.bento-tier-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: var(--bg-darkest);
 }
 
-/* Animations */
-.fade-in-up {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.6s ease-out;
+.tier-s { background: #f59e0b; }
+.tier-a { background: var(--sage-400); }
+.tier-b { background: #60a5fa; }
+
+.bento-tier-item {
+  flex: 1;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--mono-border);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--mono-white);
 }
 
-/* =========================================
-   NUEVO CSS PARA LA VISTA PREVIA DEL HEATMAP
-   ========================================= */
-
-/* Ajustes al contenedor del placeholder */
-.feature-img-placeholder.heatmap-preview-container {
-    height: auto !important; /* Permitir que el contenido defina la altura */
-    min-height: 220px;
-    /* Fondo más oscuro para contraste */
-    background: rgba(15, 23, 42, 0.8) !important;
-    display: block !important; /* Sobreescribir el flex center original */
-    /* Permitir que los efectos hover salgan del contenedor */
-    overflow: visible !important;
+/* Budget Box */
+.budget-display-box {
+  background: rgba(10, 13, 12, 0.7);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--mono-border);
+  text-align: center;
 }
 
-/* La cuadrícula miniatura */
-.landing-heatmap-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    max-width: 240px; /* Mantenerlo pequeño y centrado */
-    margin: 0 auto;
+.budget-number {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--mono-white);
+  margin: 6px 0;
 }
 
-/* Cabeceras de días (D L M...) */
-.landing-day-header {
-    text-align: center;
-    font-size: 0.6rem;
-    font-weight: bold;
-    color: rgba(255,255,255,0.4);
-    padding-bottom: 4px;
+/* Voter Transparency Row */
+.voter-transparency-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--mono-border);
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* Las cajas de los días */
-.landing-day-box {
-    aspect-ratio: 1;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.05); /* Color base sin votos */
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
-    border: 1px solid transparent;
-    cursor: default;
+.voter-transparency-row.selected {
+  background: rgba(79, 126, 101, 0.22);
+  border-color: var(--sage-500);
 }
 
-/* Efecto hover (imitando la app real) */
-.landing-day-box:not(.empty):hover,
-.landing-day-box.select-simulate {
-    transform: scale(1.2);
-    border-color: white;
-    z-index: 10;
-    box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5);
-    font-weight: bold;
-    color: white;
+/* Archetypes Grid */
+.archetypes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
 }
 
-.landing-day-box.empty {
-    background: transparent;
-    color: transparent;
+.archetype-card {
+  height: 260px;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--liquid-glass-border);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--anim-smooth);
 }
 
-/* ====================
-   COLORES DEL HEATMAP (Hardcoded para la landing)
-   ==================== */
-/* Azul/Indigo bajo */
-.heat-low {
-    background: rgba(79, 70, 229, 0.2);
-    color: white;
-}
-/* Violeta medio */
-.heat-mid {
-    background: rgba(79, 70, 229, 0.5);
-    color: white;
-}
-/* Rosa alto */
-.heat-high {
-    background: rgba(79, 70, 229, 0.75);
-    color: white;
-}
-/* Fucsia máximo con brillo */
-.heat-max {
-    background: rgba(79, 70, 229, 1);
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 0 15px rgba(84, 83, 114, 0.5);
+.archetype-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--sage-400);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
-/* El texto de resultado simulado */
-.heatmap-result-simulate {
-    font-size: 0.85rem;
-    background: rgba(0,0,0,0.3);
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
+.archetype-info {
+  position: relative;
+  z-index: 2;
 }
 
-/* Ajuste específico para el calendario dentro de las tarjetas flotantes del Hero */
-.mockup-card .landing-day-box {
-    font-size: 0.8rem; /* Un poco más pequeño que en la sección de features */
-    border-radius: 4px;
+/* Admin Feature Box */
+.admin-feature-box {
+  background: rgba(10, 13, 12, 0.7);
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid var(--liquid-glass-border);
+  text-align: center;
 }
 
-.mockup-card .landing-heatmap-grid {
-    gap: 3px; /* Espacio un poco más apretado */
+@media (max-width: 768px) {
+  .hero-depth-section {
+    padding: 100px 16px 50px;
+  }
 }

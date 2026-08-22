@@ -1,42 +1,77 @@
-<div class="glass-panel p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="text-white fw-bold mb-0">
-            <i class="fa-solid fa-users me-2 text-neon"></i>Tripulantes
-        </h5>
-        <span class="badge bg-dark border border-secondary">{{ participants.length }} a bordo</span>
+<div class="participants-box">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <span class="label-micro">ROSTER & ACCESOS</span>
+      <h4 class="font-bold text-white fs-5 mt-1 mb-0">Tripulantes del Viaje</h4>
     </div>
+    <span class="status-badge" style="background: rgba(79, 126, 101, 0.25); border: 1px solid var(--sage-500); color: var(--sage-200); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">
+      {{ participants.length }} a bordo
+    </span>
+  </div>
 
-    <!-- Loading -->
-    <div *ngIf="isLoading" class="text-center py-3">
-        <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-    </div>
+  <!-- Toast -->
+  <div *ngIf="feedbackMessage" class="feedback-toast mb-3">
+    <iconify-icon icon="solar:check-circle-bold" width="16"></iconify-icon>
+    <span>{{ feedbackMessage }}</span>
+  </div>
 
-    <!-- Lista -->
-    <div *ngIf="!isLoading" class="user-list custom-scroll">
-        <div *ngFor="let user of participants" class="user-row d-flex align-items-center p-3 rounded mb-2">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center py-4">
+    <iconify-icon icon="solar:refresh-circle-broken" width="28" class="spin-icon text-sage"></iconify-icon>
+  </div>
 
-            <!-- Avatar (Inicial) -->
-            <div class="avatar me-3" [class.admin-avatar]="user.is_admin">
-                {{ user.name.charAt(0).toUpperCase() }}
-            </div>
+  <!-- Participants List -->
+  <div *ngIf="!isLoading" class="participants-list d-flex flex-column gap-2">
+    
+    <div 
+      *ngFor="let user of participants" 
+      class="participant-row d-flex align-items-center justify-content-between p-3 rounded-3"
+      [class.admin-row]="user.is_admin">
 
-            <!-- Info -->
-            <div class="flex-grow-1">
-                <h6 class="text-white mb-0 text-capitalize">
-                    {{ user.name }}
-                    <i *ngIf="user.is_admin" class="fa-solid fa-crown text-warning ms-1 small" title="Admin"></i>
-                </h6>
-                <span class="text-muted x-small">{{ user.is_admin ? 'Organizador' : 'Viajero' }}</span>
-            </div>
-
-            <!-- Delete Action -->
-            <button *ngIf="!user.is_admin" class="btn btn-sm text-danger opacity-50 hover-opacity-100"
-                (click)="deleteParticipant(user)" title="Eliminar Viajero">
-                <i class="fa-solid fa-trash"></i>
-            </button>
-
-            <!-- Status (Decorativo) -->
-            <div class="status-dot" title="En línea"></div>
+      <!-- Avatar & Name -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="voter-avatar" [style.background]="user.is_admin ? 'var(--sage-500)' : 'var(--sage-700)'">
+          {{ user.name ? (user.name.charAt(0) | uppercase) : '?' }}
         </div>
+        <div>
+          <div class="fw-bold text-white fs-6 d-flex align-items-center gap-1">
+            <span>{{ user.name }}</span>
+            <iconify-icon *ngIf="user.is_admin" icon="solar:crown-bold" width="15" style="color: #f59e0b;" title="Organizador"></iconify-icon>
+          </div>
+          <span class="text-muted" style="font-size: 0.75rem;">
+            {{ user.is_admin ? 'Organizador' : (user.status === 'invited' ? 'Invitado (Sin ingresar)' : 'Activo') }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Buttons for Non-Admins -->
+      <div *ngIf="!user.is_admin" class="d-flex align-items-center gap-2">
+        <button 
+          type="button" 
+          class="btn-tc btn-tc-glass btn-tc-sm" 
+          (click)="resetPin(user)" 
+          title="Restablecer PIN si el amigo olvidó su clave">
+          <iconify-icon icon="solar:restart-broken" width="14"></iconify-icon>
+          <span class="d-none d-sm-inline">Reset PIN</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="btn-delete-participant" 
+          (click)="deleteParticipant(user)" 
+          title="Eliminar tripulante">
+          <iconify-icon icon="solar:trash-bin-trash-broken" width="16"></iconify-icon>
+        </button>
+      </div>
+
+      <div *ngIf="user.is_admin">
+        <span class="label-micro text-sage">ORGANIZADOR</span>
+      </div>
+
     </div>
+
+  </div>
+
 </div>

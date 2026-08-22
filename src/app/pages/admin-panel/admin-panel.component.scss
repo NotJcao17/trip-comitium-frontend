@@ -1,57 +1,63 @@
+.admin-page-wrapper {
+  min-height: 100vh;
+  padding: 110px 20px 80px;
+}
+
+.admin-container {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
 .admin-poll-card {
-    transition: all 0.2s;
-    cursor: pointer;
-    border-left: 4px solid transparent;
-    position: relative;
-
-    &:hover {
-        background: rgba(255, 255, 255, 0.08);
-        z-index: 10;
-    }
-
-    &:focus-within {
-        z-index: 20;
-    }
-
-    &.active-card {
-        background: rgba(99, 102, 241, 0.1);
-        border-left-color: #6366f1;
-        z-index: 5;
-    }
+  background: rgba(10, 13, 12, 0.6);
+  border: 1px solid var(--mono-border);
+  cursor: pointer;
+  transition: var(--anim-fast);
 }
 
-.poll-icon-sm {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #cbd5e1;
+.admin-poll-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(201, 222, 211, 0.25);
 }
 
-.clickable-area {
-    flex-grow: 1;
+.admin-poll-card.active-card {
+  background: rgba(79, 126, 101, 0.2);
+  border-color: var(--sage-400);
 }
 
-.animate-fade-in {
-    animation: fadeIn 0.4s ease-out;
+.poll-status-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+  display: inline-block;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.active-tag {
+  background: rgba(79, 126, 101, 0.3);
+  color: var(--sage-200);
+  border: 1px solid var(--sage-500);
 }
 
-.container {
-    padding-top: 100px !important;
-    padding-bottom: 50px;
+.locked-tag {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--mono-muted);
+  border: 1px solid var(--mono-border);
+}
+
+.btn-delete-poll {
+  background: transparent;
+  border: none;
+  color: #f87171;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--anim-fast);
+}
+
+.btn-delete-poll:hover {
+  background: rgba(239, 68, 68, 0.15);
 }

@@ -1,75 +1,162 @@
-<!-- Fondo Ambiental -->
-<div class="ambient-light">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-</div>
+<div class="create-page-wrapper">
+  <div class="create-container">
+    
+    <div class="create-card glass-panel">
+      
+      <!-- Encabezado -->
+      <div class="text-center mb-4">
+        <span class="label-micro">NUEVA EXPEDICIÓN</span>
+        <h2 class="font-bold text-white fs-2 mt-1">CREAR SALA DE VIAJE</h2>
+        <p class="text-muted small">Configura tu sala y comparte el código con tus amigos.</p>
+      </div>
 
-<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="row w-100 justify-content-center">
-        <div class="col-lg-6 col-md-8">
+      <!-- Alerta de Error -->
+      <div *ngIf="errorMessage" class="error-banner mb-4">
+        <iconify-icon icon="solar:danger-triangle-broken" width="18"></iconify-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
 
-            <!-- Tarjeta de Vidrio -->
-            <div class="glass-panel p-4 p-md-5 animate-up">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold mb-2">Crear Nueva Sala</h2>
-                    <p class="text-muted">Configura el espacio para tu grupo.</p>
-                </div>
-
-                <form (ngSubmit)="onSubmit()">
-                    <!-- Nombre del Viaje -->
-                    <div class="mb-4">
-                        <label class="form-label text-white small fw-bold">NOMBRE DEL VIAJE</label>
-                        <input type="text" class="form-control form-control-lg custom-input"
-                            placeholder="Ej. Graduación 2025" [(ngModel)]="formData.tripName" name="tripName" required>
-                    </div>
-
-                    <!-- Descripción -->
-                    <div class="mb-4">
-                        <label class="form-label text-white small fw-bold">DESCRIPCIÓN (OPCIONAL)</label>
-                        <textarea class="form-control custom-input" rows="2" placeholder="Breve descripción del plan..."
-                            [(ngModel)]="formData.tripDescription" name="tripDescription"></textarea>
-                    </div>
-
-                    <div class="row">
-                        <!-- Tu Nombre -->
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label text-white small fw-bold">TU NOMBRE (ADMIN)</label>
-                            <input type="text" class="form-control custom-input" placeholder="Ej. Ana"
-                                [(ngModel)]="formData.adminName" name="adminName" required>
-                        </div>
-                        <!-- Tu PIN -->
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label text-white small fw-bold">CREAR PIN DE ACCESO</label>
-                            <div class="input-group">
-                                <input [type]="showPin ? 'text' : 'password'"
-                                    class="form-control custom-input border-end-0" placeholder="4 dígitos" maxlength="4"
-                                    [(ngModel)]="formData.adminPin" name="adminPin" required>
-                                <button class="btn btn-glass border-start-0 text-white" type="button"
-                                    (click)="togglePin()">
-                                    <i class="fa-solid" [class.fa-eye]="!showPin" [class.fa-eye-slash]="showPin"></i>
-                                </button>
-                            </div>
-                            <div class="form-text text-white-50 small">Lo usarás para entrar después.</div>
-                        </div>
-                    </div>
-
-                    <!-- Mensaje de Error -->
-                    <div *ngIf="errorMessage"
-                        class="alert alert-danger bg-danger bg-opacity-25 border-danger text-white text-center mb-4">
-                        {{ errorMessage }}
-                    </div>
-
-                    <!-- Botones -->
-                    <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-primary-grad btn-custom btn-lg" [disabled]="isLoading">
-                            <span *ngIf="!isLoading">Despegar </span>
-                            <span *ngIf="isLoading"><i class="fa-solid fa-circle-notch fa-spin"></i> Creando...</span>
-                        </button>
-                        <a routerLink="/" class="btn btn-glass btn-custom text-white">Cancelar</a>
-                    </div>
-                </form>
-            </div>
-
+      <form (ngSubmit)="onSubmit()">
+        
+        <!-- Nombre del Viaje -->
+        <div class="form-group mb-3">
+          <label class="form-label">Nombre del Viaje *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.tripName" 
+            name="tripName" 
+            class="form-input" 
+            placeholder="Ej. Fiordos Noruegos 2026" 
+            required>
         </div>
+
+        <!-- Descripción -->
+        <div class="form-group mb-4">
+          <label class="form-label">Descripción o Notas (Opcional)</label>
+          <textarea 
+            [(ngModel)]="formData.tripDescription" 
+            name="tripDescription" 
+            class="form-input" 
+            rows="2" 
+            placeholder="Ej. Ruta de senderismo, cabañas y transporte conjunto..."></textarea>
+        </div>
+
+        <!-- Selector de Tipo de Sala -->
+        <div class="form-group mb-4">
+          <label class="form-label">Tipo de Sala de Acceso</label>
+          <div class="mode-pills">
+            <button 
+              type="button" 
+              class="mode-pill-btn" 
+              [class.active]="formData.roomType === 'closed'" 
+              (click)="setRoomType('closed')">
+              <iconify-icon icon="solar:users-group-rounded-broken" width="16"></iconify-icon>
+              <span>Sala Cerrada (Roster de amigos)</span>
+            </button>
+            <button 
+              type="button" 
+              class="mode-pill-btn" 
+              [class.active]="formData.roomType === 'open'" 
+              (click)="setRoomType('open')">
+              <iconify-icon icon="solar:lock-unlocked-broken" width="16"></iconify-icon>
+              <span>Sala Abierta</span>
+            </button>
+          </div>
+          <div class="text-muted small mt-1">
+            <span *ngIf="formData.roomType === 'closed'">
+              <strong>Sala Cerrada:</strong> Define la lista de amigos que pueden entrar seleccionando su nombre.
+            </span>
+            <span *ngIf="formData.roomType === 'open'">
+              <strong>Sala Abierta:</strong> Cualquier persona con el código puede registrarse con su apodo libremente.
+            </span>
+          </div>
+        </div>
+
+        <!-- Lista de Amigos si es Sala Cerrada -->
+        <div *ngIf="formData.roomType === 'closed'" class="roster-section mb-4">
+          <label class="form-label">Invitados del Grupo</label>
+          <div class="d-flex gap-2 mb-2">
+            <input 
+              type="text" 
+              [(ngModel)]="newFriendName" 
+              name="newFriendName" 
+              class="form-input" 
+              placeholder="Nombre del amigo (Ej. Sofía Navarro)"
+              (keydown.enter)="$event.preventDefault(); addFriend()">
+            <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="addFriend()">
+              <iconify-icon icon="solar:add-circle-broken" width="16"></iconify-icon> Agregar
+            </button>
+          </div>
+
+          <div *ngIf="rosterList.length > 0" class="roster-chips-container">
+            <div *ngFor="let friend of rosterList; let i = index" class="roster-chip">
+              <span>{{ friend }}</span>
+              <button type="button" class="roster-chip-remove" (click)="removeFriend(i)">
+                <iconify-icon icon="solar:close-circle-bold" width="14"></iconify-icon>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="rosterList.length === 0" class="text-muted small italic">
+            Agrega al menos los nombres de tus amigos para que aparezcan en la lista desplegable.
+          </div>
+        </div>
+
+        <div class="divider mb-4"></div>
+
+        <!-- Datos del Organizador (Admin) -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-7">
+            <label class="form-label">Tu Nombre o Apodo (Organizador) *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="formData.adminName" 
+              name="adminName" 
+              class="form-input" 
+              placeholder="Ej. Carlos Ruiz" 
+              required>
+          </div>
+
+          <div class="col-md-5">
+            <label class="form-label">Tu PIN de Acceso (4 dígitos) *</label>
+            <div class="position-relative">
+              <input 
+                [type]="showPin ? 'text' : 'password'" 
+                [(ngModel)]="formData.adminPin" 
+                name="adminPin" 
+                class="form-input text-center" 
+                placeholder="••••" 
+                maxlength="4" 
+                style="letter-spacing: 0.3em; font-size: 1.1rem;" 
+                required>
+              <button 
+                type="button" 
+                class="pin-toggle-btn" 
+                (click)="togglePin()">
+                <iconify-icon [icon]="showPin ? 'solar:eye-closed-broken' : 'solar:eye-broken'" width="16"></iconify-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de Envío -->
+        <button 
+          type="submit" 
+          class="btn-tc btn-tc-primary w-100 py-3 fs-6" 
+          [disabled]="isLoading">
+          <iconify-icon *ngIf="!isLoading" icon="solar:plain-bold" width="18"></iconify-icon>
+          <span *ngIf="!isLoading">Crear Sala y Entrar</span>
+          <span *ngIf="isLoading">Creando Sala...</span>
+        </button>
+
+      </form>
+
+      <div class="text-center mt-4">
+        <a routerLink="/join" class="text-muted small link-hover">
+          ¿Ya tienes un código de viaje? <strong>Únete aquí</strong>
+        </a>
+      </div>
+
     </div>
+
+  </div>
 </div>

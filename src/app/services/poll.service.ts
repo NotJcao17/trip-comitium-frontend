@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Poll } from '../models/poll.interface';
-import { Vote } from '../models/vote.interface';
-import { AuthService } from './auth.service';
+import { Poll, PollCreatePayload, PollStats } from '../models/poll.interface';
+import { Vote, VoteSubmitPayload } from '../models/vote.interface';
 import { environment } from '../environments/environment';
 
 @Injectable({
@@ -11,57 +10,52 @@ import { environment } from '../environments/environment';
 })
 export class PollService {
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
   private baseUrl = environment.apiUrl;
-
-  private getHeaders() {
-    return {
-      headers: new HttpHeaders({
-        'auth-token': this.authService.getToken() || ''
-      })
-    };
-  }
 
   // --- ENCUESTAS ---
   getPolls(): Observable<Poll[]> {
-    return this.http.get<Poll[]>(`${this.baseUrl}/polls`, this.getHeaders());
+    return this.http.get<Poll[]>(`${this.baseUrl}/polls`);
   }
 
   getPollById(pollId: number): Observable<Poll> {
-    return this.http.get<Poll>(`${this.baseUrl}/polls/${pollId}`, this.getHeaders());
+    return this.http.get<Poll>(`${this.baseUrl}/polls/${pollId}`);
   }
 
-  createPoll(pollData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/polls`, pollData, this.getHeaders());
+  createPoll(pollData: PollCreatePayload): Observable<{ message: string; pollId: number }> {
+    return this.http.post<{ message: string; pollId: number }>(`${this.baseUrl}/polls`, pollData);
   }
 
-  updateStatus(pollId: number, status: string): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/polls/${pollId}/status`, { status }, this.getHeaders());
+  updateStatus(pollId: number, status: 'active' | 'locked' | 'hidden'): Observable<{ message: string }> {
+    return this.http.patch<{ message: string }>(`${this.baseUrl}/polls/${pollId}/status`, { status });
   }
 
-  deletePoll(pollId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/polls/${pollId}`, this.getHeaders());
+  deletePoll(pollId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.baseUrl}/polls/${pollId}`);
   }
 
   // --- VOTOS ---
-  submitVote(voteData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/votes`, voteData, this.getHeaders());
+  submitVote(voteData: VoteSubmitPayload): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/votes`, voteData);
   }
 
-  deleteVote(voteId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/votes/${voteId}`, this.getHeaders());
+  deleteVote(voteId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.baseUrl}/votes/${voteId}`);
   }
 
-  getMyVote(pollId: number): Observable<Vote> {
-    return this.http.get<Vote>(`${this.baseUrl}/votes/${pollId}/my-vote`, this.getHeaders());
+  getMyVote(pollId: number): Observable<Vote | null> {
+    return this.http.get<Vote | null>(`${this.baseUrl}/votes/${pollId}/my-vote`);
   }
 
   getMyVotes(): Observable<number[]> {
-    return this.http.get<number[]>(`${this.baseUrl}/votes/my-votes`, this.getHeaders());
+    return this.http.get<number[]>(`${this.baseUrl}/votes/my-votes`);
   }
 
   // --- ESTADÍSTICAS ---
-  getStats(pollId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/stats/${pollId}`, this.getHeaders());
+  getPollStats(pollId: number): Observable<PollStats> {
+    return this.http.get<PollStats>(`${this.baseUrl}/stats/${pollId}`);
+  }
+
+  getStats(pollId: number): Observable<PollStats> {
+    return this.getPollStats(pollId);
   }
 }

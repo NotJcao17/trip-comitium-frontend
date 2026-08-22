@@ -1,30 +1,56 @@
-<div class="slider-container glass-panel p-5 text-center">
+<div class="budget-slider-wrapper text-center">
 
-    <h5 class="text-white mb-4">¿Cuánto estás dispuesto a gastar?</h5>
+  <!-- Success Toast -->
+  <div *ngIf="successMessage" class="success-banner mb-4 text-start">
+    <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+    <span>{{ successMessage }}</span>
+  </div>
 
-    <!-- Valor Gigante -->
-    <div class="amount-display mb-4 text-neon fw-bold">
-        ${{ amount | number }} <span class="fs-5 text-muted">{{ currency }}</span>
+  <span class="label-micro">TU RANGO PERSONAL CÓMODO</span>
+  
+  <!-- Gigantic Amount Display -->
+  <div class="amount-display-giant">
+    ${{ amount | number }} <span class="currency-tag">{{ currency }}</span>
+  </div>
+
+  <!-- Range Slider -->
+  <div class="range-wrapper my-4">
+    <input 
+      type="range" 
+      class="custom-sage-range"
+      [min]="min" 
+      [max]="max" 
+      [step]="step"
+      [(ngModel)]="amount"
+      [disabled]="poll.status === 'locked'">
+
+    <div class="d-flex justify-content-between mt-2 text-muted small font-monospace">
+      <span>${{ min | number }}</span>
+      <span>${{ max | number }}</span>
     </div>
+  </div>
 
-    <!-- Slider -->
-    <div class="range-wrapper mb-4">
-        <input type="range" class="form-range custom-range"
-               [min]="min" [max]="max" [step]="step"
-               [(ngModel)]="amount">
-
-        <div class="d-flex justify-content-between mt-2 text-muted small">
-            <span>${{ min }}</span>
-            <span>${{ max }}</span>
-        </div>
+  <!-- Group Average Stats Card -->
+  <div *ngIf="stats && stats.totalVotes && stats.totalVotes > 0" class="group-average-card p-3 my-4 text-start">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <span class="label-micro">PROMEDIO CONSENSUADO ({{ stats.totalVotes }} {{ stats.totalVotes === 1 ? 'VOTO' : 'VOTOS' }})</span>
+      <span class="text-sage fw-bold font-monospace">${{ stats.average | number }} {{ currency }}</span>
     </div>
-
-    <!-- Botón -->
-    <div class="mt-4">
-        <div *ngIf="successMessage" class="alert alert-success py-2 mb-3">{{ successMessage }}</div>
-        <button class="btn btn-primary-grad btn-custom w-100" (click)="submitVote()" [disabled]="isSubmitting">
-            Confirmar Presupuesto
-        </button>
+    <div class="d-flex justify-content-between text-muted" style="font-size: 0.78rem;">
+      <span>Mínimo grupal: ${{ stats.min | number }}</span>
+      <span>Máximo grupal: ${{ stats.max | number }}</span>
     </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div *ngIf="poll.status === 'active'" class="mt-4">
+    <button 
+      class="btn-tc btn-tc-primary w-100 py-3 fs-6" 
+      [disabled]="isSubmitting"
+      (click)="submitVote()">
+      <iconify-icon icon="solar:diskette-broken" width="18"></iconify-icon>
+      <span>{{ isSubmitting ? 'Guardando...' : 'Confirmar mi Presupuesto' }}</span>
+    </button>
+  </div>
 
 </div>

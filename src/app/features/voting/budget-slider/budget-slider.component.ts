@@ -1,59 +1,71 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Poll } from '../../../models/poll.interface';
+import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 
 @Component({
   selector: 'app-budget-slider',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './budget-slider.component.html',
   styleUrl: './budget-slider.component.scss'
 })
 export class BudgetSliderComponent implements OnInit {
-  @Input() poll!: Poll;
-  pollService = inject(PollService);
+  @Input({ required: true }) poll!: Poll;
+  private pollService = inject(PollService);
 
   amount: number = 0;
   isSubmitting = false;
   successMessage = '';
+  stats: PollStats | null = null;
 
-  // Configuración por defecto
-  min = 0;
-  max = 10000;
-  step = 100;
+  min = 1000;
+  max = 30000;
+  step = 500;
   currency = 'MXN';
 
   ngOnInit() {
-    // Cargar configuración si existe
     if (this.poll.config) {
-      this.min = this.poll.config.min || 0;
-      this.max = this.poll.config.max || 10000;
-      this.step = this.poll.config.step || 100;
+      this.min = this.poll.config.min || 1000;
+      this.max = this.poll.config.max || 30000;
+      this.step = this.poll.config.step || 500;
       this.currency = this.poll.config.currency || 'MXN';
     }
-    // Valor inicial a la mitad
     this.amount = (this.max + this.min) / 2;
 
     this.loadMyVote();
+    this.loadStats();
   }
 
   loadMyVote() {
     if (!this.poll.poll_id) return;
     this.pollService.getMyVote(this.poll.poll_id).subscribe(vote => {
-      if (vote && vote.vote_value && vote.vote_value.amount) {
-        this.amount = vote.vote_value.amount;
+      if (vote && vote.vote_value) {
+        const val = typeof vote.vote_value === 'string' ? JSON.parse(vote.vote_value) : vote.vote_value;
+        if (val && val.amount) {
+          this.amount = val.amount;
+        }
       }
     });
   }
 
-  submitVote() {
+  loadStats() {
     if (!this.poll.poll_id) return;
+    this.pollService.getPollStats(this.poll.poll_id).subscribe({
+      next: (data) => {
+        this.stats = data;
+      },
+      error: (err) => console.warn('Could not load stats:', err)
+    });
+  }
+
+  submitVote() {
+    if (!this.poll.poll_id || this.poll.status === 'locked' || this.isSubmitting) return;
 
     this.isSubmitting = true;
 
-    // Guardamos como JSON: { "amount": 5000 }
     const voteData = {
       pollId: this.poll.poll_id,
       voteValue: { amount: this.amount }
@@ -62,12 +74,13 @@ export class BudgetSliderComponent implements OnInit {
     this.pollService.submitVote(voteData).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.successMessage = '¡Presupuesto guardado!';
-        setTimeout(() => this.successMessage = '', 3000);
+        this.successMessage = '¡Tu presupuesto ha sido guardado!';
+        this.loadStats();
+        setTimeout(() => this.successMessage = '', 3500);
       },
-      error: () => {
+      error: (err) => {
         this.isSubmitting = false;
-        alert('Error al guardar.');
+        alert(err.error?.error || 'Error al guardar el presupuesto.');
       }
     });
   }

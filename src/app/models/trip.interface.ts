@@ -1,15 +1,28 @@
 export interface Trip {
     trip_id?: number;
+    id?: number;
     name: string;
     description?: string;
-    share_code: string;
+    share_code?: string;
+    shareCode?: string;
+    room_type?: 'open' | 'closed';
+    roomType?: 'open' | 'closed';
     created_at?: Date;
 }
 
 export interface Participant {
-    participant_id: number;
-    trip_id: number;
+    participant_id?: number;
+    id?: number;
+    trip_id?: number;
     name: string;
-    is_admin: boolean; // MySQL devuelve 0/1, pero en el front lo trataremos como boolean
-    has_paid?: boolean; // (Aunque lo quitamos de la BD, lo dejo opcional por si acaso en visualización)
+    is_admin?: boolean;
+    isAdmin?: boolean;
+    status?: 'invited' | 'active';
+    is_claimed?: boolean;
+    isClaimed?: boolean;
+}
+
+export interface RosterResponse {
+    roomType: 'open' | 'closed';
+    participants: Participant[];
 }

@@ -1,19 +1,23 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthService, RecentTrip } from '../../services/auth.service';
+import { TripService } from '../../services/trip.service';
 
 @Component({
   selector: 'app-join-trip',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './join-trip.component.html',
   styleUrl: './join-trip.component.scss'
 })
-export class JoinTripComponent {
-  authService = inject(AuthService);
-  router = inject(Router);
+export class JoinTripComponent implements OnInit {
+  private authService = inject(AuthService);
+  private tripService = inject(TripService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   formData = {
     shareCode: '',
@@ -21,25 +25,69 @@ export class JoinTripComponent {
     accessPin: ''
   };
 
+  roomType: 'open' | 'closed' | null = null;
+  rosterParticipants: Array<{ id?: number; name: string; isClaimed?: boolean }> = [];
+  recentTrips: RecentTrip[] = [];
+
   isLoading = false;
+  isCheckingRoom = false;
   errorMessage = '';
   showPin = false;
 
+  ngOnInit() {
+    this.recentTrips = this.authService.getRecentTrips();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['code']) {
+        this.formData.shareCode = params['code'].toUpperCase();
+        this.onCodeBlur();
+      }
+    });
+  }
+
   togglePin() {
     this.showPin = !this.showPin;
+  }
+
+  onCodeBlur() {
+    const code = this.formData.shareCode ? this.formData.shareCode.trim().toUpperCase() : '';
+    if (!code || code.length < 4) {
+      this.roomType = null;
+      this.rosterParticipants = [];
+      return;
+    }
+
+    this.isCheckingRoom = true;
+    this.tripService.getRosterByCode(code).subscribe({
+      next: (res) => {
+        this.isCheckingRoom = false;
+        this.roomType = res.roomType;
+        this.rosterParticipants = res.participants || [];
+      },
+      error: () => {
+        this.isCheckingRoom = false;
+        this.roomType = null;
+        this.rosterParticipants = [];
+      }
+    });
+  }
+
+  reconnectRecent(recent: RecentTrip) {
+    this.formData.shareCode = recent.shareCode;
+    this.formData.name = recent.participantName;
+    this.onCodeBlur();
   }
 
   onSubmit() {
     if (this.isLoading) return;
 
     if (!this.formData.shareCode || !this.formData.name || !this.formData.accessPin) {
-      this.errorMessage = 'Todos los campos son necesarios.';
+      this.errorMessage = 'Por favor completa todos los campos (Código, Nombre y PIN).';
       return;
     }
 
-    // Validar PIN de 4 dígitos
     if (!/^\d{4}$/.test(this.formData.accessPin)) {
-      this.errorMessage = 'El PIN debe ser de 4 números exactos.';
+      this.errorMessage = 'El PIN debe ser exactamente de 4 dígitos numéricos.';
       return;
     }
 
@@ -47,19 +95,19 @@ export class JoinTripComponent {
     this.errorMessage = '';
 
     this.authService.joinTrip(this.formData.shareCode, this.formData.name, this.formData.accessPin).subscribe({
-      next: (res) => {
-        // Login exitoso, el token ya se guardó en el servicio
-        this.router.navigate(['/trip', this.formData.shareCode]);
+      next: () => {
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
-        // Si el error es 401, es credenciales. Si es 404, viaje no existe.
         if (err.status === 404) {
-          this.errorMessage = 'Código de viaje no encontrado.';
+          this.errorMessage = 'Código de viaje no encontrado. Verifica con tu organizador.';
         } else if (err.status === 401) {
-          this.errorMessage = 'Nombre ocupado o PIN incorrecto.';
+          this.errorMessage = err.error?.error || 'PIN incorrecto. Si olvidaste tu PIN, pide al administrador restablecer tu acceso.';
+        } else if (err.status === 403) {
+          this.errorMessage = err.error?.error || 'Esta sala es cerrada. Selecciona tu nombre de la lista de invitados.';
         } else {
-          this.errorMessage = 'Ocurrió un error. Intenta de nuevo.';
+          this.errorMessage = err.error?.error || 'Error al entrar a la sala. Intenta de nuevo.';
         }
       }
     });

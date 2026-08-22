@@ -1,58 +1,78 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TripService } from '../../services/trip.service';
 import { PollService } from '../../services/poll.service';
 import { AuthService } from '../../services/auth.service';
-import { Trip } from '../../models/trip.interface';
+import { Trip, Participant } from '../../models/trip.interface';
 import { Poll } from '../../models/poll.interface';
 import { PollCardComponent } from '../../components/poll-card/poll-card.component';
-import { EmptyStateComponent } from '../../components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-trip-dashboard',
   standalone: true,
-  imports: [CommonModule, PollCardComponent, EmptyStateComponent, RouterLink],
+  imports: [CommonModule, PollCardComponent, RouterLink],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './trip-dashboard.component.html',
   styleUrl: './trip-dashboard.component.scss'
 })
 export class TripDashboardComponent implements OnInit {
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  tripService = inject(TripService);
-  pollService = inject(PollService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private tripService = inject(TripService);
+  private pollService = inject(PollService);
   authService = inject(AuthService);
 
   tripCode: string = '';
   tripData: Trip | null = null;
+  participants: Participant[] = [];
   polls: Poll[] = [];
+  myVotes: Set<number> = new Set();
+  
   isLoading = true;
   error = '';
-
-  // Simulación de votos del usuario (más adelante lo conectaremos real)
-  myVotes: Set<number> = new Set();
+  copiedCode = false;
 
   ngOnInit() {
     this.tripCode = this.route.snapshot.paramMap.get('code') || '';
+    
+    // Si no viene en la URL, intentar obtener del usuario autenticado o reciente
+    if (!this.tripCode) {
+      const recents = this.authService.getRecentTrips();
+      if (recents.length > 0) {
+        this.tripCode = recents[0].shareCode;
+      }
+    }
+
     if (this.tripCode) {
       this.loadData();
+    } else {
+      this.isLoading = false;
+      this.error = 'No se encontró un código de viaje activo.';
     }
   }
 
   loadData() {
     this.isLoading = true;
-    // 1. Cargar Info del Viaje
     this.tripService.getTripByCode(this.tripCode).subscribe({
       next: (trip) => {
         this.tripData = trip;
-
-        // 2. Cargar Encuestas (Solo si el viaje existe)
+        this.loadParticipants();
         this.loadPolls();
       },
-      error: (err) => {
+      error: () => {
         this.error = 'No pudimos cargar la información del viaje.';
         this.isLoading = false;
       }
+    });
+  }
+
+  loadParticipants() {
+    this.tripService.getParticipants().subscribe({
+      next: (parts) => {
+        this.participants = parts || [];
+      },
+      error: (err) => console.warn('Error loading participants:', err)
     });
   }
 
@@ -60,38 +80,31 @@ export class TripDashboardComponent implements OnInit {
     this.pollService.getPolls().subscribe({
       next: (polls) => {
         this.polls = polls;
-
-        // Fetch user votes to populate myVotes Set
         this.pollService.getMyVotes().subscribe({
           next: (votedPollIds) => {
             this.myVotes = new Set(votedPollIds);
             this.isLoading = false;
           },
-          error: (err) => {
-            console.error('Error loading votes:', err);
+          error: () => {
             this.isLoading = false;
           }
         });
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.isLoading = false;
       }
     });
   }
 
-  // Navegar a la votación
   goToVote(pollId: number) {
-    const poll = this.polls.find(p => p.poll_id === pollId);
-    if (poll && poll.status === 'locked') {
-      alert('Esta encuesta está cerrada.');
-      return;
-    }
     this.router.navigate(['/trip', this.tripCode, 'vote', pollId]);
   }
 
   copyCode() {
     navigator.clipboard.writeText(this.tripCode);
-    alert('Código copiado: ' + this.tripCode);
+    this.copiedCode = true;
+    setTimeout(() => {
+      this.copiedCode = false;
+    }, 2500);
   }
 }

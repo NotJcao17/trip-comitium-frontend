@@ -19,9 +19,13 @@ export const routes: Routes = [
     { path: 'join', component: JoinTripComponent },
 
     // 4. Dashboard del Viaje (Protegida con authGuard)
-    // El ':code' es una variable dinámica (ej. trip/A8X9L)
     {
         path: 'trip/:code',
+        component: TripDashboardComponent,
+        canActivate: [authGuard]
+    },
+    {
+        path: 'dashboard',
         component: TripDashboardComponent,
         canActivate: [authGuard]
     },
@@ -29,6 +33,11 @@ export const routes: Routes = [
     // 5. Panel de Admin (Protegida con adminGuard)
     {
         path: 'trip/:code/admin',
+        component: AdminPanelComponent,
+        canActivate: [adminGuard]
+    },
+    {
+        path: 'admin',
         component: AdminPanelComponent,
         canActivate: [adminGuard]
     },
@@ -40,6 +49,6 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
 
-    // Comodín: Si ponen una ruta rara, mandar a home
+    // Comodín: Redirección al inicio
     { path: '**', redirectTo: '' }
 ];

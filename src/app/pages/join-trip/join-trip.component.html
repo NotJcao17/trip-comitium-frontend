@@ -1,65 +1,138 @@
-<div class="ambient-light">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-</div>
+<div class="join-page-wrapper">
+  <div class="join-container">
+    
+    <div class="join-card glass-panel">
+      
+      <!-- Encabezado -->
+      <div class="text-center mb-4">
+        <span class="label-micro">ACCESO A LA SALA</span>
+        <h2 class="font-bold text-white fs-2 mt-1">UNIRSE A UN VIAJE</h2>
+        <p class="text-muted small">Ingresa el código compartido por tu organizador.</p>
+      </div>
 
-<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="row w-100 justify-content-center">
-        <div class="col-lg-5 col-md-7">
+      <!-- Alerta de Error -->
+      <div *ngIf="errorMessage" class="error-banner mb-4">
+        <iconify-icon icon="solar:danger-triangle-broken" width="18"></iconify-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
 
-            <div class="glass-panel p-4 p-md-5 animate-up text-center">
-                <div class="mb-4">
-                    <h2 class="fw-bold mb-2">Unirse a Sala</h2>
-                    <p class="text-muted">Ingresa el código que te compartieron.</p>
-                </div>
-
-                <form (ngSubmit)="onSubmit()" class="text-start">
-
-                    <!-- Código -->
-                    <div class="mb-4">
-                        <label class="form-label text-white small fw-bold">CÓDIGO DEL VIAJE</label>
-                        <input type="text"
-                            class="form-control custom-input text-center font-monospace fs-4 letter-spacing-2 text-uppercase"
-                            placeholder="ABC-12" [(ngModel)]="formData.shareCode" name="shareCode" required>
-                    </div>
-
-                    <!-- Nombre -->
-                    <div class="mb-4">
-                        <label class="form-label text-white small fw-bold">TU NOMBRE O APODO</label>
-                        <input type="text" class="form-control custom-input" placeholder="¿Quién eres?"
-                            [(ngModel)]="formData.name" name="name" required>
-                    </div>
-
-                    <!-- PIN -->
-                    <div class="mb-4">
-                        <label class="form-label text-white small fw-bold">TU PIN (4 DÍGITOS)</label>
-                        <div class="input-group">
-                            <input [type]="showPin ? 'text' : 'password'" class="form-control custom-input border-end-0"
-                                placeholder="****" maxlength="4" [(ngModel)]="formData.accessPin" name="accessPin"
-                                required>
-                            <button class="btn btn-glass border-start-0 text-white" type="button" (click)="togglePin()">
-                                <i class="fa-solid" [class.fa-eye]="!showPin" [class.fa-eye-slash]="showPin"></i>
-                            </button>
-                        </div>
-                        <div class="form-text text-white-50 small">Si es tu primera vez, este será tu PIN. Si ya
-                            entraste antes, usa el mismo.</div>
-                    </div>
-
-                    <div *ngIf="errorMessage"
-                        class="alert alert-danger bg-danger bg-opacity-25 border-danger text-white text-center mb-4">
-                        {{ errorMessage }}
-                    </div>
-
-                    <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-primary-grad btn-custom btn-lg" [disabled]="isLoading">
-                            <span *ngIf="!isLoading">Entrar <i class="fa-solid fa-arrow-right ms-2"></i></span>
-                            <span *ngIf="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Verificando...</span>
-                        </button>
-                        <a routerLink="/" class="btn btn-glass btn-custom text-white">Volver</a>
-                    </div>
-                </form>
+      <form (ngSubmit)="onSubmit()">
+        
+        <!-- Código del Viaje -->
+        <div class="form-group mb-3">
+          <label class="form-label">Código del Viaje *</label>
+          <div class="position-relative">
+            <input 
+              type="text" 
+              [(ngModel)]="formData.shareCode" 
+              name="shareCode" 
+              class="form-input text-uppercase font-monospace fs-5 fw-bold" 
+              placeholder="EJ. NOR-8821" 
+              maxlength="10"
+              (blur)="onCodeBlur()" 
+              required>
+            <div *ngIf="isCheckingRoom" class="input-spinner">
+              <iconify-icon icon="solar:refresh-circle-broken" width="18" class="spin-icon"></iconify-icon>
             </div>
-
+          </div>
         </div>
+
+        <!-- Indicador de tipo de sala detectado -->
+        <div *ngIf="roomType" class="room-type-tag mb-3">
+          <iconify-icon [icon]="roomType === 'closed' ? 'solar:users-group-rounded-bold' : 'solar:lock-unlocked-bold'" width="16"></iconify-icon>
+          <span *ngIf="roomType === 'closed'">Sala Cerrada detectada — Selecciona tu nombre de la lista</span>
+          <span *ngIf="roomType === 'open'">Sala Abierta detectada — Escribe tu nombre o apodo</span>
+        </div>
+
+        <!-- Selección de Nombre: Dropdown si es Sala Cerrada -->
+        <div *ngIf="roomType === 'closed' && rosterParticipants.length > 0" class="form-group mb-3">
+          <label class="form-label">Selecciona tu Nombre en el Grupo *</label>
+          <select 
+            [(ngModel)]="formData.name" 
+            name="name" 
+            class="form-input custom-select" 
+            required>
+            <option value="">-- ¿Quién eres? --</option>
+            <option *ngFor="let p of rosterParticipants" [value]="p.name">
+              {{ p.name }} {{ p.isClaimed ? '(Registrado)' : '(Disponible)' }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Input de Texto para Nombre si es Sala Abierta o sin detección aún -->
+        <div *ngIf="roomType !== 'closed' || rosterParticipants.length === 0" class="form-group mb-3">
+          <label class="form-label">Tu Nombre o Apodo *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.name" 
+            name="name" 
+            class="form-input" 
+            placeholder="Ej. Mateo Valdés" 
+            required>
+        </div>
+
+        <!-- PIN de Acceso -->
+        <div class="form-group mb-4">
+          <label class="form-label">Tu PIN de Acceso (4 Dígitos) *</label>
+          <div class="position-relative">
+            <input 
+              [type]="showPin ? 'text' : 'password'" 
+              [(ngModel)]="formData.accessPin" 
+              name="accessPin" 
+              class="form-input text-center" 
+              placeholder="••••" 
+              maxlength="4" 
+              style="letter-spacing: 0.3em; font-size: 1.1rem;" 
+              required>
+            <button 
+              type="button" 
+              class="pin-toggle-btn" 
+              (click)="togglePin()">
+              <iconify-icon [icon]="showPin ? 'solar:eye-closed-broken' : 'solar:eye-broken'" width="16"></iconify-icon>
+            </button>
+          </div>
+          <span class="text-muted" style="font-size: 0.75rem; display: block; margin-top: 5px;">
+            Si es tu primera vez en la sala, este será tu PIN. Si ya entraste antes, escribe el mismo.
+          </span>
+        </div>
+
+        <!-- Botón de Envío -->
+        <button 
+          type="submit" 
+          class="btn-tc btn-tc-primary w-100 py-3 fs-6" 
+          [disabled]="isLoading">
+          <iconify-icon *ngIf="!isLoading" icon="solar:arrow-right-broken" width="18"></iconify-icon>
+          <span *ngIf="!isLoading">Entrar a la Sala</span>
+          <span *ngIf="isLoading">Entrando...</span>
+        </button>
+
+      </form>
+
+      <!-- Persistencia de Viajes Recientes en este dispositivo -->
+      <div *ngIf="recentTrips.length > 0" class="recent-trips-section mt-4 pt-3">
+        <span class="label-micro">SALAS RECIENTES EN ESTE DISPOSITIVO</span>
+        <div class="recent-trips-list mt-2">
+          <div *ngFor="let recent of recentTrips" class="recent-trip-row">
+            <div>
+              <div class="fw-bold text-white fs-6">{{ recent.tripName }}</div>
+              <div class="text-muted" style="font-size: 0.75rem;">
+                Código: <span class="font-monospace text-sage">{{ recent.shareCode }}</span> • Guardado como: {{ recent.participantName }}
+              </div>
+            </div>
+            <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="reconnectRecent(recent)">
+              Reconectar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a routerLink="/create" class="text-muted small link-hover">
+          ¿Aún no tienes una sala? <strong>Crea un nuevo viaje aquí</strong>
+        </a>
+      </div>
+
     </div>
+
+  </div>
 </div>

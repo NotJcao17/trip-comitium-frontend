@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-budget-slider',
@@ -15,6 +17,9 @@ import { PollService } from '../../../services/poll.service';
 export class BudgetSliderComponent implements OnInit {
   @Input({ required: true }) poll!: Poll;
   private pollService = inject(PollService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   amount: number = 0;
   isSubmitting = false;
@@ -28,12 +33,16 @@ export class BudgetSliderComponent implements OnInit {
 
   ngOnInit() {
     if (this.poll.config) {
-      this.min = this.poll.config.min || 1000;
-      this.max = this.poll.config.max || 30000;
-      this.step = this.poll.config.step || 500;
-      this.currency = this.poll.config.currency || 'MXN';
+      let cfg = this.poll.config;
+      if (typeof cfg === 'string') {
+        try { cfg = JSON.parse(cfg); } catch { cfg = {}; }
+      }
+      this.min = cfg.min || 1000;
+      this.max = cfg.max || 30000;
+      this.step = cfg.step || 500;
+      this.currency = cfg.currency || 'MXN';
     }
-    this.amount = (this.max + this.min) / 2;
+    this.amount = Math.round((this.max + this.min) / 2);
 
     this.loadMyVote();
     this.loadStats();
@@ -44,8 +53,8 @@ export class BudgetSliderComponent implements OnInit {
     this.pollService.getMyVote(this.poll.poll_id).subscribe(vote => {
       if (vote && vote.vote_value) {
         const val = typeof vote.vote_value === 'string' ? JSON.parse(vote.vote_value) : vote.vote_value;
-        if (val && val.amount) {
-          this.amount = val.amount;
+        if (val && val.amount !== undefined) {
+          this.amount = Number(val.amount);
         }
       }
     });
@@ -75,8 +84,19 @@ export class BudgetSliderComponent implements OnInit {
       next: () => {
         this.isSubmitting = false;
         this.successMessage = '¡Tu presupuesto ha sido guardado!';
-        this.loadStats();
-        setTimeout(() => this.successMessage = '', 3500);
+
+        const tripCode = this.route.snapshot.paramMap.get('code') || this.authService.getActiveTripCode();
+        setTimeout(() => {
+          if (tripCode) {
+            this.router.navigate(['/trip', tripCode], { 
+              queryParams: { voted: '1', title: this.poll.title } 
+            });
+          } else {
+            this.router.navigate(['/dashboard'], { 
+              queryParams: { voted: '1', title: this.poll.title } 
+            });
+          }
+        }, 600);
       },
       error: (err) => {
         this.isSubmitting = false;

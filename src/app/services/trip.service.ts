@@ -60,4 +60,9 @@ export class TripService {
   deleteParticipant(participantId: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/participants/${participantId}`);
   }
+
+  // 7. Agregar participante a sala cerrada o abierta (Solo Admin)
+  addParticipant(name: string): Observable<{ message: string; participant: Participant }> {
+    return this.http.post<{ message: string; participant: Participant }>(`${this.apiUrl}/participants`, { name });
+  }
 }

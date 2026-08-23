@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-standard-vote',
@@ -15,6 +17,9 @@ import { PollService } from '../../../services/poll.service';
 export class StandardVoteComponent implements OnInit {
   @Input({ required: true }) poll!: Poll;
   private pollService = inject(PollService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   selectedOptionId: number | null = null;
   textResponse: string = '';
@@ -86,8 +91,19 @@ export class StandardVoteComponent implements OnInit {
       next: () => {
         this.isSubmitting = false;
         this.successMessage = '¡Tu voto ha sido registrado correctamente!';
-        this.loadStats();
-        setTimeout(() => this.successMessage = '', 3500);
+
+        const tripCode = this.route.snapshot.paramMap.get('code') || this.authService.getActiveTripCode();
+        setTimeout(() => {
+          if (tripCode) {
+            this.router.navigate(['/trip', tripCode], { 
+              queryParams: { voted: '1', title: this.poll.title } 
+            });
+          } else {
+            this.router.navigate(['/dashboard'], { 
+              queryParams: { voted: '1', title: this.poll.title } 
+            });
+          }
+        }, 600);
       },
       error: (err) => {
         this.isSubmitting = false;

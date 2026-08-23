@@ -44,3 +44,21 @@
   font-size: 0.82rem;
   font-weight: 700;
 }
+
+.error-toast {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+  padding: 10px 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.add-participant-form {
+  background: rgba(20, 28, 25, 0.7);
+  border: 1px solid var(--liquid-glass-border);
+}

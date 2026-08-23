@@ -32,10 +32,23 @@ export class TripDashboardComponent implements OnInit {
   isLoading = true;
   error = '';
   copiedCode = false;
+  feedbackMessage = '';
 
   ngOnInit() {
     this.tripCode = this.route.snapshot.paramMap.get('code') || '';
     
+    // Si viene de votar, mostrar mensaje de agradecimiento
+    if (this.route.snapshot.queryParamMap.get('voted') === '1') {
+      const pollTitle = this.route.snapshot.queryParamMap.get('title');
+      this.feedbackMessage = pollTitle 
+        ? `¡Tu voto en "${pollTitle}" fue registrado correctamente!` 
+        : '¡Tu voto ha sido registrado correctamente!';
+      
+      setTimeout(() => {
+        this.feedbackMessage = '';
+      }, 5000);
+    }
+
     // Si no viene en la URL, intentar obtener del usuario autenticado o reciente
     if (!this.tripCode) {
       const recents = this.authService.getRecentTrips();

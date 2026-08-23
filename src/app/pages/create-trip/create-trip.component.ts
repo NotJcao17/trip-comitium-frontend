@@ -84,10 +84,13 @@ export class CreateTripComponent {
             shareCode: res.trip.shareCode,
             tripName: res.trip.name,
             participantName: this.formData.adminName,
+            isAdmin: true,
+            roomType: res.trip.roomType || this.formData.roomType,
+            token: res.token,
             lastVisited: Date.now()
           });
         }
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/trip', res.trip.shareCode]);
       },
       error: (err) => {
         this.isLoading = false;

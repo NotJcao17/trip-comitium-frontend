@@ -11,11 +11,41 @@
     </span>
   </div>
 
-  <!-- Toast -->
+  <!-- Toast Feedback & Error -->
   <div *ngIf="feedbackMessage" class="feedback-toast mb-3">
     <iconify-icon icon="solar:check-circle-bold" width="16"></iconify-icon>
     <span>{{ feedbackMessage }}</span>
   </div>
+
+  <div *ngIf="errorMessage" class="error-toast mb-3">
+    <iconify-icon icon="solar:danger-triangle-broken" width="16"></iconify-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Add Participant Input for Admins -->
+  <form (ngSubmit)="addParticipant()" class="add-participant-form mb-4 p-3 rounded-3">
+    <label class="form-label" style="font-size: 0.72rem; letter-spacing: 0.08em;">INVITAR NUEVO INTEGRANTE</label>
+    <div class="d-flex gap-2">
+      <input 
+        type="text" 
+        class="form-input" 
+        [(ngModel)]="newParticipantName" 
+        name="newParticipantName"
+        placeholder="Nombre o apodo del amigo..."
+        [disabled]="isAdding"
+        required>
+      <button 
+        type="submit" 
+        class="btn-tc btn-tc-primary flex-shrink-0"
+        [disabled]="!newParticipantName.trim() || isAdding">
+        <iconify-icon icon="solar:user-plus-rounded-bold" width="16"></iconify-icon>
+        <span>{{ isAdding ? 'Agregando...' : 'Agregar' }}</span>
+      </button>
+    </div>
+    <span class="text-muted" style="font-size: 0.74rem; display: block; margin-top: 5px;">
+      El nuevo amigo aparecerá en la lista y podrá ingresar a la sala con el código del viaje creando su propio PIN.
+    </span>
+  </form>
 
   <!-- Loading -->
   <div *ngIf="isLoading" class="text-center py-4">

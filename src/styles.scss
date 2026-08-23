@@ -10,11 +10,11 @@
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&f[]=cabinet-grotesk@800,900&display=swap');
 
 :root {
-  /* Atmosphere & Base Tones */
-  --bg-darkest: #0a0d0c;
-  --bg-deep: #0f1412;
-  --bg-slate: #161c1a;
-  --bg-elevated: #1e2623;
+  /* Atmosphere & Base Tones (Refined Slate-Pine Dark Theme) */
+  --bg-darkest: #111614;
+  --bg-deep: #17201c;
+  --bg-slate: #202c27;
+  --bg-elevated: #283731;
 
   /* Official Brand Palette */
   --sage-100: #e8f0ec;
@@ -28,17 +28,17 @@
   --sage-900: #102119;
 
   /* Liquid Glass System */
-  --liquid-glass-bg: rgba(22, 28, 26, 0.65);
-  --liquid-glass-border: rgba(201, 222, 211, 0.18);
+  --liquid-glass-bg: rgba(28, 38, 33, 0.72);
+  --liquid-glass-border: rgba(201, 222, 211, 0.16);
   --liquid-glass-highlight: rgba(255, 255, 255, 0.22);
-  --liquid-glass-glow: 0 15px 35px rgba(16, 33, 25, 0.45);
+  --liquid-glass-glow: 0 15px 35px rgba(16, 33, 25, 0.35);
 
   /* Monochromes */
   --mono-white: #ffffff;
   --mono-offwhite: #f5f7f6;
   --mono-light: #d6deda;
   --mono-muted: #8e9e96;
-  --mono-border: rgba(255, 255, 255, 0.08);
+  --mono-border: rgba(255, 255, 255, 0.09);
 
   /* Fonts */
   --font-display: 'Clash Display', 'Syne', sans-serif;
@@ -333,4 +333,44 @@ a {
   .bento-col-8, .bento-col-4, .bento-col-6 {
     grid-column: span 12;
   }
+}
+
+/* ==========================================================================
+   GLOBAL UTILITIES, HOST CONTAINER HEIGHTS & ICON NORMALIZATION
+   ========================================================================== */
+app-poll-card, app-empty-state, app-date-selector, app-tier-list-sort, app-budget-slider, app-standard-vote {
+  display: block;
+  height: 100%;
+}
+
+.row.g-3 > [class*="col-"], .row.g-4 > [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+}
+
+.row.g-3 > [class*="col-"] > *, .row.g-4 > [class*="col-"] > * {
+  flex: 1 1 auto;
+}
+
+iconify-icon {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Prevent GPU Tile Render Glitches on Scroll */
+.hero-depth-section, .hero-bg-layer, .hero-fog-overlay, .floating-nav-wrapper {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.poll-question-desc {
+  background: rgba(79, 126, 101, 0.14);
+  border: 1px solid var(--liquid-glass-border);
+  color: var(--sage-200);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }

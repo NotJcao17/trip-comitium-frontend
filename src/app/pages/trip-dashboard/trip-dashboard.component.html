@@ -19,7 +19,14 @@
     <!-- Main Content -->
     <div *ngIf="!isLoading && tripData">
       
-      <!-- Expedition Hero Banner with Mountain Photography -->
+      <!-- Feedback Banner tras Votar -->
+      <div *ngIf="feedbackMessage" class="feedback-toast mb-4">
+        <iconify-icon icon="solar:check-circle-bold" width="22" class="text-sage flex-shrink-0"></iconify-icon>
+        <span>{{ feedbackMessage }}</span>
+        <button type="button" class="btn-close-toast ms-auto" (click)="feedbackMessage = ''" aria-label="Cerrar">×</button>
+      </div>
+
+      <!-- Expedition Hero Banner -->
       <div class="trip-header-banner">
         <div class="trip-banner-content">
           

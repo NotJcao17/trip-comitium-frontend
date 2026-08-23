@@ -30,8 +30,10 @@
 }
 
 .footer-logo-img {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(79, 126, 101, 0.4));
 }
 
 .footer-tagline {

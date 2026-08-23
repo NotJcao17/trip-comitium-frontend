@@ -6,8 +6,14 @@
     <span>{{ successMessage }}</span>
   </div>
 
+  <!-- Dynamic Question Description -->
+  <div *ngIf="poll.description" class="poll-question-desc mb-4 p-3 rounded-3 text-center">
+    <iconify-icon icon="solar:info-circle-broken" width="16" class="text-sage me-1"></iconify-icon>
+    <span>{{ poll.description }}</span>
+  </div>
+
   <p class="text-muted small mb-4 text-center">
-    Arrastra cada propuesta hacia la categoría correspondiente (S = Imprescindible, C = Opcional).
+    Arrastra cada tarjeta hacia su categoría o toca los botones de nivel directo para clasificarla rápidamente.
   </p>
 
   <!-- Filas de Tiers (S, A, B, C) -->
@@ -16,9 +22,10 @@
       
       <!-- Tier Badge Lateral -->
       <div 
-        class="tier-header d-flex align-items-center justify-content-center fw-bold"
+        class="tier-header d-flex flex-column align-items-center justify-content-center fw-bold"
         [style.background-color]="tier.color">
-        {{ tier.label }}
+        <span class="tier-letter">{{ tier.label }}</span>
+        <span class="tier-sublabel d-none d-sm-block">{{ tier.sublabel }}</span>
       </div>
 
       <!-- Zona de Drop -->
@@ -32,7 +39,28 @@
 
         <div *ngFor="let item of tier.items" class="tier-drag-item" cdkDrag>
           <iconify-icon icon="solar:hamburger-menu-broken" width="14" class="drag-handle-icon"></iconify-icon>
-          <span>{{ item }}</span>
+          <span class="item-label">{{ item }}</span>
+          
+          <!-- Mini Quick Move Buttons -->
+          <div class="quick-move-group">
+            <button 
+              *ngFor="let target of tiers | slice:0:4" 
+              type="button" 
+              class="btn-quick-tier"
+              [class.active]="target.id === tier.id"
+              (click)="moveToTier(item, tier.id, target.id)"
+              [title]="'Mover a ' + target.label">
+              {{ target.label }}
+            </button>
+            <button 
+              type="button" 
+              class="btn-quick-tier btn-quick-reset" 
+              (click)="moveToTier(item, tier.id, 'Unranked')" 
+              title="Regresar a opciones sin clasificar">
+              ×
+            </button>
+          </div>
+
           <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
         </div>
 
@@ -46,7 +74,11 @@
 
   <!-- Banco de Opciones Disponibles (Pool) -->
   <div class="pool-container p-3 mb-4">
-    <span class="label-micro d-block mb-2">OPCIONES DISPONIBLES (SIN CLASIFICAR)</span>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="label-micro">OPCIONES DISPONIBLES (SIN CLASIFICAR)</span>
+      <span class="text-muted small">{{ tiers[4].items.length }} restantes</span>
+    </div>
+
     <div 
       class="pool-drop-zone d-flex flex-wrap gap-2 min-vh-10"
       cdkDropList 
@@ -57,12 +89,26 @@
 
       <div *ngFor="let item of tiers[4].items" class="tier-drag-item pool-item" cdkDrag>
         <iconify-icon icon="solar:hamburger-menu-broken" width="14" class="drag-handle-icon"></iconify-icon>
-        <span>{{ item }}</span>
+        <span class="item-label">{{ item }}</span>
+        
+        <!-- Quick Assign Buttons for unranked items -->
+        <div class="quick-move-group">
+          <button 
+            *ngFor="let target of tiers | slice:0:4" 
+            type="button" 
+            class="btn-quick-tier"
+            (click)="moveToTier(item, 'Unranked', target.id)"
+            [title]="'Asignar a ' + target.label">
+            {{ target.label }}
+          </button>
+        </div>
+
         <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
       </div>
 
-      <p *ngIf="tiers[4].items.length === 0" class="text-muted small m-0 text-center w-100 py-2 fst-italic">
-        Todas las opciones han sido clasificadas en los tiers de arriba.
+      <p *ngIf="tiers[4].items.length === 0" class="text-muted small m-0 text-center w-100 py-3 fst-italic">
+        <iconify-icon icon="solar:check-circle-bold" width="16" class="text-sage me-1"></iconify-icon>
+        ¡Excelente! Has clasificado todas las propuestas.
       </p>
     </div>
   </div>

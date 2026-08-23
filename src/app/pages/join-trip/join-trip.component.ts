@@ -96,7 +96,7 @@ export class JoinTripComponent implements OnInit {
 
     this.authService.joinTrip(this.formData.shareCode, this.formData.name, this.formData.accessPin).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/trip', this.formData.shareCode.trim().toUpperCase()]);
       },
       error: (err) => {
         this.isLoading = false;

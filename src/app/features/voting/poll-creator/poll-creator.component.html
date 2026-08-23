@@ -7,6 +7,14 @@
     </div>
   </div>
 
+  <!-- Validation Error Alerts -->
+  <div *ngIf="validationErrors.length > 0" class="error-banner mb-3">
+    <iconify-icon icon="solar:danger-triangle-broken" width="18" class="flex-shrink-0"></iconify-icon>
+    <div>
+      <div *ngFor="let err of validationErrors" class="small">{{ err }}</div>
+    </div>
+  </div>
+
   <form (ngSubmit)="submit()">
     <div class="row g-3">
       
@@ -29,9 +37,23 @@
           <option value="multiple_choice">Opción Múltiple</option>
           <option value="date">Calendario de Fechas</option>
           <option value="slider">Presupuesto (Slider)</option>
-          <option value="tier_list">Tier List (Ranking S-A-B)</option>
+          <option value="tier_list">Tier List (Ranking S-A-B-C)</option>
           <option value="text">Propuesta Libre (Texto)</option>
         </select>
+      </div>
+
+      <!-- Descripción personalizada de la pregunta -->
+      <div class="col-12">
+        <label class="form-label">Descripción o Instrucciones (Opcional)</label>
+        <input 
+          type="text" 
+          class="form-input" 
+          [(ngModel)]="description" 
+          name="description" 
+          placeholder="Ej. Voten considerando que saldremos desde el viernes por la tarde">
+        <span class="text-muted" style="font-size: 0.75rem; display: block; margin-top: 4px;">
+          Esta descripción aparecerá arriba de las opciones para guiar el voto de tus amigos.
+        </span>
       </div>
 
     </div>
@@ -41,7 +63,10 @@
       
       <!-- Opciones para Multiple Choice y Tier List -->
       <div *ngIf="type === 'multiple_choice' || type === 'tier_list'">
-        <label class="form-label">Opciones (Escribe una por renglón)</label>
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <label class="form-label mb-0">Opciones (Escribe una por renglón) *</label>
+          <span class="badge-helper" style="font-size: 0.72rem; color: var(--sage-300);">Mínimo 2 opciones</span>
+        </div>
         <textarea 
           class="form-input font-monospace" 
           rows="4" 
@@ -49,42 +74,60 @@
           name="optionsText" 
           placeholder="Cabaña en el Bosque&#10;Glamping Laguna&#10;Hotel en el Centro"></textarea>
         <span class="text-muted" style="font-size: 0.75rem; display: block; margin-top: 4px;">
-          Cada línea será una tarjeta seleccionable o rankeable para tus amigos.
+          Cada renglón se convertirá en una tarjeta votable o clasificable.
         </span>
       </div>
 
       <!-- Config Slider -->
       <div *ngIf="type === 'slider'" class="row g-3">
         <div class="col-4">
-          <label class="form-label">Mínimo ($)</label>
-          <input type="number" class="form-input" [(ngModel)]="sliderMin" name="sliderMin">
+          <label class="form-label">Mínimo ($ MXN)</label>
+          <input type="number" class="form-input" [(ngModel)]="sliderMin" name="sliderMin" min="0">
         </div>
         <div class="col-4">
-          <label class="form-label">Máximo ($)</label>
-          <input type="number" class="form-input" [(ngModel)]="sliderMax" name="sliderMax">
+          <label class="form-label">Máximo ($ MXN)</label>
+          <input type="number" class="form-input" [(ngModel)]="sliderMax" name="sliderMax" min="100">
         </div>
         <div class="col-4">
-          <label class="form-label">Paso ($)</label>
-          <input type="number" class="form-input" [(ngModel)]="sliderStep" name="sliderStep">
+          <label class="form-label">Paso ($ MXN)</label>
+          <input type="number" class="form-input" [(ngModel)]="sliderStep" name="sliderStep" min="50">
         </div>
       </div>
 
-      <!-- Config Fechas -->
-      <div *ngIf="type === 'date'" class="row g-3">
-        <div class="col-6">
-          <label class="form-label">Fecha Inicio</label>
-          <input type="date" class="form-input" [(ngModel)]="dateStart" name="dateStart">
+      <!-- Config Fechas con Mini-resumen interactivo -->
+      <div *ngIf="type === 'date'" class="row g-3 align-items-end">
+        <div class="col-sm-5">
+          <label class="form-label">Fecha Inicio *</label>
+          <input 
+            type="date" 
+            class="form-input" 
+            [(ngModel)]="dateStart" 
+            name="dateStart" 
+            [min]="todayDateStr"
+            required>
         </div>
-        <div class="col-6">
-          <label class="form-label">Fecha Fin</label>
-          <input type="date" class="form-input" [(ngModel)]="dateEnd" name="dateEnd">
+        <div class="col-sm-5">
+          <label class="form-label">Fecha Fin *</label>
+          <input 
+            type="date" 
+            class="form-input" 
+            [(ngModel)]="dateEnd" 
+            name="dateEnd" 
+            [min]="dateStart || todayDateStr"
+            required>
+        </div>
+        <div class="col-sm-2 text-center text-sm-start">
+          <div *ngIf="getDaysCount() > 0" class="date-summary-chip">
+            <iconify-icon icon="solar:calendar-bold" width="14"></iconify-icon>
+            <span>{{ getDaysCount() }} días</span>
+          </div>
         </div>
       </div>
 
       <!-- Info Texto -->
       <div *ngIf="type === 'text'" class="text-muted small">
         <iconify-icon icon="solar:info-circle-broken" width="16" class="me-1 text-sage"></iconify-icon>
-        Los miembros de la expedición tendrán un campo libre para aportar ideas o comentarios.
+        Los integrantes tendrán un campo abierto para escribir ideas, sugerencias o comentarios libres.
       </div>
 
     </div>
@@ -94,7 +137,7 @@
       <button 
         type="submit" 
         class="btn-tc btn-tc-primary" 
-        [disabled]="!title.trim() || isSubmitting">
+        [disabled]="isSubmitting">
         <iconify-icon icon="solar:add-circle-bold" width="16"></iconify-icon>
         <span>{{ isSubmitting ? 'Publicando...' : 'Publicar Encuesta' }}</span>
       </button>

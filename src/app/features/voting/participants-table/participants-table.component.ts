@@ -1,12 +1,13 @@
 import { Component, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TripService } from '../../../services/trip.service';
 import { Participant } from '../../../models/trip.interface';
 
 @Component({
   selector: 'app-participants-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './participants-table.component.html',
   styleUrl: './participants-table.component.scss'
@@ -16,7 +17,10 @@ export class ParticipantsTableComponent implements OnInit {
 
   participants: Participant[] = [];
   isLoading = true;
+  isAdding = false;
+  newParticipantName = '';
   feedbackMessage = '';
+  errorMessage = '';
 
   ngOnInit() {
     this.loadParticipants();
@@ -31,6 +35,34 @@ export class ParticipantsTableComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.isLoading = false;
+      }
+    });
+  }
+
+  addParticipant() {
+    const cleanName = this.newParticipantName.trim();
+    if (!cleanName) return;
+
+    this.isAdding = true;
+    this.errorMessage = '';
+    this.feedbackMessage = '';
+
+    this.tripService.addParticipant(cleanName).subscribe({
+      next: (res) => {
+        this.isAdding = false;
+        this.newParticipantName = '';
+        this.feedbackMessage = res.message || `"${cleanName}" agregado exitosamente.`;
+        if (res.participant) {
+          this.participants.push(res.participant);
+        } else {
+          this.loadParticipants();
+        }
+        setTimeout(() => this.feedbackMessage = '', 4000);
+      },
+      error: (err) => {
+        this.isAdding = false;
+        this.errorMessage = err.error?.error || 'No se pudo agregar al participante.';
+        setTimeout(() => this.errorMessage = '', 5000);
       }
     });
   }

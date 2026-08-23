@@ -41,20 +41,21 @@
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   color: var(--mono-white);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: 0.05em;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
   flex-shrink: 0;
 }
 
 .nav-logo-img {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(79, 126, 101, 0.4));
 }
 
 .nav-links {
@@ -188,4 +189,98 @@
     width: 34px;
     height: 34px;
   }
+
+  .nav-logo-img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ==========================================================================
+   MULTI-ROOM SELECTOR MODAL & BADGES
+   ========================================================================== */
+.badge-trip-count {
+  background: var(--sage-500);
+  color: var(--mono-white);
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+
+.badge-role-admin {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.rooms-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.rooms-modal-card {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(20, 28, 25, 0.95);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  color: var(--mono-muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: var(--anim-fast);
+}
+
+.btn-close-modal:hover {
+  color: var(--mono-white);
+}
+
+.room-selector-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--liquid-glass-border);
+  transition: var(--anim-fast);
+  cursor: pointer;
+}
+
+.room-selector-item:hover {
+  background: rgba(79, 126, 101, 0.18);
+  border-color: var(--sage-400);
+}
+
+.btn-remove-room {
+  background: transparent;
+  border: none;
+  color: var(--mono-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: var(--anim-fast);
+}
+
+.btn-remove-room:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
 }

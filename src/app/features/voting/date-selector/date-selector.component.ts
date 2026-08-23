@@ -1,7 +1,9 @@
-import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Input, OnInit, HostListener, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-date-selector',
@@ -14,6 +16,9 @@ import { PollService } from '../../../services/poll.service';
 export class DateSelectorComponent implements OnInit {
   @Input({ required: true }) poll!: Poll;
   private pollService = inject(PollService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   selectedDates: Set<string> = new Set();
   currentMonth: Date = new Date();
@@ -22,10 +27,20 @@ export class DateSelectorComponent implements OnInit {
   successMessage = '';
   stats: PollStats | null = null;
 
+  // Drag-to-select state
+  isDragging = false;
+  dragSelectMode: 'select' | 'deselect' = 'select';
+
   ngOnInit() {
     this.generateCalendar();
     this.loadMyVote();
     this.loadStats();
+  }
+
+  @HostListener('window:pointerup')
+  @HostListener('window:pointercancel')
+  onWindowPointerUp() {
+    this.isDragging = false;
   }
 
   loadMyVote() {
@@ -105,7 +120,56 @@ export class DateSelectorComponent implements OnInit {
     }
   }
 
+  onCellPointerDown(day: any, event: PointerEvent) {
+    if (!day.date || day.disabled || this.poll.status === 'locked') return;
+
+    this.isDragging = true;
+    if (this.selectedDates.has(day.date)) {
+      this.dragSelectMode = 'deselect';
+      this.selectedDates.delete(day.date);
+    } else {
+      this.dragSelectMode = 'select';
+      this.selectedDates.add(day.date);
+    }
+    day.selected = this.selectedDates.has(day.date);
+  }
+
+  onCellPointerEnter(day: any) {
+    if (!this.isDragging || !day.date || day.disabled || this.poll.status === 'locked') return;
+
+    if (this.dragSelectMode === 'select') {
+      this.selectedDates.add(day.date);
+    } else {
+      this.selectedDates.delete(day.date);
+    }
+    day.selected = this.selectedDates.has(day.date);
+  }
+
+  onTouchMove(event: TouchEvent) {
+    if (!this.isDragging || this.poll.status === 'locked') return;
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!element) return;
+
+    const cell = element.closest('.calendar-day-cell') as HTMLElement;
+    if (cell && cell.dataset['date']) {
+      const dateStr = cell.dataset['date'];
+      const targetDay = this.calendarDays.find(d => d.date === dateStr);
+      if (targetDay && !targetDay.disabled) {
+        if (this.dragSelectMode === 'select') {
+          this.selectedDates.add(dateStr);
+        } else {
+          this.selectedDates.delete(dateStr);
+        }
+        targetDay.selected = this.selectedDates.has(dateStr);
+      }
+    }
+  }
+
   toggleDate(day: any) {
+    // Fallback click handler if not dragged
     if (!day.date || day.disabled || this.poll.status === 'locked') return;
 
     if (this.selectedDates.has(day.date)) {
@@ -113,7 +177,7 @@ export class DateSelectorComponent implements OnInit {
     } else {
       this.selectedDates.add(day.date);
     }
-    this.generateCalendar();
+    day.selected = this.selectedDates.has(day.date);
   }
 
   changeMonth(delta: number) {
@@ -134,8 +198,20 @@ export class DateSelectorComponent implements OnInit {
       next: () => {
         this.isSubmitting = false;
         this.successMessage = '¡Tus fechas disponibles han sido guardadas!';
-        this.loadStats();
-        setTimeout(() => this.successMessage = '', 3500);
+
+        // Redirigir al dashboard con feedback
+        const tripCode = this.route.snapshot.paramMap.get('code') || this.authService.getActiveTripCode();
+        setTimeout(() => {
+          if (tripCode) {
+            this.router.navigate(['/trip', tripCode], { 
+              queryParams: { voted: '1', title: this.poll.title } 
+            });
+          } else {
+            this.router.navigate(['/dashboard'], { 
+              queryParams: { voted: '1', title: this.poll.title } 
+            });
+          }
+        }, 600);
       },
       error: (err) => {
         this.isSubmitting = false;

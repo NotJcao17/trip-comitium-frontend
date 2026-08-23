@@ -9,10 +9,9 @@
 }
 
 .trip-header-banner {
-  background: linear-gradient(90deg, rgba(10, 13, 12, 0.95) 0%, rgba(10, 13, 12, 0.7) 60%, transparent 100%),
-              url('/images/pexels-kamil-szerlag-1972585-4413456.jpg');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(135deg, rgba(28, 38, 33, 0.9) 0%, rgba(20, 28, 24, 0.95) 50%, rgba(17, 32, 25, 0.85) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--liquid-glass-border);
   border-radius: 24px;
   padding: 40px;
@@ -23,6 +22,45 @@
   flex-wrap: wrap;
   gap: 20px;
   box-shadow: var(--liquid-glass-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.trip-header-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sage-400), var(--sage-200), transparent);
+}
+
+.feedback-toast {
+  background: rgba(79, 126, 101, 0.25);
+  border: 1px solid var(--sage-400);
+  color: var(--sage-100);
+  padding: 14px 20px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 8px 24px rgba(16, 33, 25, 0.4);
+}
+
+.btn-close-toast {
+  background: transparent;
+  border: none;
+  color: var(--mono-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.btn-close-toast:hover {
+  color: var(--mono-white);
 }
 
 .trip-banner-content {

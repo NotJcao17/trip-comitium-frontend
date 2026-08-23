@@ -6,7 +6,13 @@
     <span>{{ successMessage }}</span>
   </div>
 
-  <span class="label-micro">TU RANGO PERSONAL CÓMODO</span>
+  <!-- Dynamic Question Description or Clean Subtitle -->
+  <div *ngIf="poll.description" class="poll-question-desc mb-4 p-3 rounded-3 text-center">
+    <iconify-icon icon="solar:info-circle-broken" width="16" class="text-sage me-1"></iconify-icon>
+    <span>{{ poll.description }}</span>
+  </div>
+
+  <span class="label-micro">{{ poll.description ? 'TU PROPUESTA' : 'MONTO SELECCIONADO' }}</span>
   
   <!-- Gigantic Amount Display -->
   <div class="amount-display-giant">

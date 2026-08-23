@@ -6,6 +6,12 @@
     <span>{{ successMessage }}</span>
   </div>
 
+  <!-- Dynamic Question Description -->
+  <div *ngIf="poll.description" class="poll-question-desc mb-4 p-3 rounded-3 text-center">
+    <iconify-icon icon="solar:info-circle-broken" width="16" class="text-sage me-1"></iconify-icon>
+    <span>{{ poll.description }}</span>
+  </div>
+
   <!-- Month Navigation Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(-1)">
@@ -24,8 +30,8 @@
     </button>
   </div>
 
-  <!-- Calendar Grid -->
-  <div class="calendar-grid">
+  <!-- Calendar Grid with Drag & Touch Swipe Support -->
+  <div class="calendar-grid" (touchmove)="onTouchMove($event)">
     <div class="calendar-header-day">Dom</div>
     <div class="calendar-header-day">Lun</div>
     <div class="calendar-header-day">Mar</div>
@@ -37,20 +43,22 @@
     <div 
       *ngFor="let day of calendarDays" 
       class="calendar-day-cell"
+      [attr.data-date]="day.date"
       [class.empty]="!day.date"
       [class.disabled]="day.disabled"
       [class.selected]="day.selected"
       [class.is-today]="day.isToday"
       [class.has-votes]="day.voteCount > 0"
       [class.high-match]="day.voteCount >= 3"
-      (click)="toggleDate(day)">
+      (pointerdown)="onCellPointerDown(day, $event)"
+      (pointerenter)="onCellPointerEnter(day)">
       
       <span *ngIf="day.day" class="day-number">{{ day.day }}</span>
       <span *ngIf="day.voteCount > 0" class="vote-count-dot">{{ day.voteCount }}v</span>
     </div>
   </div>
 
-  <!-- Legend -->
+  <!-- Legend & Hint -->
   <div class="d-flex justify-content-between align-items-center mt-4 text-muted small flex-wrap gap-2">
     <div class="d-flex align-items-center gap-2">
       <span class="legend-box selected"></span> <span>Tus días marcados</span>
@@ -61,8 +69,11 @@
   </div>
 
   <!-- Submit Button -->
-  <div *ngIf="poll.status === 'active'" class="mt-4 pt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center">
-    <span class="text-muted small">Haz clic en los días que tengas libres.</span>
+  <div *ngIf="poll.status === 'active'" class="mt-4 pt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <span class="text-muted small">
+      <iconify-icon icon="solar:hand-shake-broken" width="14" class="text-sage"></iconify-icon> 
+      Arrastra el cursor o dedo para marcar varios días seguidos.
+    </span>
     <button 
       class="btn-tc btn-tc-primary" 
       [disabled]="selectedDates.size === 0 || isSubmitting"

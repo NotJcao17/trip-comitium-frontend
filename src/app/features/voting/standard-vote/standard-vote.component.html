@@ -6,6 +6,12 @@
     <span>{{ successMessage }}</span>
   </div>
 
+  <!-- Dynamic Question Description -->
+  <div *ngIf="poll.description" class="poll-question-desc mb-4 p-3 rounded-3 text-center">
+    <iconify-icon icon="solar:info-circle-broken" width="16" class="text-sage me-1"></iconify-icon>
+    <span>{{ poll.description }}</span>
+  </div>
+
   <!-- Multiple Choice Mode -->
   <div *ngIf="poll.type === 'multiple_choice'" class="options-container">
     

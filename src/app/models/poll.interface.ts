@@ -2,6 +2,7 @@ export interface Poll {
     poll_id?: number;
     trip_id: number;
     title: string;
+    description?: string;
     type: 'date' | 'tier_list' | 'slider' | 'multiple_choice' | 'text';
     status: 'active' | 'locked' | 'hidden';
     config?: any;
@@ -18,6 +19,7 @@ export interface PollOption {
 
 export interface PollCreatePayload {
     title: string;
+    description?: string;
     type: 'date' | 'tier_list' | 'slider' | 'multiple_choice' | 'text';
     config?: any;
     options?: string[];

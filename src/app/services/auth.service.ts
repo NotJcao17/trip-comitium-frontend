@@ -8,6 +8,9 @@ export interface RecentTrip {
   shareCode: string;
   tripName: string;
   participantName: string;
+  isAdmin?: boolean;
+  roomType?: string;
+  token?: string;
   lastVisited: number;
 }
 
@@ -32,6 +35,9 @@ export class AuthService {
             shareCode: response.trip?.shareCode || shareCode.toUpperCase(),
             tripName: response.trip?.name || 'Viaje Activo',
             participantName: response.user?.name || name,
+            isAdmin: Boolean(response.user?.isAdmin),
+            roomType: response.trip?.roomType,
+            token: response.token,
             lastVisited: Date.now()
           });
         }
@@ -91,9 +97,32 @@ export class AuthService {
     try {
       const list = this.getRecentTrips().filter(t => t.shareCode !== trip.shareCode);
       list.unshift(trip);
-      localStorage.setItem(this.recentTripsKey, JSON.stringify(list.slice(0, 5)));
+      localStorage.setItem(this.recentTripsKey, JSON.stringify(list.slice(0, 8)));
     } catch (e) {
       console.warn('No se pudo guardar en recientes:', e);
     }
+  }
+
+  removeRecentTrip(shareCode: string): void {
+    try {
+      const list = this.getRecentTrips().filter(t => t.shareCode !== shareCode);
+      localStorage.setItem(this.recentTripsKey, JSON.stringify(list));
+    } catch (e) {
+      console.warn('No se pudo eliminar de recientes:', e);
+    }
+  }
+
+  switchToTrip(trip: RecentTrip): void {
+    if (trip.token) {
+      this.saveToken(trip.token);
+    }
+    trip.lastVisited = Date.now();
+    this.saveRecentTrip(trip);
+    this.router.navigate(['/trip', trip.shareCode]);
+  }
+
+  getActiveTripCode(): string | null {
+    const recents = this.getRecentTrips();
+    return recents.length > 0 ? recents[0].shareCode : null;
   }
 }

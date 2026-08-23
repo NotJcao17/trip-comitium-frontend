@@ -44,3 +44,29 @@
   background-repeat: no-repeat;
   background-position: right 14px center;
 }
+
+.date-summary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(79, 126, 101, 0.25);
+  border: 1px solid var(--sage-400);
+  color: var(--sage-200);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.error-banner {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-weight: 600;
+}

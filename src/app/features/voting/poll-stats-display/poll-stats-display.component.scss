@@ -78,3 +78,17 @@
   align-items: center;
   gap: 5px;
 }
+
+.score-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: #111;
+}
+
+.pill-s { background: #ff7f7f; }
+.pill-a { background: #ffbf7f; }
+.pill-b { background: #ffdf7f; }
+.pill-c { background: #ffff7f; }
+.pill-d { background: #bfff7f; }

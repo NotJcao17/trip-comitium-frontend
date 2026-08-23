@@ -112,9 +112,27 @@
 
     <!-- 4. Tier List Results -->
     <div *ngIf="poll?.type === 'tier_list'" class="tier-ranking-box">
-      <span class="label-micro d-block mb-3">PUNTUACIÓN PONDERADA DEL GRUPO</span>
+      
+      <!-- Scoring Rules & Header -->
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <span class="label-micro m-0">PUNTUACIÓN PONDERADA DEL GRUPO</span>
+        
+        <!-- Badges de puntuación -->
+        <div class="d-flex gap-1 flex-wrap align-items-center">
+          <span class="score-pill pill-s">S = 5 pts</span>
+          <span class="score-pill pill-a">A = 4 pts</span>
+          <span class="score-pill pill-b">B = 3 pts</span>
+          <span class="score-pill pill-c">C = 2 pts</span>
+          <span class="score-pill pill-d">D = 1 pt</span>
+        </div>
+      </div>
+
+      <p class="text-muted small mb-3">
+        El puntaje grupal se calcula sumando los puntos asignados por cada tripulante según su nivel de preferencia (S: 5 pts, A: 4 pts, B: 3 pts, C: 2 pts, D: 1 pt).
+      </p>
+
       <div class="d-flex flex-column gap-2">
-        <div *ngFor="let item of stats.ranking; let i = index" class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-black bg-opacity-25">
+        <div *ngFor="let item of stats.ranking; let i = index" class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-black bg-opacity-25 border border-white border-opacity-5">
           <div class="d-flex align-items-center gap-3">
             <span class="ranking-position-badge" [class.gold]="i === 0">#{{ i + 1 }}</span>
             <span class="fw-bold text-white">{{ item.item }}</span>

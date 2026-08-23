@@ -37,7 +37,6 @@
         (cdkDropListDropped)="drop($event)">
 
         <div *ngFor="let item of tier.items" class="tier-drag-item" cdkDrag>
-          <iconify-icon icon="solar:reorder-broken" width="14" class="drag-handle-icon"></iconify-icon>
           <span class="item-label">{{ item }}</span>
           <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
         </div>
@@ -62,7 +61,6 @@
       (cdkDropListDropped)="drop($event)">
 
       <div *ngFor="let item of tiers[5].items" class="tier-drag-item pool-item" cdkDrag>
-        <iconify-icon icon="solar:reorder-broken" width="14" class="drag-handle-icon"></iconify-icon>
         <span class="item-label">{{ item }}</span>
         <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
       </div>

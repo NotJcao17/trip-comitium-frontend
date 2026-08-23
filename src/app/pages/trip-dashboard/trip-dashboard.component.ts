@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { TripService } from '../../services/trip.service';
 import { PollService } from '../../services/poll.service';
 import { AuthService } from '../../services/auth.service';
@@ -16,7 +17,7 @@ import { PollCardComponent } from '../../components/poll-card/poll-card.componen
   templateUrl: './trip-dashboard.component.html',
   styleUrl: './trip-dashboard.component.scss'
 })
-export class TripDashboardComponent implements OnInit {
+export class TripDashboardComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private tripService = inject(TripService);
@@ -34,47 +35,58 @@ export class TripDashboardComponent implements OnInit {
   copiedCode = false;
   feedbackMessage = '';
 
+  private routeSub: Subscription | null = null;
+
   ngOnInit() {
-    this.tripCode = this.route.snapshot.paramMap.get('code') || '';
-    
-    // Si viene de votar, mostrar mensaje de agradecimiento
-    if (this.route.snapshot.queryParamMap.get('voted') === '1') {
-      const pollTitle = this.route.snapshot.queryParamMap.get('title');
-      this.feedbackMessage = pollTitle 
-        ? `¡Tu voto en "${pollTitle}" fue registrado correctamente!` 
-        : '¡Tu voto ha sido registrado correctamente!';
-      
-      setTimeout(() => {
-        this.feedbackMessage = '';
-      }, 5000);
-    }
-
-    // Si no viene en la URL, intentar obtener del usuario autenticado o reciente
-    if (!this.tripCode) {
-      const recents = this.authService.getRecentTrips();
-      if (recents.length > 0) {
-        this.tripCode = recents[0].shareCode;
+    this.routeSub = this.route.paramMap.subscribe(params => {
+      const codeFromUrl = params.get('code');
+      if (codeFromUrl) {
+        this.tripCode = codeFromUrl;
+      } else {
+        const active = this.authService.getActiveTripCode();
+        if (active) {
+          this.tripCode = active;
+        } else {
+          const recents = this.authService.getRecentTrips();
+          this.tripCode = recents.length > 0 ? recents[0].shareCode : '';
+        }
       }
-    }
 
-    if (this.tripCode) {
-      this.loadData();
-    } else {
-      this.isLoading = false;
-      this.error = 'No se encontró un código de viaje activo.';
+      // Feedback de votación
+      const voted = this.route.snapshot.queryParamMap.get('voted');
+      const title = this.route.snapshot.queryParamMap.get('title');
+      if (voted === '1') {
+        this.feedbackMessage = title ? `¡Tu voto en "${title}" fue registrado exitosamente!` : '¡Tu voto ha sido guardado!';
+        setTimeout(() => this.feedbackMessage = '', 5000);
+      }
+
+      if (this.tripCode) {
+        this.loadData();
+      } else {
+        this.isLoading = false;
+        this.error = 'No se encontró un código de viaje activo.';
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
     }
   }
 
   loadData() {
     this.isLoading = true;
+    this.error = '';
+
     this.tripService.getTripByCode(this.tripCode).subscribe({
       next: (trip) => {
         this.tripData = trip;
         this.loadParticipants();
         this.loadPolls();
       },
-      error: () => {
-        this.error = 'No pudimos cargar la información del viaje.';
+      error: (err) => {
+        this.error = err.error?.error || 'No pudimos cargar la información del viaje.';
         this.isLoading = false;
       }
     });
@@ -85,17 +97,19 @@ export class TripDashboardComponent implements OnInit {
       next: (parts) => {
         this.participants = parts || [];
       },
-      error: (err) => console.warn('Error loading participants:', err)
+      error: (err) => {
+        console.warn('Error loading participants:', err);
+      }
     });
   }
 
   loadPolls() {
     this.pollService.getPolls().subscribe({
       next: (polls) => {
-        this.polls = polls;
+        this.polls = polls || [];
         this.pollService.getMyVotes().subscribe({
           next: (votedPollIds) => {
-            this.myVotes = new Set(votedPollIds);
+            this.myVotes = new Set(votedPollIds || []);
             this.isLoading = false;
           },
           error: () => {

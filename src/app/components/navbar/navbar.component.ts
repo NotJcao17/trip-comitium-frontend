@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, HostListener, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService, RecentTrip } from '../../services/auth.service';
@@ -11,7 +11,7 @@ import { AuthService, RecentTrip } from '../../services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   authService = inject(AuthService);
   private router = inject(Router);
 
@@ -20,8 +20,16 @@ export class NavbarComponent {
   showRoomsModal = false;
   copiedCode: string | null = null;
 
-  get recentTrips(): RecentTrip[] {
-    return this.authService.getRecentTrips();
+  recentTrips: RecentTrip[] = [];
+  activeTripCode: string | null = null;
+
+  ngOnInit() {
+    this.refreshTripsState();
+  }
+
+  refreshTripsState() {
+    this.recentTrips = this.authService.getRecentTrips();
+    this.activeTripCode = this.authService.getActiveTripCode();
   }
 
   @HostListener('window:scroll', [])
@@ -45,6 +53,7 @@ export class NavbarComponent {
   }
 
   toggleRoomsModal() {
+    this.refreshTripsState();
     this.showRoomsModal = !this.showRoomsModal;
   }
 
@@ -53,16 +62,17 @@ export class NavbarComponent {
   }
 
   isCurrentTrip(trip: RecentTrip): boolean {
-    return this.authService.getActiveTripCode() === trip.shareCode;
+    return this.activeTripCode === trip.shareCode;
   }
 
   onMyRoomClick(event: Event) {
     event.preventDefault();
-    const trips = this.recentTrips;
-    if (trips.length > 1) {
+    this.refreshTripsState();
+    
+    if (this.recentTrips.length > 1) {
       this.showRoomsModal = true;
-    } else if (trips.length === 1) {
-      this.authService.switchToTrip(trips[0]);
+    } else if (this.recentTrips.length === 1) {
+      this.switchTrip(this.recentTrips[0]);
     } else {
       this.router.navigate(['/dashboard']);
     }
@@ -71,6 +81,7 @@ export class NavbarComponent {
 
   switchTrip(trip: RecentTrip) {
     this.authService.switchToTrip(trip);
+    this.refreshTripsState();
     this.showRoomsModal = false;
     this.closeMenu();
   }
@@ -78,6 +89,7 @@ export class NavbarComponent {
   removeTrip(trip: RecentTrip, event: Event) {
     event.stopPropagation();
     this.authService.removeRecentTrip(trip.shareCode);
+    this.refreshTripsState();
     if (this.recentTrips.length === 0) {
       this.closeRoomsModal();
     }

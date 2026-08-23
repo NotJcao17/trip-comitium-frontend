@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Input, OnInit, HostListener, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -34,6 +34,11 @@ export class TierListSortComponent implements OnInit {
 
   isSubmitting = false;
   successMessage = '';
+
+  @HostListener('dragstart', ['$event'])
+  onNativeDragStart(event: DragEvent) {
+    event.preventDefault();
+  }
 
   ngOnInit() {
     if (this.poll.options) {

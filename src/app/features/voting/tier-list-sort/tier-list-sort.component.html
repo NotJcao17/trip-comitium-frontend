@@ -13,24 +13,23 @@
   </div>
 
   <p class="text-muted small mb-4 text-center">
-    Arrastra cada tarjeta hacia su categoría o toca los botones de nivel directo para clasificarla rápidamente.
+    Arrastra y suelta cada opción dentro de la categoría que consideres adecuada.
   </p>
 
-  <!-- Filas de Tiers (S, A, B, C) -->
-  <div class="d-flex flex-column gap-3 mb-4">
-    <div *ngFor="let tier of tiers | slice:0:4" class="tier-row d-flex align-items-stretch">
+  <!-- Filas de Tiers (S, A, B, C, D) -->
+  <div class="tier-board mb-4">
+    <div *ngFor="let tier of tiers | slice:0:5" class="tier-row d-flex align-items-stretch">
       
-      <!-- Tier Badge Lateral -->
+      <!-- Tier Badge Lateral (Solo la letra grande y nítida como en la imagen) -->
       <div 
-        class="tier-header d-flex flex-column align-items-center justify-content-center fw-bold"
+        class="tier-header d-flex align-items-center justify-content-center"
         [style.background-color]="tier.color">
         <span class="tier-letter">{{ tier.label }}</span>
-        <span class="tier-sublabel d-none d-sm-block">{{ tier.sublabel }}</span>
       </div>
 
       <!-- Zona de Drop -->
       <div 
-        class="tier-drop-zone flex-grow-1 p-3 d-flex flex-wrap gap-2 align-items-center" 
+        class="tier-drop-zone flex-grow-1 p-2 d-flex flex-wrap gap-2 align-items-center" 
         cdkDropList
         [id]="'tier-' + tier.id" 
         [cdkDropListData]="tier.items" 
@@ -38,35 +37,10 @@
         (cdkDropListDropped)="drop($event)">
 
         <div *ngFor="let item of tier.items" class="tier-drag-item" cdkDrag>
-          <iconify-icon icon="solar:hamburger-menu-broken" width="14" class="drag-handle-icon"></iconify-icon>
+          <iconify-icon icon="solar:reorder-broken" width="14" class="drag-handle-icon"></iconify-icon>
           <span class="item-label">{{ item }}</span>
-          
-          <!-- Mini Quick Move Buttons -->
-          <div class="quick-move-group">
-            <button 
-              *ngFor="let target of tiers | slice:0:4" 
-              type="button" 
-              class="btn-quick-tier"
-              [class.active]="target.id === tier.id"
-              (click)="moveToTier(item, tier.id, target.id)"
-              [title]="'Mover a ' + target.label">
-              {{ target.label }}
-            </button>
-            <button 
-              type="button" 
-              class="btn-quick-tier btn-quick-reset" 
-              (click)="moveToTier(item, tier.id, 'Unranked')" 
-              title="Regresar a opciones sin clasificar">
-              ×
-            </button>
-          </div>
-
           <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
         </div>
-
-        <span *ngIf="tier.items.length === 0" class="empty-tier-hint">
-          Arrastra opciones aquí
-        </span>
 
       </div>
     </div>
@@ -75,40 +49,27 @@
   <!-- Banco de Opciones Disponibles (Pool) -->
   <div class="pool-container p-3 mb-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <span class="label-micro">OPCIONES DISPONIBLES (SIN CLASIFICAR)</span>
-      <span class="text-muted small">{{ tiers[4].items.length }} restantes</span>
+      <span class="label-micro text-white-50">OPCIONES DISPONIBLES (ARRASTRA HACIA ARRIBA)</span>
+      <span class="text-muted small">{{ tiers[5].items.length }} restantes</span>
     </div>
 
     <div 
-      class="pool-drop-zone d-flex flex-wrap gap-2 min-vh-10"
+      class="pool-drop-zone d-flex flex-wrap gap-2 p-2"
       cdkDropList 
       id="tier-Unranked" 
-      [cdkDropListData]="tiers[4].items" 
+      [cdkDropListData]="tiers[5].items" 
       [cdkDropListConnectedTo]="connectedLists"
       (cdkDropListDropped)="drop($event)">
 
-      <div *ngFor="let item of tiers[4].items" class="tier-drag-item pool-item" cdkDrag>
-        <iconify-icon icon="solar:hamburger-menu-broken" width="14" class="drag-handle-icon"></iconify-icon>
+      <div *ngFor="let item of tiers[5].items" class="tier-drag-item pool-item" cdkDrag>
+        <iconify-icon icon="solar:reorder-broken" width="14" class="drag-handle-icon"></iconify-icon>
         <span class="item-label">{{ item }}</span>
-        
-        <!-- Quick Assign Buttons for unranked items -->
-        <div class="quick-move-group">
-          <button 
-            *ngFor="let target of tiers | slice:0:4" 
-            type="button" 
-            class="btn-quick-tier"
-            (click)="moveToTier(item, 'Unranked', target.id)"
-            [title]="'Asignar a ' + target.label">
-            {{ target.label }}
-          </button>
-        </div>
-
         <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
       </div>
 
-      <p *ngIf="tiers[4].items.length === 0" class="text-muted small m-0 text-center w-100 py-3 fst-italic">
+      <p *ngIf="tiers[5].items.length === 0" class="text-muted small m-0 text-center w-100 py-3 fst-italic">
         <iconify-icon icon="solar:check-circle-bold" width="16" class="text-sage me-1"></iconify-icon>
-        ¡Excelente! Has clasificado todas las propuestas.
+        ¡Has clasificado todas las propuestas en la tabla!
       </p>
     </div>
   </div>
@@ -120,7 +81,7 @@
       [disabled]="isSubmitting"
       (click)="submitVote()">
       <iconify-icon icon="solar:diskette-broken" width="18"></iconify-icon>
-      <span>{{ isSubmitting ? 'Guardando...' : 'Confirmar mi Tier List' }}</span>
+      <span>{{ isSubmitting ? 'Guardando...' : 'Confirmar mi Clasificación' }}</span>
     </button>
   </div>
 

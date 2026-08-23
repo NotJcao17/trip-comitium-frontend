@@ -16,7 +16,7 @@ import { AuthService } from '../../../services/auth.service';
 export class DateSelectorComponent implements OnInit {
   @Input({ required: true }) poll!: Poll;
   private pollService = inject(PollService);
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 

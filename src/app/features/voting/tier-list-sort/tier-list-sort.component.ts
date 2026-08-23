@@ -22,21 +22,22 @@ export class TierListSortComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   tiers = [
-    { id: 'S', label: 'S', sublabel: 'Imprescindible', color: '#f59e0b', items: [] as string[] },
-    { id: 'A', label: 'A', sublabel: 'Gran opción', color: 'var(--sage-400)', items: [] as string[] },
-    { id: 'B', label: 'B', sublabel: 'Aceptable', color: '#60a5fa', items: [] as string[] },
-    { id: 'C', label: 'C', sublabel: 'Opcional', color: '#a78bfa', items: [] as string[] },
-    { id: 'Unranked', label: 'Sin clasificar', sublabel: 'Pendiente', color: 'var(--mono-muted)', items: [] as string[] }
+    { id: 'S', label: 'S', color: '#ff7f7f', items: [] as string[] },
+    { id: 'A', label: 'A', color: '#ffbf7f', items: [] as string[] },
+    { id: 'B', label: 'B', color: '#ffdf7f', items: [] as string[] },
+    { id: 'C', label: 'C', color: '#ffff7f', items: [] as string[] },
+    { id: 'D', label: 'D', color: '#bfff7f', items: [] as string[] },
+    { id: 'Unranked', label: 'Sin clasificar', color: 'var(--mono-muted)', items: [] as string[] }
   ];
 
-  connectedLists: string[] = ['tier-S', 'tier-A', 'tier-B', 'tier-C', 'tier-Unranked'];
+  connectedLists: string[] = ['tier-S', 'tier-A', 'tier-B', 'tier-C', 'tier-D', 'tier-Unranked'];
 
   isSubmitting = false;
   successMessage = '';
 
   ngOnInit() {
     if (this.poll.options) {
-      this.tiers[4].items = this.poll.options.map(o => o.text);
+      this.tiers[5].items = this.poll.options.map(o => o.text);
     }
     this.loadMyVote();
   }
@@ -57,9 +58,9 @@ export class TierListSortComponent implements OnInit {
           if (rank) {
             const targetTier = this.tiers.find(t => t.id === rank);
             if (targetTier) targetTier.items.push(opt.text);
-            else this.tiers[4].items.push(opt.text);
+            else this.tiers[5].items.push(opt.text);
           } else {
-            this.tiers[4].items.push(opt.text);
+            this.tiers[5].items.push(opt.text);
           }
         });
       }

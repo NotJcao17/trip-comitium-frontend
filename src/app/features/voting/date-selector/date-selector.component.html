@@ -51,18 +51,18 @@
       [class.disabled]="day.disabled"
       [class.selected]="day.selected"
       [class.is-today]="day.isToday"
-      [class.has-votes]="day.voteCount > 0"
-      [class.high-match]="day.voteCount >= 3"
+      [class.has-votes]="authService.isAdmin() && day.voteCount > 0"
+      [class.high-match]="authService.isAdmin() && day.voteCount >= 3"
       (pointerdown)="onCellPointerDown(day, $event)"
       (pointerenter)="onCellPointerEnter(day)">
       
       <span *ngIf="day.day" class="day-number">{{ day.day }}</span>
-      <span *ngIf="day.voteCount > 0" class="vote-count-dot">{{ day.voteCount }}v</span>
+      <span *ngIf="authService.isAdmin() && day.voteCount > 0" class="vote-count-dot">{{ day.voteCount }}v</span>
     </div>
   </div>
 
-  <!-- Legend & Hint -->
-  <div class="d-flex justify-content-between align-items-center mt-4 text-muted small flex-wrap gap-2">
+  <!-- Admin-Only Results & Heatmap Legend -->
+  <div *ngIf="authService.isAdmin()" class="d-flex justify-content-between align-items-center mt-4 text-muted small flex-wrap gap-2 p-2 rounded-3 bg-black bg-opacity-25 border border-white border-opacity-10">
     <div class="d-flex align-items-center gap-2">
       <span class="legend-box selected"></span> <span>Tus días marcados</span>
     </div>

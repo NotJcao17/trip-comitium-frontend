@@ -103,58 +103,119 @@
       </a>
     </div>
   </div>
+</div>
 
-  <!-- Multi-Room Selector Modal -->
-  <div *ngIf="showRoomsModal" class="rooms-modal-backdrop" (click)="closeRoomsModal()">
-    <div class="rooms-modal-card glass-panel" (click)="$event.stopPropagation()">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <span class="label-micro">EXPEDICIONES GUARDADAS</span>
-          <h4 class="font-bold text-white fs-5 mt-1 mb-0">Tus Salas Activas</h4>
+<!-- Standalone Multi-Room Selector Modal (Independent from Transformed Navbar) -->
+<div *ngIf="showRoomsModal" class="rooms-modal-backdrop animate-fade-in" (click)="closeRoomsModal()">
+  <div class="rooms-modal-card" (click)="$event.stopPropagation()">
+    
+    <!-- Header with Emerald Icon Badge -->
+    <div class="rooms-modal-header d-flex justify-content-between align-items-start pb-3 mb-3 border-bottom border-white border-opacity-10">
+      <div class="d-flex align-items-center gap-3">
+        <div class="modal-icon-badge">
+          <iconify-icon icon="solar:compass-bold" width="24"></iconify-icon>
         </div>
-        <button type="button" class="btn-close-modal" (click)="closeRoomsModal()">
-          <iconify-icon icon="solar:close-circle-broken" width="22"></iconify-icon>
-        </button>
+        <div>
+          <span class="label-micro text-sage">EXPEDICIONES ACTIVAS</span>
+          <h3 class="modal-title m-0">Tus Salas Guardadas</h3>
+          <p class="modal-subtitle m-0 mt-1">Selecciona a qué viaje deseas entrar o gestiona tus accesos rápidos.</p>
+        </div>
       </div>
+      <button type="button" class="btn-close-modal" (click)="closeRoomsModal()" aria-label="Cerrar modal">
+        <iconify-icon icon="solar:close-circle-broken" width="24"></iconify-icon>
+      </button>
+    </div>
 
-      <div class="rooms-modal-list d-flex flex-column gap-2 mb-3">
+    <!-- Room List -->
+    <div class="rooms-modal-body custom-scrollbar">
+      
+      <!-- When Trips Exist -->
+      <div *ngIf="recentTrips.length > 0" class="d-flex flex-column gap-3">
         <div 
           *ngFor="let trip of recentTrips" 
-          class="room-selector-item p-3 rounded-3 d-flex align-items-center justify-content-between"
+          class="room-card"
+          [class.is-active-room]="isCurrentTrip(trip)"
           (click)="switchTrip(trip)">
           
-          <div>
-            <div class="fw-bold text-white fs-6 d-flex align-items-center gap-2">
-              <span>{{ trip.tripName }}</span>
-              <span *ngIf="trip.isAdmin" class="badge-role-admin">Admin</span>
+          <div class="room-card-content d-flex align-items-center justify-content-between flex-wrap gap-3">
+            
+            <!-- Left Info -->
+            <div class="d-flex align-items-center gap-3 min-w-0">
+              <div class="room-avatar" [class.admin-avatar]="trip.isAdmin">
+                <iconify-icon [icon]="trip.isAdmin ? 'solar:crown-bold' : 'solar:map-point-wave-bold'" width="20"></iconify-icon>
+              </div>
+
+              <div class="room-info">
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                  <h4 class="room-name m-0">{{ trip.tripName }}</h4>
+                  <span *ngIf="trip.isAdmin" class="badge-tag badge-admin">
+                    <iconify-icon icon="solar:shield-star-bold" width="11"></iconify-icon> Organizador
+                  </span>
+                  <span *ngIf="!trip.isAdmin" class="badge-tag badge-member">
+                    <iconify-icon icon="solar:user-bold" width="11"></iconify-icon> Tripulante
+                  </span>
+                  <span *ngIf="isCurrentTrip(trip)" class="badge-tag badge-active-room">
+                    <span class="active-dot"></span> Sala Actual
+                  </span>
+                </div>
+
+                <div class="room-meta d-flex align-items-center gap-3">
+                  <span class="meta-item">
+                    <iconify-icon icon="solar:user-broken" width="13"></iconify-icon>
+                    {{ trip.participantName }}
+                  </span>
+                  <button type="button" class="btn-copy-code" (click)="copyCode(trip.shareCode, $event)" title="Copiar código">
+                    <span class="code-font">{{ trip.shareCode }}</span>
+                    <iconify-icon [icon]="copiedCode === trip.shareCode ? 'solar:check-circle-bold' : 'solar:copy-broken'" width="13"></iconify-icon>
+                  </button>
+                </div>
+              </div>
             </div>
-            <span class="text-muted" style="font-size: 0.78rem;">
-              Código: <strong class="text-sage font-monospace">{{ trip.shareCode }}</strong> • Ingresaste como: {{ trip.participantName }}
-            </span>
-          </div>
 
-          <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn-tc btn-tc-primary btn-tc-sm">
-              Entrar
-            </button>
-            <button type="button" class="btn-remove-room" (click)="removeTrip(trip, $event)" title="Quitar de este dispositivo">
-              <iconify-icon icon="solar:trash-bin-trash-broken" width="16"></iconify-icon>
-            </button>
-          </div>
+            <!-- Right Actions -->
+            <div class="d-flex align-items-center gap-2 ms-auto">
+              <button 
+                type="button" 
+                class="btn-tc btn-tc-sm room-action-btn"
+                [ngClass]="isCurrentTrip(trip) ? 'btn-tc-glass' : 'btn-tc-primary'">
+                <span>{{ isCurrentTrip(trip) ? 'Abierta' : 'Entrar' }}</span>
+                <iconify-icon [icon]="isCurrentTrip(trip) ? 'solar:eye-bold' : 'solar:arrow-right-broken'" width="14"></iconify-icon>
+              </button>
 
+              <button 
+                type="button" 
+                class="btn-delete-room" 
+                (click)="removeTrip(trip, $event)" 
+                title="Quitar de este dispositivo">
+                <iconify-icon icon="solar:trash-bin-trash-broken" width="16"></iconify-icon>
+              </button>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center pt-2 border-top border-white border-opacity-10">
-        <a routerLink="/join" class="btn-tc btn-tc-glass btn-tc-sm" (click)="closeRoomsModal()">
-          <iconify-icon icon="solar:add-circle-broken" width="14"></iconify-icon> Unirse a otra sala
-        </a>
-        <a routerLink="/create" class="btn-tc btn-tc-glass btn-tc-sm" (click)="closeRoomsModal()">
-          <iconify-icon icon="solar:plain-bold" width="14"></iconify-icon> Crear nueva
-        </a>
+      <!-- Empty State -->
+      <div *ngIf="recentTrips.length === 0" class="text-center py-5">
+        <iconify-icon icon="solar:compass-broken" width="48" class="text-muted mb-2"></iconify-icon>
+        <h5 class="text-white">No tienes expediciones guardadas</h5>
+        <p class="text-muted small">Crea una nueva sala o únete a una con tu código de invitación.</p>
       </div>
 
     </div>
-  </div>
 
+    <!-- Modal Footer Actions -->
+    <div class="rooms-modal-footer pt-3 mt-3 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <a routerLink="/join" class="btn-tc btn-tc-glass btn-tc-sm" (click)="closeRoomsModal()">
+        <iconify-icon icon="solar:login-2-broken" width="15"></iconify-icon>
+        <span>Unirse a otra sala</span>
+      </a>
+
+      <a routerLink="/create" class="btn-tc btn-tc-primary btn-tc-sm" (click)="closeRoomsModal()">
+        <iconify-icon icon="solar:add-circle-bold" width="15"></iconify-icon>
+        <span>Crear nuevo viaje</span>
+      </a>
+    </div>
+
+  </div>
 </div>

@@ -18,6 +18,7 @@ export class NavbarComponent {
   isScrolled = false;
   isMenuOpen = false;
   showRoomsModal = false;
+  copiedCode: string | null = null;
 
   get recentTrips(): RecentTrip[] {
     return this.authService.getRecentTrips();
@@ -26,6 +27,13 @@ export class NavbarComponent {
   @HostListener('window:scroll', [])
   onWindowScroll() {
     this.isScrolled = window.scrollY > 40;
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscape() {
+    if (this.showRoomsModal) {
+      this.closeRoomsModal();
+    }
   }
 
   toggleMenu() {
@@ -42,6 +50,10 @@ export class NavbarComponent {
 
   closeRoomsModal() {
     this.showRoomsModal = false;
+  }
+
+  isCurrentTrip(trip: RecentTrip): boolean {
+    return this.authService.getActiveTripCode() === trip.shareCode;
   }
 
   onMyRoomClick(event: Event) {
@@ -66,6 +78,19 @@ export class NavbarComponent {
   removeTrip(trip: RecentTrip, event: Event) {
     event.stopPropagation();
     this.authService.removeRecentTrip(trip.shareCode);
+    if (this.recentTrips.length === 0) {
+      this.closeRoomsModal();
+    }
+  }
+
+  copyCode(code: string, event: Event) {
+    event.stopPropagation();
+    navigator.clipboard.writeText(code).then(() => {
+      this.copiedCode = code;
+      setTimeout(() => {
+        if (this.copiedCode === code) this.copiedCode = null;
+      }, 2000);
+    });
   }
 
   logout() {

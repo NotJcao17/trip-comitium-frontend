@@ -14,18 +14,21 @@
 
   <!-- Month Navigation Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(-1)">
+    <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(-1)" title="Mes anterior">
       <iconify-icon icon="solar:arrow-left-broken" width="16"></iconify-icon>
     </button>
     
     <div class="text-center">
       <span class="label-micro">MES A VOTAR</span>
       <h4 class="font-bold text-white fs-5 mb-0 text-capitalize">
-        {{ currentMonth | date:'MMMM yyyy':'':'es' }}
+        {{ getMonthYearLabel() }}
       </h4>
+      <span *ngIf="getVotingRangeLabel()" class="text-sage d-block mt-1 font-monospace" style="font-size: 0.76rem;">
+        {{ getVotingRangeLabel() }}
+      </span>
     </div>
 
-    <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(1)">
+    <button type="button" class="btn-tc btn-tc-glass btn-tc-sm" (click)="changeMonth(1)" title="Siguiente mes">
       <iconify-icon icon="solar:arrow-right-broken" width="16"></iconify-icon>
     </button>
   </div>

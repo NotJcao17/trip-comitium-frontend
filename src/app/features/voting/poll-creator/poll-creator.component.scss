@@ -70,3 +70,115 @@
   gap: 10px;
   font-weight: 600;
 }
+
+/* Date Creator Interactive Calendar */
+.date-creator-wrapper {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(120, 163, 140, 0.15);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.btn-icon-only {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.btn-preset-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--mono-light);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--anim-fast);
+}
+
+.btn-preset-chip:hover {
+  background: rgba(79, 126, 101, 0.25);
+  border-color: var(--sage-400);
+  color: #ffffff;
+}
+
+.creator-calendar-box {
+  background: rgba(14, 20, 17, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.creator-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+
+.header-day {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--sage-300);
+  padding: 4px 0;
+  text-transform: uppercase;
+}
+
+.creator-day-cell {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.creator-day-cell:not(.empty-cell):not(.is-past):hover {
+  background: rgba(79, 126, 101, 0.3);
+  border-color: var(--sage-400);
+  transform: scale(1.05);
+}
+
+.creator-day-cell.empty-cell {
+  background: transparent;
+  cursor: default;
+}
+
+.creator-day-cell.is-past {
+  color: rgba(255, 255, 255, 0.2);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.creator-day-cell.is-today {
+  border-color: rgba(120, 163, 140, 0.5);
+  position: relative;
+}
+
+.creator-day-cell.in-range {
+  background: rgba(79, 126, 101, 0.25);
+  color: #ffffff;
+  border-color: rgba(120, 163, 140, 0.35);
+  border-radius: 4px;
+}
+
+.creator-day-cell.is-start,
+.creator-day-cell.is-end {
+  background: var(--sage-500) !important;
+  color: #ffffff !important;
+  font-weight: 800;
+  border-radius: 8px !important;
+  box-shadow: 0 0 10px rgba(120, 163, 140, 0.4);
+}

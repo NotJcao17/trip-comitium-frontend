@@ -94,34 +94,98 @@
         </div>
       </div>
 
-      <!-- Config Fechas con Mini-resumen interactivo -->
-      <div *ngIf="type === 'date'" class="row g-3 align-items-end">
-        <div class="col-sm-5">
-          <label class="form-label">Fecha Inicio *</label>
-          <input 
-            type="date" 
-            class="form-input" 
-            [(ngModel)]="dateStart" 
-            name="dateStart" 
-            [min]="todayDateStr"
-            required>
-        </div>
-        <div class="col-sm-5">
-          <label class="form-label">Fecha Fin *</label>
-          <input 
-            type="date" 
-            class="form-input" 
-            [(ngModel)]="dateEnd" 
-            name="dateEnd" 
-            [min]="dateStart || todayDateStr"
-            required>
-        </div>
-        <div class="col-sm-2 text-center text-sm-start">
-          <div *ngIf="getDaysCount() > 0" class="date-summary-chip">
-            <iconify-icon icon="solar:calendar-bold" width="14"></iconify-icon>
-            <span>{{ getDaysCount() }} días</span>
+      <!-- Config Fechas con Calendario Interactivo y Presets -->
+      <div *ngIf="type === 'date'" class="date-creator-wrapper">
+        
+        <!-- Header con Mes y Presets Rápidos -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn-tc btn-tc-glass btn-tc-sm btn-icon-only" (click)="changeCreatorMonth(-1)" title="Mes anterior">
+              <iconify-icon icon="solar:arrow-left-broken" width="14"></iconify-icon>
+            </button>
+            <span class="font-bold text-white fs-6 text-capitalize">
+              {{ getCreatorMonthYearLabel() }}
+            </span>
+            <button type="button" class="btn-tc btn-tc-glass btn-tc-sm btn-icon-only" (click)="changeCreatorMonth(1)" title="Siguiente mes">
+              <iconify-icon icon="solar:arrow-right-broken" width="14"></iconify-icon>
+            </button>
+          </div>
+
+          <!-- Presets -->
+          <div class="d-flex gap-1 flex-wrap">
+            <button type="button" class="btn-preset-chip" (click)="setPresetWeekend()">
+              Fin de semana
+            </button>
+            <button type="button" class="btn-preset-chip" (click)="setPresetWeek()">
+              Semana (7 días)
+            </button>
+            <button type="button" class="btn-preset-chip" (click)="setPresetNextMonth()">
+              Siguiente Mes
+            </button>
           </div>
         </div>
+
+        <!-- Mini Visual Calendar Grid -->
+        <div class="creator-calendar-box mb-3">
+          <div class="creator-calendar-grid">
+            <div class="header-day">Do</div>
+            <div class="header-day">Lu</div>
+            <div class="header-day">Ma</div>
+            <div class="header-day">Mi</div>
+            <div class="header-day">Ju</div>
+            <div class="header-day">Vi</div>
+            <div class="header-day">Sá</div>
+
+            <div 
+              *ngFor="let cell of creatorCalendarDays" 
+              class="creator-day-cell"
+              [class.empty-cell]="!cell.date"
+              [class.is-past]="cell.isPast"
+              [class.is-today]="cell.isToday"
+              [class.is-start]="cell.isStart"
+              [class.is-end]="cell.isEnd"
+              [class.in-range]="cell.isInRange"
+              (click)="onCreatorDayClick(cell)">
+              <span *ngIf="cell.day" class="day-number">{{ cell.day }}</span>
+            </div>
+          </div>
+          <p class="text-muted text-center mt-2 mb-0" style="font-size: 0.73rem;">
+            💡 Haz clic en el día de <strong>inicio</strong> y luego en el día de <strong>fin</strong> para marcar el periodo.
+          </p>
+        </div>
+
+        <!-- Inputs Sincronizados y Resumen -->
+        <div class="row g-2 align-items-end">
+          <div class="col-sm-5">
+            <label class="form-label mb-1">Fecha Inicio *</label>
+            <input 
+              type="date" 
+              class="form-input" 
+              [(ngModel)]="dateStart" 
+              (change)="onDateInputChange()"
+              name="dateStart" 
+              [min]="todayDateStr"
+              required>
+          </div>
+          <div class="col-sm-5">
+            <label class="form-label mb-1">Fecha Fin *</label>
+            <input 
+              type="date" 
+              class="form-input" 
+              [(ngModel)]="dateEnd" 
+              (change)="onDateInputChange()"
+              name="dateEnd" 
+              [min]="dateStart || todayDateStr"
+              required>
+          </div>
+          <div class="col-sm-2 text-center text-sm-start">
+            <div *ngIf="getDaysCount() > 0" class="date-summary-chip w-100 justify-content-center">
+              <iconify-icon icon="solar:calendar-bold" width="14"></iconify-icon>
+              <span>{{ getDaysCount() }} días</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Info Texto -->

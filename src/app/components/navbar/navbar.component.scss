@@ -366,21 +366,31 @@
   color: var(--mono-muted);
 }
 
+.room-share-code {
+  color: #ffffff !important;
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+}
+
 .btn-copy-code {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(120, 163, 140, 0.3);
-  color: var(--sage-300);
-  padding: 1px 7px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff !important;
+  padding: 2px 7px;
   border-radius: 5px;
   font-size: 0.75rem;
   display: inline-flex;
   align-items: center;
+  gap: 5px;
   cursor: pointer;
   transition: var(--anim-fast);
 }
 
 .btn-copy-code:hover {
-  background: rgba(79, 126, 101, 0.25);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
   color: #ffffff;
 }
 

@@ -26,6 +26,10 @@ export class PollCreatorComponent implements OnInit {
   dateEnd = '';
   todayDateStr = '';
 
+  // Interactive visual calendar for admin date selection
+  creatorCurrentMonth: Date = new Date();
+  creatorCalendarDays: any[] = [];
+
   isSubmitting = false;
   validationErrors: string[] = [];
 
@@ -40,6 +44,135 @@ export class PollCreatorComponent implements OnInit {
 
     this.dateStart = nextFriday.toISOString().split('T')[0];
     this.dateEnd = nextSunday.toISOString().split('T')[0];
+    this.creatorCurrentMonth = new Date(nextFriday.getFullYear(), nextFriday.getMonth(), 1);
+
+    this.generateCreatorCalendar();
+  }
+
+  getCreatorMonthYearLabel(): string {
+    const months = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    return `${months[this.creatorCurrentMonth.getMonth()]} ${this.creatorCurrentMonth.getFullYear()}`;
+  }
+
+  changeCreatorMonth(delta: number) {
+    this.creatorCurrentMonth = new Date(
+      this.creatorCurrentMonth.getFullYear(),
+      this.creatorCurrentMonth.getMonth() + delta,
+      1
+    );
+    this.generateCreatorCalendar();
+  }
+
+  generateCreatorCalendar() {
+    const year = this.creatorCurrentMonth.getFullYear();
+    const month = this.creatorCurrentMonth.getMonth();
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startingDayOfWeek = firstDay.getDay();
+
+    this.creatorCalendarDays = [];
+
+    // Empty cells before start of month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      this.creatorCalendarDays.push({ date: null, disabled: true });
+    }
+
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      const dateObj = new Date(year, month, d);
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const dayStr = String(dateObj.getDate()).padStart(2, '0');
+      const dateStr = `${y}-${m}-${dayStr}`;
+
+      const isPast = dateStr < this.todayDateStr;
+      const isStart = dateStr === this.dateStart;
+      const isEnd = dateStr === this.dateEnd;
+      const isInRange = Boolean(
+        this.dateStart && 
+        this.dateEnd && 
+        dateStr >= this.dateStart && 
+        dateStr <= this.dateEnd
+      );
+
+      this.creatorCalendarDays.push({
+        day: d,
+        date: dateStr,
+        isPast,
+        isToday: dateStr === this.todayDateStr,
+        isStart,
+        isEnd,
+        isInRange
+      });
+    }
+  }
+
+  onCreatorDayClick(day: any) {
+    if (!day.date || day.isPast) return;
+
+    if (!this.dateStart || (this.dateStart && this.dateEnd)) {
+      // First click of a new range: set start date only
+      this.dateStart = day.date;
+      this.dateEnd = '';
+    } else if (this.dateStart && !this.dateEnd) {
+      // Second click: complete range
+      if (day.date < this.dateStart) {
+        this.dateEnd = this.dateStart;
+        this.dateStart = day.date;
+      } else {
+        this.dateEnd = day.date;
+      }
+    }
+
+    this.generateCreatorCalendar();
+  }
+
+  onDateInputChange() {
+    if (this.dateStart) {
+      const parts = this.dateStart.split('-');
+      if (parts.length === 3) {
+        this.creatorCurrentMonth = new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+      }
+    }
+    this.generateCreatorCalendar();
+  }
+
+  setPresetWeekend() {
+    const nextFriday = new Date();
+    nextFriday.setDate(nextFriday.getDate() + ((7 - nextFriday.getDay() + 5) % 7 || 7));
+    const nextSunday = new Date(nextFriday);
+    nextSunday.setDate(nextSunday.getDate() + 2);
+
+    this.dateStart = nextFriday.toISOString().split('T')[0];
+    this.dateEnd = nextSunday.toISOString().split('T')[0];
+    this.creatorCurrentMonth = new Date(nextFriday.getFullYear(), nextFriday.getMonth(), 1);
+    this.generateCreatorCalendar();
+  }
+
+  setPresetWeek() {
+    const nextMonday = new Date();
+    nextMonday.setDate(nextMonday.getDate() + ((7 - nextMonday.getDay() + 1) % 7 || 7));
+    const nextSunday = new Date(nextMonday);
+    nextSunday.setDate(nextSunday.getDate() + 6);
+
+    this.dateStart = nextMonday.toISOString().split('T')[0];
+    this.dateEnd = nextSunday.toISOString().split('T')[0];
+    this.creatorCurrentMonth = new Date(nextMonday.getFullYear(), nextMonday.getMonth(), 1);
+    this.generateCreatorCalendar();
+  }
+
+  setPresetNextMonth() {
+    const now = new Date();
+    const nextMonthFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const nextMonthLast = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+
+    this.dateStart = nextMonthFirst.toISOString().split('T')[0];
+    this.dateEnd = nextMonthLast.toISOString().split('T')[0];
+    this.creatorCurrentMonth = new Date(nextMonthFirst.getFullYear(), nextMonthFirst.getMonth(), 1);
+    this.generateCreatorCalendar();
   }
 
   validate(): boolean {

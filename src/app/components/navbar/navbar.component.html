@@ -146,8 +146,8 @@
                 <span class="text-muted">Como: <strong class="text-white">{{ trip.participantName }}</strong></span>
                 <span class="text-muted">•</span>
                 <button type="button" class="btn-copy-code" (click)="copyCode(trip.shareCode, $event)" title="Copiar código">
-                  <code>{{ trip.shareCode }}</code>
-                  <span *ngIf="copiedCode === trip.shareCode" class="text-sage ms-1">✓</span>
+                  <span class="room-share-code">{{ trip.shareCode }}</span>
+                  <span *ngIf="copiedCode === trip.shareCode" class="text-sage ms-1 font-bold">✓</span>
                 </button>
               </div>
             </div>

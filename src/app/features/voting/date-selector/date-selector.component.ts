@@ -32,9 +32,43 @@ export class DateSelectorComponent implements OnInit {
   dragSelectMode: 'select' | 'deselect' = 'select';
 
   ngOnInit() {
+    // 1. Inicializar el mes en el inicio del periodo de votación configurado
+    let config = this.poll.config;
+    if (typeof config === 'string') {
+      try { config = JSON.parse(config); } catch { config = {}; }
+    }
+    
+    if (config?.startDate) {
+      const parts = config.startDate.split('-');
+      if (parts.length === 3) {
+        this.currentMonth = new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+      }
+    }
+
     this.generateCalendar();
     this.loadMyVote();
     this.loadStats();
+  }
+
+  getMonthYearLabel(): string {
+    const months = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    const monthName = months[this.currentMonth.getMonth()];
+    const year = this.currentMonth.getFullYear();
+    return `${monthName} ${year}`;
+  }
+
+  getVotingRangeLabel(): string | null {
+    let config = this.poll.config;
+    if (typeof config === 'string') {
+      try { config = JSON.parse(config); } catch { config = {}; }
+    }
+    if (config?.startDate && config?.endDate) {
+      return `Periodo disponible: ${config.startDate} al ${config.endDate}`;
+    }
+    return null;
   }
 
   @HostListener('window:pointerup')

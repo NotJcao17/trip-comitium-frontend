@@ -3,7 +3,7 @@
     
     <!-- Brand Logo -->
     <a routerLink="/" class="nav-logo" (click)="closeMenu()">
-      <img src="images/logo512.png" alt="Trip Comitium" class="nav-logo-img">
+      <img src="images/logo_512.png" alt="Trip Comitium" class="nav-logo-img">
       <span class="nav-logo-text">TRIP COMITIUM</span>
     </a>
 
@@ -30,7 +30,7 @@
         </a>
       </li>
       <li *ngIf="authService.isAdmin()">
-        <a routerLink="/admin" class="nav-link-item" routerLinkActive="active">
+        <a [routerLink]="adminRouterLink" class="nav-link-item" routerLinkActive="active" (click)="refreshTripsState()">
           <iconify-icon icon="solar:shield-user-broken" width="16"></iconify-icon> Admin
         </a>
       </li>
@@ -83,7 +83,7 @@
     <a *ngIf="authService.isLoggedIn()" href="#" (click)="onMyRoomClick($event)" class="mobile-menu-item">
       <iconify-icon icon="solar:compass-broken" width="18"></iconify-icon> Mi Sala
     </a>
-    <a *ngIf="authService.isAdmin()" routerLink="/admin" class="mobile-menu-item" (click)="closeMenu()">
+    <a *ngIf="authService.isAdmin()" [routerLink]="adminRouterLink" class="mobile-menu-item" (click)="closeMenu()">
       <iconify-icon icon="solar:shield-user-broken" width="18"></iconify-icon> Panel de Administración
     </a>
     
@@ -116,7 +116,7 @@
         <p class="modal-subtitle m-0 mt-1">Selecciona a qué viaje deseas ingresar</p>
       </div>
       <button type="button" class="btn-close-modal" (click)="closeRoomsModal()" aria-label="Cerrar modal">
-        ✕
+        <iconify-icon icon="solar:close-circle-broken" width="18"></iconify-icon>
       </button>
     </div>
 
@@ -147,7 +147,7 @@
                 <span class="text-muted">•</span>
                 <button type="button" class="btn-copy-code" (click)="copyCode(trip.shareCode, $event)" title="Copiar código">
                   <span class="room-share-code">{{ trip.shareCode }}</span>
-                  <span *ngIf="copiedCode === trip.shareCode" class="text-sage ms-1 font-bold">✓</span>
+                  <iconify-icon *ngIf="copiedCode === trip.shareCode" icon="solar:check-circle-bold" width="14" class="text-sage ms-1"></iconify-icon>
                 </button>
               </div>
             </div>
@@ -166,7 +166,7 @@
                 class="btn-delete-room" 
                 (click)="removeTrip(trip, $event)" 
                 title="Quitar de este dispositivo">
-                ✕
+                <iconify-icon icon="solar:close-circle-broken" width="16"></iconify-icon>
               </button>
             </div>
 

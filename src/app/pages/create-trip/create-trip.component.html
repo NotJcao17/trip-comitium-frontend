@@ -119,14 +119,16 @@
           <div class="col-md-5">
             <label class="form-label">Tu PIN de Acceso (4 dígitos) *</label>
             <div class="position-relative">
-              <input 
-                [type]="showPin ? 'text' : 'password'" 
-                [(ngModel)]="formData.adminPin" 
-                name="adminPin" 
-                class="form-input text-center" 
-                placeholder="••••" 
-                maxlength="4" 
-                style="letter-spacing: 0.3em; font-size: 1.1rem;" 
+              <input
+                [type]="!showPin && !maskWithCss ? 'password' : 'text'"
+                inputmode="numeric"
+                autocomplete="off"
+                [(ngModel)]="formData.adminPin"
+                name="adminPin"
+                class="form-input text-center pin-input"
+                [class.is-masked]="!showPin && maskWithCss"
+                placeholder="••••"
+                maxlength="4"
                 required>
               <button 
                 type="button" 

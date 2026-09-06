@@ -5,11 +5,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { AuthService } from '../../../services/auth.service';
+import { VotersListComponent } from '../../../components/voters-list/voters-list.component';
 
 @Component({
   selector: 'app-standard-vote',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, VotersListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './standard-vote.component.html',
   styleUrl: './standard-vote.component.scss'
@@ -54,6 +55,28 @@ export class StandardVoteComponent implements OnInit {
       },
       error: (err) => console.warn('Could not load poll stats:', err)
     });
+  }
+
+  /** Opciones cuya descripción larga está desplegada por completo. */
+  private expandedDescriptions = new Set<number>();
+  readonly descriptionClampLength = 220;
+
+  isDescriptionLong(description: string | null | undefined): boolean {
+    return Boolean(description && description.length > this.descriptionClampLength);
+  }
+
+  isDescriptionExpanded(optionId: number | undefined): boolean {
+    return optionId ? this.expandedDescriptions.has(optionId) : false;
+  }
+
+  toggleDescription(optionId: number | undefined, event: Event) {
+    event.stopPropagation();
+    if (!optionId) return;
+    if (this.expandedDescriptions.has(optionId)) {
+      this.expandedDescriptions.delete(optionId);
+    } else {
+      this.expandedDescriptions.add(optionId);
+    }
   }
 
   selectOption(id: number | undefined) {

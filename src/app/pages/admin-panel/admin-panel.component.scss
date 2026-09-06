@@ -9,7 +9,7 @@
 }
 
 .admin-poll-card {
-  background: rgba(10, 13, 12, 0.6);
+  background: var(--glass-inset);
   border: 1px solid var(--mono-border);
   cursor: pointer;
   transition: var(--anim-fast);

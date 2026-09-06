@@ -6,11 +6,11 @@
       <div>
         <span class="label-micro">ORGANIZADOR</span>
         <h2 class="font-bold text-white fs-2 mt-1 mb-0">Panel de Administración</h2>
-        <p class="text-muted small mb-0">Código del viaje: <span class="text-sage fw-bold font-monospace">{{ tripCode }}</span></p>
+        <p *ngIf="tripCode" class="text-muted small mb-0">Código del viaje: <span class="text-sage fw-bold font-monospace">{{ tripCode }}</span></p>
       </div>
 
       <div class="d-flex gap-2">
-        <a [routerLink]="['/trip', tripCode]" class="btn-tc btn-tc-glass btn-tc-sm">
+        <a *ngIf="tripCode" [routerLink]="['/trip', tripCode]" class="btn-tc btn-tc-glass btn-tc-sm">
           <iconify-icon icon="solar:eye-broken" width="16"></iconify-icon>
           <span>Ver como Viajero</span>
         </a>

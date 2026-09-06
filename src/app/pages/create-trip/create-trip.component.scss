@@ -34,7 +34,7 @@
 .form-input {
   width: 100%;
   padding: 14px 18px;
-  background: rgba(10, 13, 12, 0.7);
+  background: var(--glass-inset);
   border: 1px solid var(--liquid-glass-border);
   border-radius: 12px;
   color: var(--mono-white);
@@ -51,7 +51,7 @@
 
 .mode-pills {
   display: flex;
-  background: rgba(10, 13, 12, 0.8);
+  background: var(--glass-inset-strong);
   border: 1px solid var(--mono-border);
   border-radius: 30px;
   padding: 4px;

@@ -61,6 +61,11 @@ export class NavbarComponent implements OnInit {
     this.showRoomsModal = false;
   }
 
+  /** Enlace al panel admin: incluye el código para que el panel siempre lo muestre. */
+  get adminRouterLink(): any[] {
+    return this.activeTripCode ? ['/trip', this.activeTripCode, 'admin'] : ['/admin'];
+  }
+
   isCurrentTrip(trip: RecentTrip): boolean {
     return this.activeTripCode === trip.shareCode;
   }

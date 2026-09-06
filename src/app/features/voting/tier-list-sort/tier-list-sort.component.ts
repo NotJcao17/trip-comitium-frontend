@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, HostListener, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, inject, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -22,18 +22,30 @@ export class TierListSortComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   tiers = [
-    { id: 'S', label: 'S', color: '#ff7f7f', items: [] as string[] },
-    { id: 'A', label: 'A', color: '#ffbf7f', items: [] as string[] },
-    { id: 'B', label: 'B', color: '#ffdf7f', items: [] as string[] },
-    { id: 'C', label: 'C', color: '#ffff7f', items: [] as string[] },
-    { id: 'D', label: 'D', color: '#bfff7f', items: [] as string[] },
-    { id: 'Unranked', label: 'Sin clasificar', color: 'var(--mono-muted)', items: [] as string[] }
+    { id: 'S', label: 'S', color: 'var(--tier-s)', ink: 'var(--tier-s-ink)', items: [] as string[] },
+    { id: 'A', label: 'A', color: 'var(--tier-a)', ink: 'var(--tier-a-ink)', items: [] as string[] },
+    { id: 'B', label: 'B', color: 'var(--tier-b)', ink: 'var(--tier-b-ink)', items: [] as string[] },
+    { id: 'C', label: 'C', color: 'var(--tier-c)', ink: 'var(--tier-c-ink)', items: [] as string[] },
+    { id: 'D', label: 'D', color: 'var(--tier-d)', ink: 'var(--tier-d-ink)', items: [] as string[] },
+    { id: 'Unranked', label: 'Sin clasificar', color: 'var(--mono-muted)', ink: 'var(--bg-darkest)', items: [] as string[] }
   ];
 
   connectedLists: string[] = ['tier-S', 'tier-A', 'tier-B', 'tier-C', 'tier-D', 'tier-Unranked'];
 
   isSubmitting = false;
   successMessage = '';
+
+  /** Los votos se guardan por texto, así que indexamos los detalles por texto. */
+  private descriptions: Record<string, string> = {};
+  activeDetail: { text: string; description: string } | null = null;
+  showAllDetails = false;
+
+  /**
+   * La ficha va en un <dialog>: el panel de la votación tiene backdrop-filter y
+   * eso convierte a cualquier hijo `position: fixed` en relativo al panel, que
+   * era lo que dejaba la ficha hasta el fondo y encimada al hacer scroll.
+   */
+  @ViewChild('detailDialog') detailDialog?: ElementRef<HTMLDialogElement>;
 
   @HostListener('dragstart', ['$event'])
   onNativeDragStart(event: DragEvent) {
@@ -43,8 +55,43 @@ export class TierListSortComponent implements OnInit {
   ngOnInit() {
     if (this.poll.options) {
       this.tiers[5].items = this.poll.options.map(o => o.text);
+      this.poll.options.forEach(o => {
+        if (o.description && o.description.trim()) {
+          this.descriptions[o.text] = o.description.trim();
+        }
+      });
     }
     this.loadMyVote();
+  }
+
+  hasDetails(item: string): boolean {
+    return Boolean(this.descriptions[item]);
+  }
+
+  getDescription(item: string): string {
+    return this.descriptions[item] || '';
+  }
+
+  get optionsWithDetails() {
+    return (this.poll.options || []).filter(o => this.hasDetails(o.text));
+  }
+
+  openDetail(item: string, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    if (!this.hasDetails(item)) return;
+    this.activeDetail = { text: item, description: this.descriptions[item] };
+    // Esperamos a que Angular pinte el contenido antes de abrirlo
+    queueMicrotask(() => {
+      const dlg = this.detailDialog?.nativeElement;
+      if (dlg && !dlg.open) dlg.showModal();
+    });
+  }
+
+  closeDetail() {
+    const dlg = this.detailDialog?.nativeElement;
+    if (dlg?.open) dlg.close();
+    this.activeDetail = null;
   }
 
   loadMyVote() {

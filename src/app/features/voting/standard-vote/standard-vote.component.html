@@ -15,35 +15,50 @@
   <!-- Multiple Choice Mode -->
   <div *ngIf="poll.type === 'multiple_choice'" class="options-container">
     
-    <div 
-      *ngFor="let opt of poll.options" 
+    <div
+      *ngFor="let opt of poll.options"
       class="vote-option-card"
       [class.selected]="selectedOptionId === opt.option_id"
       [class.locked]="poll.status === 'locked'"
       (click)="selectOption(opt.option_id)">
-      
-      <div class="d-flex align-items-center gap-3">
-        <iconify-icon 
-          [icon]="selectedOptionId === opt.option_id ? 'solar:check-circle-bold' : 'solar:check-circle-broken'" 
-          width="24" 
-          [class.text-sage]="selectedOptionId === opt.option_id"
-          [class.text-muted]="selectedOptionId !== opt.option_id">
-        </iconify-icon>
-        <div>
-          <div class="option-text fw-bold text-white">{{ opt.text }}</div>
-          <span class="text-muted small">
+
+      <iconify-icon
+        class="option-check"
+        [icon]="selectedOptionId === opt.option_id ? 'solar:check-circle-bold' : 'solar:check-circle-broken'"
+        width="24"
+        [class.text-sage]="selectedOptionId === opt.option_id"
+        [class.text-muted]="selectedOptionId !== opt.option_id">
+      </iconify-icon>
+
+      <div class="option-body">
+        <div class="option-text">{{ opt.text }}</div>
+
+        <!-- Detalles que capturó el organizador -->
+        <p
+          *ngIf="opt.description"
+          class="option-desc"
+          [class.clamped]="isDescriptionLong(opt.description) && !isDescriptionExpanded(opt.option_id)">
+          {{ opt.description }}
+        </p>
+
+        <button
+          *ngIf="isDescriptionLong(opt.description)"
+          type="button"
+          class="btn-desc-toggle"
+          (click)="toggleDescription(opt.option_id, $event)">
+          {{ isDescriptionExpanded(opt.option_id) ? 'Ver menos' : 'Ver detalles completos' }}
+        </button>
+
+        <div class="option-meta">
+          <span class="option-count">
             {{ getVotesCount(opt.option_id) }} {{ getVotesCount(opt.option_id) === 1 ? 'voto' : 'votos' }}
           </span>
-        </div>
-      </div>
 
-      <!-- Live Voter Avatars (Quién votó qué) -->
-      <div class="voter-avatars" *ngIf="getVotersForOption(opt.option_id).length > 0">
-        <div 
-          *ngFor="let v of getVotersForOption(opt.option_id)" 
-          class="voter-avatar" 
-          [title]="v.name">
-          {{ v.name ? (v.name.charAt(0) | uppercase) : '?' }}
+          <app-voters-list
+            *ngIf="getVotersForOption(opt.option_id).length > 0"
+            [voters]="getVotersForOption(opt.option_id)"
+            label="Quién votó">
+          </app-voters-list>
         </div>
       </div>
 

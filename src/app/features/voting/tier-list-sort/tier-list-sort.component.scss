@@ -29,7 +29,6 @@
   width: 80px;
   min-height: 74px;
   flex-shrink: 0;
-  color: #111111 !important;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
@@ -41,7 +40,7 @@
   font-size: 1.7rem;
   line-height: 1;
   font-weight: 900;
-  color: #111111 !important;
+  color: inherit;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
@@ -62,7 +61,8 @@
 }
 
 .tier-drag-item {
-  padding: 10px 18px;
+  gap: 8px;
+  padding: 10px 14px 10px 18px;
   background: #1e2823;
   border: 1px solid rgba(120, 163, 140, 0.28);
   border-radius: 8px;
@@ -172,4 +172,168 @@
   gap: 10px;
   font-size: 0.88rem;
   font-weight: 700;
+}
+/* ==========================================================================
+   DETALLES DE CADA OPCIÓN
+   ========================================================================== */
+.item-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(120, 163, 140, 0.18);
+  color: var(--sage-300);
+  cursor: pointer;
+  transition: var(--anim-fast);
+}
+
+.item-info-btn:hover {
+  background: var(--sage-500);
+  color: #ffffff;
+}
+
+.details-panel {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: var(--glass-inset);
+  overflow: hidden;
+}
+
+.details-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 16px;
+  background: transparent;
+  border: none;
+  color: var(--mono-light);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--anim-fast);
+}
+
+.details-toggle:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--mono-white);
+}
+
+.details-body {
+  padding: 4px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detail-entry-title {
+  color: var(--mono-white);
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.detail-entry-text {
+  color: var(--mono-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* El diálogo ocupa toda la pantalla y hace de contenedor; el fondo real
+   lo pinta ::backdrop, que el navegador coloca bajo la capa superior. */
+.detail-dialog {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  margin: 0;
+  padding: 16px;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+  display: none;
+}
+
+.detail-dialog[open] {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.detail-dialog::backdrop {
+  background: rgba(8, 11, 10, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.detail-sheet {
+  width: 100%;
+  max-width: 460px;
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--bg-slate);
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  animation: detail-sheet-in 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes detail-sheet-in {
+  from { transform: translateY(18px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.detail-sheet-title {
+  color: var(--mono-white);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.detail-sheet-close {
+  background: transparent;
+  border: none;
+  color: var(--mono-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.detail-sheet-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mono-white);
+}
+
+.detail-sheet-text {
+  color: var(--mono-light);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin: 0;
+  white-space: pre-line;
+}
+
+@media (min-width: 640px) {
+  .detail-dialog[open] {
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-sheet { animation: none; }
 }

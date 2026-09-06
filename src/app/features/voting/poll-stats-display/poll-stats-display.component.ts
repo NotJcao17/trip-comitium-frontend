@@ -2,11 +2,12 @@ import { Component, Input, OnChanges, SimpleChanges, inject, CUSTOM_ELEMENTS_SCH
 import { CommonModule } from '@angular/common';
 import { Poll } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
+import { VotersListComponent } from '../../../components/voters-list/voters-list.component';
 
 @Component({
   selector: 'app-poll-stats-display',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VotersListComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './poll-stats-display.component.html',
   styleUrl: './poll-stats-display.component.scss'
@@ -105,6 +106,12 @@ export class PollStatsDisplayComponent implements OnChanges {
     if (count === 1) return 'var(--sage-800)';
     if (count <= 3) return 'var(--sage-600)';
     return 'var(--sage-400)';
+  }
+
+  /** Los votos de tier list se guardan por texto: recuperamos su descripción. */
+  getOptionDescription(itemText: string): string | null {
+    const opt = this.poll?.options?.find(o => o.text === itemText);
+    return opt?.description || null;
   }
 
   showDayDetails(day: any) {

@@ -54,7 +54,10 @@
   background: transparent;
   border: none;
   color: var(--mono-muted);
-  font-size: 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
   cursor: pointer;
   line-height: 1;
 }

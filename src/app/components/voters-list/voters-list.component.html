@@ -1,0 +1,26 @@
+<div class="voters-list" *ngIf="voters.length > 0">
+  <button
+    type="button"
+    class="voters-trigger"
+    [class.is-static]="alwaysExpanded"
+    (click)="toggle(); $event.stopPropagation()"
+    [attr.aria-expanded]="expanded"
+    [attr.aria-label]="expanded ? 'Ocultar nombres de quienes votaron' : 'Ver nombres de quienes votaron'">
+
+    <span class="voters-label">{{ label }}</span>
+
+    <span class="voter-avatars">
+      <span *ngFor="let v of voters" class="voter-avatar" [title]="v.name">{{ initial(v.name) }}</span>
+    </span>
+
+    <iconify-icon
+      *ngIf="!alwaysExpanded"
+      class="voters-caret"
+      [icon]="expanded ? 'solar:alt-arrow-up-broken' : 'solar:alt-arrow-down-broken'"
+      width="14"></iconify-icon>
+  </button>
+
+  <div *ngIf="expanded" class="voter-names">
+    <span *ngFor="let v of voters" class="voter-name-chip">{{ v.name }}</span>
+  </div>
+</div>

@@ -14,6 +14,7 @@
 
   <p class="text-muted small mb-4 text-center">
     Arrastra y suelta cada opción dentro de la categoría que consideres adecuada.
+    <span *ngIf="optionsWithDetails.length > 0">Toca el icono de información para leer los detalles.</span>
   </p>
 
   <!-- Filas de Tiers (S, A, B, C, D) -->
@@ -21,9 +22,10 @@
     <div *ngFor="let tier of tiers | slice:0:5" class="tier-row d-flex align-items-stretch">
       
       <!-- Tier Badge Lateral (Solo la letra grande y nítida como en la imagen) -->
-      <div 
+      <div
         class="tier-header d-flex align-items-center justify-content-center"
-        [style.background-color]="tier.color">
+        [style.background-color]="tier.color"
+        [style.color]="tier.ink">
         <span class="tier-letter">{{ tier.label }}</span>
       </div>
 
@@ -38,6 +40,15 @@
 
         <div *ngFor="let item of tier.items" class="tier-drag-item" cdkDrag>
           <span class="item-label">{{ item }}</span>
+          <button
+            *ngIf="hasDetails(item)"
+            type="button"
+            class="item-info-btn"
+            (click)="openDetail(item, $event)"
+            (pointerdown)="$event.stopPropagation()"
+            [attr.aria-label]="'Ver detalles de ' + item">
+            <iconify-icon icon="solar:info-circle-bold" width="15"></iconify-icon>
+          </button>
           <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
         </div>
 
@@ -62,6 +73,15 @@
 
       <div *ngFor="let item of tiers[5].items" class="tier-drag-item pool-item" cdkDrag>
         <span class="item-label">{{ item }}</span>
+        <button
+          *ngIf="hasDetails(item)"
+          type="button"
+          class="item-info-btn"
+          (click)="openDetail(item, $event)"
+          (pointerdown)="$event.stopPropagation()"
+          [attr.aria-label]="'Ver detalles de ' + item">
+          <iconify-icon icon="solar:info-circle-bold" width="15"></iconify-icon>
+        </button>
         <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
       </div>
 
@@ -71,6 +91,39 @@
       </p>
     </div>
   </div>
+
+  <!-- Detalles de todas las opciones (lectura cómoda, sobre todo en móvil) -->
+  <div *ngIf="optionsWithDetails.length > 0" class="details-panel mb-4">
+    <button type="button" class="details-toggle" (click)="showAllDetails = !showAllDetails" [attr.aria-expanded]="showAllDetails">
+      <iconify-icon icon="solar:notes-broken" width="17"></iconify-icon>
+      <span>Detalles de las opciones</span>
+      <iconify-icon
+        class="ms-auto"
+        [icon]="showAllDetails ? 'solar:alt-arrow-up-broken' : 'solar:alt-arrow-down-broken'"
+        width="16"></iconify-icon>
+    </button>
+
+    <div *ngIf="showAllDetails" class="details-body">
+      <div *ngFor="let opt of optionsWithDetails" class="detail-entry">
+        <h6 class="detail-entry-title">{{ opt.text }}</h6>
+        <p class="detail-entry-text">{{ opt.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ficha rápida de una opción. El <dialog> se dibuja en la capa superior,
+       fuera del panel con backdrop-filter que rompía el posicionamiento. -->
+  <dialog #detailDialog class="detail-dialog" (close)="activeDetail = null" (click)="closeDetail()">
+    <div *ngIf="activeDetail" class="detail-sheet" (click)="$event.stopPropagation()">
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+        <h5 class="detail-sheet-title">{{ activeDetail.text }}</h5>
+        <button type="button" class="detail-sheet-close" (click)="closeDetail()" aria-label="Cerrar detalles">
+          <iconify-icon icon="solar:close-circle-broken" width="18"></iconify-icon>
+        </button>
+      </div>
+      <p class="detail-sheet-text">{{ activeDetail.description }}</p>
+    </div>
+  </dialog>
 
   <!-- Botón Guardar -->
   <div *ngIf="poll.status === 'active'" class="mt-4 pt-3 border-top border-white border-opacity-10">

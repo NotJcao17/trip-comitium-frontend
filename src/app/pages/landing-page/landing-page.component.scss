@@ -1,56 +1,99 @@
+/* ==========================================================================
+   LANDING — Fondo atmosférico continuo en lugar de un plano negro
+   `overflow-x` vive en <body>: aquí rompería el position:sticky de las escenas.
+   ========================================================================== */
 .landing-main {
   min-height: 100vh;
-  overflow-x: hidden;
+  background:
+    radial-gradient(130% 55% at 50% 0%, rgba(79, 126, 101, 0.13) 0%, transparent 62%),
+    radial-gradient(90% 45% at 85% 62%, rgba(41, 71, 56, 0.35) 0%, transparent 70%),
+    linear-gradient(180deg,
+      var(--bg-darkest) 0%,
+      #141c18 26%,
+      #17211c 52%,
+      #131a16 78%,
+      var(--bg-darkest) 100%);
 }
 
 /* ==========================================================================
-   FULL-BLEED HERO DEPTH SECTION (EXACTLY FROM MOCKUPS)
+   APERTURA
+   Un solo bloque alto con el interior fijo: la portada y las tres frases
+   comparten la misma foto, así no hay salto entre imágenes ni cambio de
+   encuadre al girar el teléfono.
    ========================================================================== */
-.hero-depth-section {
+.opening {
+  --hero-fade: 1;
+  --hero-y: 0svh;
+  --img-y: -2.5svh;
+  --img-scale: 1.08;
   position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  height: 330svh;
+}
+
+.opening-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   overflow: hidden;
-  padding: 130px 20px 80px;
-  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.hero-bg-layer {
+.opening-media {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/images/iniesta44-norway-4970080_1920.jpg');
-  background-size: cover;
-  background-position: center 30%;
-  filter: brightness(0.7) contrast(1.1);
-  z-index: 1;
+  inset: 0;
+  background: linear-gradient(180deg, #16211c 0%, #101a15 100%);
 }
 
-.hero-fog-overlay {
+.opening-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  /* La escala base deja margen para que el desplazamiento no descubra bordes */
+  transform: translate3d(0, var(--img-y), 0) scale(var(--img-scale));
+  filter: brightness(0.72) contrast(1.08);
+  will-change: transform;
+}
+
+.opening-veil {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(79, 126, 101, 0.22) 0%, transparent 65%),
-              linear-gradient(180deg, rgba(10, 13, 12, 0.35) 0%, rgba(10, 13, 12, 0.1) 40%, rgba(10, 13, 12, 0.85) 85%, var(--bg-darkest) 100%);
-  z-index: 2;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(79, 126, 101, 0.2) 0%, transparent 62%),
+    linear-gradient(180deg, rgba(10, 13, 12, 0.55) 0%, rgba(10, 13, 12, 0.12) 34%, rgba(10, 13, 12, 0.62) 88%, rgba(10, 13, 12, 0.78) 100%);
+  pointer-events: none;
 }
 
-/* Giant Monumental Title in Clash Display */
-.hero-giant-text-wrapper {
+/* Corte rasgado al pie de la foto, en el tono al que entra la página */
+.torn-edge {
+  position: absolute;
+  z-index: 4;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  width: calc(100% + 2px);
+  height: clamp(26px, 4vw, 56px);
+  display: block;
+  color: var(--bg-darkest);
+  pointer-events: none;
+}
+
+.opening-hero {
   position: relative;
   z-index: 3;
   width: 100%;
   max-width: 1300px;
-  margin: 0 auto;
-  pointer-events: none;
+  padding: 0 20px;
+  opacity: var(--hero-fade);
+  transform: translate3d(0, var(--hero-y), 0);
+}
+
+/* Ya desvanecida: fuera del alcance del teclado y del ratón */
+.opening-hero.is-gone {
+  visibility: hidden;
 }
 
 .hero-giant-title {
@@ -62,51 +105,38 @@
   color: var(--mono-white);
   opacity: 0.95;
   text-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
-}
-
-.hero-foreground-mist {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 280px;
-  background: linear-gradient(0deg, var(--bg-darkest) 15%, rgba(10, 13, 12, 0.8) 45%, transparent 100%);
-  z-index: 4;
-  pointer-events: none;
+  margin: 0;
 }
 
 .hero-content-front {
-  position: relative;
-  z-index: 5;
-  max-width: 720px;
-  margin: 20px auto 0;
+  max-width: 660px;
+  margin: 24px auto 0;
 }
 
-/* Slogan in Lato (Crisp, balanced, exactly like mockup) */
 .hero-tagline {
   font-family: var(--font-body) !important;
   font-weight: 700;
   color: var(--mono-white);
-  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
-  margin-bottom: 16px;
+  font-size: clamp(1.45rem, 3.2vw, 2.3rem);
+  margin-bottom: 14px;
   line-height: 1.25;
-  letter-spacing: normal;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
 }
 
 .hero-subtitle {
   font-family: var(--font-body) !important;
-  font-size: 1.15rem;
+  font-size: 1.08rem;
   color: var(--mono-light);
-  font-weight: 400;
-  margin-bottom: 32px;
-  line-height: 1.7;
+  margin-bottom: 30px;
+  line-height: 1.65;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.6);
 }
 
 .hero-cta-group {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
@@ -136,176 +166,638 @@
   color: var(--mono-muted);
 }
 
-/* ==========================================================================
-   SECTIONS & TYPOGRAPHY
-   ========================================================================== */
-.section-wrapper {
-  padding: 80px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.section-title-group {
-  text-align: center;
-  max-width: 680px;
-  margin: 0 auto 50px;
-}
-
-.section-heading {
-  font-family: var(--font-display) !important;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 700;
-  color: var(--mono-white);
-  margin-top: 8px;
-  margin-bottom: 14px;
-  letter-spacing: -0.01em;
-}
-
-/* 3-Step Process Flow */
-.process-grid {
+/* Las tres frases ocupan la misma celda y se relevan */
+/* Centradas: es el único contenido de este tramo, no un pie de foto */
+.opening-beats {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 24px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  justify-items: center;
 }
 
-.process-card {
-  background: var(--liquid-glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--liquid-glass-border);
-  border-radius: 20px;
-  padding: 32px;
-  position: relative;
-  transition: var(--anim-smooth);
-}
-
-.process-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--sage-400);
-}
-
-.process-step-num {
-  font-family: var(--font-display) !important;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--sage-400);
-  opacity: 0.8;
-  margin-bottom: 12px;
-}
-
-.process-card-title {
-  font-family: var(--font-body) !important;
-  font-size: 1.15rem;
-  font-weight: 900;
+.tree-beat {
+  grid-area: 1 / 1;
+  margin: 0;
+  max-width: 820px;
+  text-wrap: balance;
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 5.2vw, 3.1rem);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.015em;
   color: var(--mono-white);
-  margin-bottom: 10px;
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  filter: blur(6px);
+  transition: opacity 0.55s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.55s ease;
 }
 
-/* Bento Tool Elements */
-.status-chip-match {
-  background: rgba(79, 126, 101, 0.3);
-  border: 1px solid var(--sage-400);
-  color: var(--sage-200);
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+.tree-beat.is-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
 }
 
-.bento-tier-stack {
+.tree-ticks {
+  position: absolute;
+  z-index: 3;
+  bottom: 7svh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.tree-tick {
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+  transition: background 0.4s ease;
+}
+
+.tree-tick.is-on {
+  background: var(--sage-300);
+}
+
+/* ==========================================================================
+   RIEL HORIZONTAL
+   ========================================================================== */
+.rail-scene {
+  position: relative;
+  height: calc(100svh + 230vh);
+}
+
+/* Sin capa de grano: su máscara vertical dibujaba una banda de otro tono
+   justo en el fondo que queda entre las tarjetas. */
+.rail-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  padding: 108px 0 24px;
 }
 
-/* Budget Card */
-.budget-display-box {
-  background: rgba(10, 13, 12, 0.6);
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid var(--mono-border);
-  text-align: center;
-}
-
-.budget-number {
-  font-family: var(--font-display) !important;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--mono-white);
-  margin: 6px 0;
-}
-
-/* Voter Transparency Row */
-.voter-transparency-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  border-radius: 10px;
-  transition: var(--anim-fast);
-}
-
-.voter-transparency-row.selected {
-  background: rgba(79, 126, 101, 0.2);
-  border: 1px solid var(--sage-500);
-}
-
-.voter-transparency-row.unselected {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--mono-border);
-}
-
-/* Archetypes Grid */
-.archetypes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.archetype-card {
-  height: 260px;
-  border-radius: 20px;
-  background-size: cover;
-  background-position: center;
-  border: 1px solid var(--liquid-glass-border);
+.rail-head {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: 0 20px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   align-items: flex-end;
-  padding: 24px;
-  position: relative;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.rail-heading {
+  text-wrap: balance;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4.2vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--mono-white);
+  margin: 0;
+  max-width: 15ch;
+}
+
+.rail-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 170px;
+  padding-bottom: 6px;
+}
+
+.rail-progress-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sage-300);
+  letter-spacing: 0.02em;
+}
+
+.rail-progress-track {
+  display: block;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
   overflow: hidden;
-  transition: var(--anim-smooth);
 }
 
-.archetype-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--sage-400);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+/* Escala en vez de ancho: la barra avanza mientras el riel se desplaza,
+   y animar el layout ahí es justo lo que provoca tirones. */
+.rail-progress-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--sage-300);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.archetype-info {
+.rail-hint {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  color: var(--mono-muted);
+}
+
+.rail-track {
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  flex: 0 1 auto;
+  scrollbar-width: none;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Admin Feature Box */
-.admin-feature-box {
-  background: rgba(10, 13, 12, 0.7);
-  padding: 24px;
-  border-radius: 16px;
+/* Con el scroll vertical al mando, el riel deja de desplazarse a mano */
+.rail-track.is-driven {
+  overflow: hidden;
+  scroll-snap-type: none;
+}
+
+/* `stretch` iguala las alturas entre sí, sin forzarlas al alto de la pantalla */
+.rail-panels {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  padding: 0 20px;
+  width: max-content;
+}
+
+.rail-track.is-driven .rail-panels {
+  transform: translate3d(calc(var(--rail-shift, 0px) * -1), 0, 0);
+  will-change: transform;
+}
+
+.rail-panel {
+  flex: 0 0 auto;
+  width: min(86vw, 400px);
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 22px 26px;
+  border-radius: 22px;
+  /* Mismo vidrio que el resto de la app, desde los tokens */
+  background: var(--liquid-glass-bg);
   border: 1px solid var(--liquid-glass-border);
-  text-align: center;
+  /* Sombra corta a propósito: una difusa de 45px se sumaba entre tarjeta y
+     tarjeta y pintaba una banda más oscura en el hueco. */
+  box-shadow: 0 6px 16px rgba(8, 12, 10, 0.28);
+  backdrop-filter: blur(var(--glass-blur)) saturate(125%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(125%);
 }
 
-@media (max-width: 900px) {
-  .hero-giant-title {
-    font-size: clamp(2.4rem, 10vw, 4.5rem);
+.rail-panel-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--mono-white);
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+.rail-panel-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--mono-light);
+  opacity: 0.82;
+  margin: 0;
+  max-width: 34ch;
+}
+
+.rail-art {
+  margin-top: 20px;
+}
+
+/* En la tarjeta ancha el calendario se disparaba de alto y arrastraba
+   a las demas, que se igualan a la mas alta. */
+.rail-art .mini-heatmap-grid {
+  max-width: 330px;
+  gap: 4px;
+  padding: 12px;
+}
+
+.rail-art-caption {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--sage-300);
+  font-weight: 600;
+}
+
+/* Artefactos de los paneles */
+.code-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--glass-inset);
+  border: 1px solid var(--mono-border);
+}
+
+.code-chip-label {
+  font-size: 0.72rem;
+  color: var(--mono-muted);
+}
+
+.code-chip-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--sage-200);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.type-chip {
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--mono-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--mono-muted);
+}
+
+.type-chip.is-on {
+  background: rgba(79, 126, 101, 0.28);
+  border-color: var(--sage-500);
+  color: var(--sage-100);
+}
+
+.mode-row {
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mode-row-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--mono-white);
+  margin: 0 0 3px;
+}
+
+.mode-row-text {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--mono-muted);
+  margin: 0;
+}
+
+.rail-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================================================
+   GALERÍA DE ESCAPADAS
+   ========================================================================== */
+.gallery-scene {
+  padding: 48px 0 72px;
+}
+
+.gallery-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4.2vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--mono-white);
+  margin: 0 auto 24px;
+  padding: 0 20px;
+  max-width: 1200px;
+}
+
+.gallery-rail {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0 20px;
+}
+
+
+.escape-card {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  border-radius: 22px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.escape-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.escape-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(9, 12, 11, 0.94) 4%, rgba(9, 12, 11, 0.6) 34%, rgba(9, 12, 11, 0.05) 68%, transparent 100%);
+}
+
+.escape-card:hover img {
+  transform: scale(1.07);
+}
+
+/* En móvil cada tarjeta se queda pegada arriba y la siguiente se le monta
+   encima, así que van apareciendo y escondiéndose una detrás de otra. */
+@media (max-width: 779px) {
+  .gallery-rail {
+    gap: 20px;
+  }
+
+  .escape-card {
+    position: sticky;
+    top: calc(94px + var(--i, 0) * 14px);
+    /* Más altas: el apilado se lee mejor con tarjetas de buen porte */
+    aspect-ratio: 4 / 5;
+  }
+
+  .escape-card:nth-child(1) { --i: 0; }
+  .escape-card:nth-child(2) { --i: 1; }
+  .escape-card:nth-child(3) { --i: 2; }
+
+  /* Cola de recorrido para que las tres alcancen a verse apiladas antes
+     de que el bloque suelte el pegado */
+  .gallery-rail::after {
+    content: '';
+    display: block;
+    height: 55svh;
   }
 }
 
+.escape-card figcaption {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  padding: 22px 22px 24px;
+}
+
+.escape-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.6vw, 2.1rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--mono-white);
+  margin: 0 0 8px;
+}
+
+.escape-text {
+  font-size: 0.87rem;
+  line-height: 1.5;
+  color: var(--mono-light);
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* ==========================================================================
+   CIERRE
+   ========================================================================== */
+.closing-scene {
+  position: relative;
+  overflow: hidden;
+  padding: 76px 20px 92px;
+  background:
+    radial-gradient(75% 60% at 50% 55%, rgba(79, 126, 101, 0.26) 0%, transparent 72%),
+    linear-gradient(180deg, transparent 0%, rgba(26, 48, 37, 0.45) 46%, var(--bg-darkest) 100%);
+  border-top: 1px solid rgba(201, 222, 211, 0.08);
+  text-align: center;
+}
+
+.closing-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.closing-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4.6vw, 3.1rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--mono-white);
+  margin: 0 0 14px;
+}
+
+.closing-text {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--mono-light);
+  opacity: 0.8;
+  margin: 0 auto 28px;
+  max-width: 44ch;
+}
+
+.closing-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   ESCRITORIO
+   ========================================================================== */
+@media (min-width: 780px) {
+  .rail-panel {
+    width: min(46vw, 520px);
+    padding: 32px 30px 34px;
+  }
+
+  .rail-panel-title {
+    font-size: 1.75rem;
+  }
+
+  .rail-panel-text {
+    font-size: 1rem;
+  }
+
+  .code-chip {
+    padding: 14px 18px;
+  }
+
+  .heatmap-cell {
+    font-size: 0.86rem;
+  }
+
+  .rail-panels {
+    gap: 20px;
+    padding: 0 max(20px, calc((100vw - 1200px) / 2));
+  }
+
+  .gallery-rail {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .escape-card {
+    aspect-ratio: 4 / 5;
+  }
+
+  .escape-title {
+    font-size: clamp(1.6rem, 2vw, 2.1rem);
+  }
+
+  .escape-card:nth-child(2) {
+    margin-top: 46px;
+    aspect-ratio: 3 / 4;
+  }
+
+  .escape-card:nth-child(3) {
+    margin-top: 18px;
+  }
+
+}
+
 @media (max-width: 600px) {
-  .hero-depth-section {
-    padding: 110px 14px 60px;
+  .opening {
+    height: 310svh;
+  }
+
+  .rail-scene {
+    height: calc(100svh + 260vh);
+  }
+}
+
+/* Pantallas bajas (móvil en horizontal): recorta el aire, no el contenido */
+@media (max-height: 660px) {
+  .rail-stage {
+    padding: 100px 0 28px;
+    gap: 14px;
+  }
+
+  .rail-panel {
+    padding: 18px 18px 20px;
+  }
+
+  .rail-panel-title {
+    font-size: 1.3rem;
+  }
+
+  .tree-ticks {
+    bottom: 4svh;
+  }
+}
+
+/* ==========================================================================
+   MENOS MOVIMIENTO
+   Las frases se leen juntas y el riel vuelve a ser un carrusel manual.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .opening {
+    height: auto;
+  }
+
+  .opening-stage {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+    padding: 120px 0 80px;
+  }
+
+  .opening-media img {
+    transform: none;
+  }
+
+  /* Corte rasgado al pie de la foto, en el tono al que entra la página */
+.torn-edge {
+  position: absolute;
+  z-index: 4;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  width: calc(100% + 2px);
+  height: clamp(26px, 4vw, 56px);
+  display: block;
+  color: var(--bg-darkest);
+  pointer-events: none;
+}
+
+.opening-hero {
+    opacity: 1;
+    transform: none;
+  }
+
+  .opening-beats {
+    position: relative;
+    top: auto;
+    transform: none;
+    gap: 20px;
+  }
+
+  .tree-beat {
+    position: relative;
+    grid-area: auto;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+    font-size: clamp(1.3rem, 4vw, 2rem);
+  }
+
+  .rail-scene {
+    height: auto;
+  }
+
+  .rail-stage {
+    position: relative;
+    height: auto;
+    padding: 80px 0;
+  }
+
+  .rail-track {
+    flex: none;
+  }
+
+  .rail-panel {
+    height: auto;
+  }
+
+  .escape-card img,
+  .rail-progress-fill {
+    transition: none;
   }
 }

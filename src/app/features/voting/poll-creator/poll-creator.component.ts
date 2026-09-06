@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PollService } from '../../../services/poll.service';
+import { PollOptionDraft } from '../../../models/poll.interface';
 
 @Component({
   selector: 'app-poll-creator',
@@ -18,7 +19,16 @@ export class PollCreatorComponent implements OnInit {
   title = '';
   description = '';
   type = 'multiple_choice';
-  optionsText = '';
+  isAnonymous = false;
+
+  // Opciones con detalles: cada renglón es una tarjeta que el grupo verá al votar
+  options: PollOptionDraft[] = [
+    { text: '', description: '' },
+    { text: '', description: '' }
+  ];
+  expandedOptionIndex: number | null = null;
+  readonly maxOptionDescription = 400;
+
   sliderMin = 1000;
   sliderMax = 30000;
   sliderStep = 500;
@@ -175,6 +185,52 @@ export class PollCreatorComponent implements OnInit {
     this.generateCreatorCalendar();
   }
 
+  // --- Gestión de opciones con detalles ---
+  addOption() {
+    this.options.push({ text: '', description: '' });
+    this.expandedOptionIndex = null;
+  }
+
+  removeOption(index: number) {
+    this.options.splice(index, 1);
+    if (this.options.length === 0) this.addOption();
+    this.expandedOptionIndex = null;
+  }
+
+  moveOption(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= this.options.length) return;
+    const [moved] = this.options.splice(index, 1);
+    this.options.splice(target, 0, moved);
+    this.expandedOptionIndex = null;
+  }
+
+  toggleOptionDetails(index: number) {
+    this.expandedOptionIndex = this.expandedOptionIndex === index ? null : index;
+  }
+
+  isOptionExpanded(index: number): boolean {
+    return this.expandedOptionIndex === index || Boolean(this.options[index]?.description?.trim());
+  }
+
+  onOptionEnter(event: Event, index: number) {
+    event.preventDefault();
+    if (index === this.options.length - 1) this.addOption();
+  }
+
+  filledOptions(): Array<{ text: string; description: string }> {
+    return this.options
+      .map(o => ({
+        text: (o.text || '').trim(),
+        description: (o.description || '').trim()
+      }))
+      .filter(o => o.text !== '');
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   validate(): boolean {
     this.validationErrors = [];
 
@@ -183,9 +239,18 @@ export class PollCreatorComponent implements OnInit {
     }
 
     if (this.type === 'multiple_choice' || this.type === 'tier_list') {
-      const opts = this.optionsText.split('\n').map(o => o.trim()).filter(o => o !== '');
+      const opts = this.filledOptions();
       if (opts.length < 2) {
-        this.validationErrors.push('Debes ingresar al menos 2 opciones válidas (una por renglón).');
+        this.validationErrors.push('Debes ingresar al menos 2 opciones con nombre.');
+      }
+
+      const names = opts.map(o => o.text.toLowerCase());
+      if (new Set(names).size !== names.length) {
+        this.validationErrors.push('Hay opciones repetidas. Cada opción debe tener un nombre distinto.');
+      }
+
+      if (opts.some(o => o.description.length > this.maxOptionDescription)) {
+        this.validationErrors.push(`Los detalles de cada opción no pueden pasar de ${this.maxOptionDescription} caracteres.`);
       }
     }
 
@@ -225,12 +290,16 @@ export class PollCreatorComponent implements OnInit {
       title: this.title.trim(),
       description: this.description ? this.description.trim() : null,
       type: this.type,
+      isAnonymous: this.isAnonymous,
       config: {},
       options: []
     };
 
     if (this.type === 'multiple_choice' || this.type === 'tier_list') {
-      payload.options = this.optionsText.split('\n').map(o => o.trim()).filter(o => o !== '');
+      payload.options = this.filledOptions().map(o => ({
+        text: o.text,
+        description: o.description || null
+      }));
     }
 
     if (this.type === 'slider') {
@@ -265,8 +334,13 @@ export class PollCreatorComponent implements OnInit {
   resetForm() {
     this.title = '';
     this.description = '';
-    this.optionsText = '';
+    this.options = [
+      { text: '', description: '' },
+      { text: '', description: '' }
+    ];
+    this.expandedOptionIndex = null;
     this.type = 'multiple_choice';
+    this.isAnonymous = false;
     this.validationErrors = [];
   }
 }

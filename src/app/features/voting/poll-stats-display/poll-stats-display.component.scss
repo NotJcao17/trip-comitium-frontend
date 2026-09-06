@@ -1,5 +1,5 @@
 .stats-option-row {
-  background: rgba(10, 13, 12, 0.6);
+  background: var(--glass-inset);
   border: 1px solid var(--mono-border);
 }
 
@@ -84,11 +84,16 @@
   font-weight: 800;
   padding: 2px 7px;
   border-radius: 5px;
-  color: #111;
 }
 
-.pill-s { background: #ff7f7f; }
-.pill-a { background: #ffbf7f; }
-.pill-b { background: #ffdf7f; }
-.pill-c { background: #ffff7f; }
-.pill-d { background: #bfff7f; }
+.pill-s { background: var(--tier-s); color: var(--tier-s-ink); }
+.pill-a { background: var(--tier-a); color: var(--tier-a-ink); }
+.pill-b { background: var(--tier-b); color: var(--tier-b-ink); }
+.pill-c { background: var(--tier-c); color: var(--tier-c-ink); }
+.pill-d { background: var(--tier-d); color: var(--tier-d-ink); }
+.stats-option-desc {
+  color: var(--mono-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}

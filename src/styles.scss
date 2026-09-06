@@ -27,11 +27,32 @@
   --sage-800: #1a3025;
   --sage-900: #102119;
 
-  /* Liquid Glass System */
-  --liquid-glass-bg: rgba(28, 38, 33, 0.72);
-  --liquid-glass-border: rgba(201, 222, 211, 0.16);
+  /* Liquid Glass System
+     Un solo sitio para el vidrio: los paneles usan --liquid-glass-bg y las
+     superficies hundidas (campos, sub-cajas) usan --glass-inset. Aclarar u
+     oscurecer toda la app se hace desde aqui. */
+  --liquid-glass-bg: rgba(78, 104, 91, 0.5);
+  --liquid-glass-border: rgba(201, 222, 211, 0.2);
   --liquid-glass-highlight: rgba(255, 255, 255, 0.22);
   --liquid-glass-glow: 0 15px 35px rgba(16, 33, 25, 0.35);
+  --glass-blur: 26px;
+
+  /* Superficies hundidas dentro de un panel */
+  --glass-inset: rgba(16, 26, 21, 0.5);
+  --glass-inset-strong: rgba(12, 20, 16, 0.66);
+
+  /* Escala de la Tier List: la de la pantalla de votación es la buena.
+     Vive aquí para que la vista previa del inicio use exactamente la misma. */
+  --tier-s: #ff7f7f;
+  --tier-a: #ffbf7f;
+  --tier-b: #ffdf7f;
+  --tier-c: #ffff7f;
+  --tier-d: #bfff7f;
+  --tier-s-ink: #111111;
+  --tier-a-ink: #111111;
+  --tier-b-ink: #111111;
+  --tier-c-ink: #111111;
+  --tier-d-ink: #111111;
 
   /* Monochromes */
   --mono-white: #ffffff;
@@ -66,7 +87,9 @@ html {
 body {
   background-color: var(--bg-darkest);
   color: var(--mono-light);
-  overflow-x: hidden;
+  /* `clip` recorta igual que `hidden` pero no crea contenedor de scroll,
+     así que el position:sticky de la landing sigue funcionando. */
+  overflow-x: clip;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -189,8 +212,8 @@ a {
 
 .bento-card, .glass-panel {
   background: var(--liquid-glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(var(--glass-blur)) saturate(125%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(125%);
   border: 1px solid var(--liquid-glass-border);
   border-radius: 20px;
   padding: 28px;
@@ -225,7 +248,7 @@ a {
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
   margin-top: 16px;
-  background: rgba(10, 13, 12, 0.6);
+  background: var(--glass-inset);
   padding: 16px;
   border-radius: 14px;
   border: 1px solid var(--mono-border);
@@ -282,9 +305,11 @@ a {
   color: var(--bg-darkest);
 }
 
-.tier-s { background: #f59e0b; }
-.tier-a { background: var(--sage-400); }
-.tier-b { background: #60a5fa; }
+.tier-s { background: var(--tier-s); color: var(--tier-s-ink); }
+.tier-a { background: var(--tier-a); color: var(--tier-a-ink); }
+.tier-b { background: var(--tier-b); color: var(--tier-b-ink); }
+.tier-c { background: var(--tier-c); color: var(--tier-c-ink); }
+.tier-d { background: var(--tier-d); color: var(--tier-d-ink); }
 
 .bento-tier-item {
   flex: 1;
@@ -373,4 +398,101 @@ iconify-icon {
   font-size: 0.92rem;
   line-height: 1.55;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+/* ==========================================================================
+   SUPERFICIES DEL NAVEGADOR (selección, foco, scrollbar, cursor)
+   ========================================================================== */
+::selection {
+  background: var(--sage-500);
+  color: var(--mono-white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sage-300);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+input,
+textarea {
+  caret-color: var(--sage-300);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sage-700) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sage-700);
+  border-radius: 999px;
+  border: 3px solid var(--bg-darkest);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sage-600);
+}
+
+/* Dentro de un campo, esa barra pesa demasiado */
+textarea::-webkit-scrollbar,
+select::-webkit-scrollbar {
+  width: 6px;
+}
+
+textarea::-webkit-scrollbar-thumb,
+select::-webkit-scrollbar-thumb {
+  background: rgba(120, 163, 140, 0.4);
+  border: none;
+}
+
+/* Grano fino: rompe la planitud de los fondos oscuros */
+.grain-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  /* Se desvanece en los bordes: si no, el grano marca dónde acaba la sección */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* Distintivo de votación anónima */
+.anon-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--mono-border);
+  color: var(--mono-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Campo de PIN.
+   Va como `type="text"` a propósito: con `type="password"` Chrome lo mete en el
+   gestor de contraseñas y avisa de credencial filtrada por un PIN de 4 dígitos.
+   El enmascarado lo hace CSS, así que se ve igual. */
+.pin-input {
+  letter-spacing: 0.3em;
+  font-size: 1.1rem;
+}
+
+.pin-input.is-masked {
+  -webkit-text-security: disc;
+  text-security: disc;
 }

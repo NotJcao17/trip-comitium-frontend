@@ -33,6 +33,17 @@ export class CreateTripComponent {
   errorMessage = '';
   showPin = false;
 
+  /**
+   * El PIN se enmascara con CSS para no usar `type="password"`, que en Chrome
+   * activa el gestor de contraseñas y su aviso de credencial filtrada por un
+   * PIN de cuatro dígitos. Donde `-webkit-text-security` no exista, volvemos
+   * a `type="password"` para no dejar el PIN a la vista.
+   */
+  readonly maskWithCss =
+    typeof CSS !== 'undefined' &&
+    typeof CSS.supports === 'function' &&
+    CSS.supports('-webkit-text-security', 'disc');
+
   togglePin() {
     this.showPin = !this.showPin;
   }

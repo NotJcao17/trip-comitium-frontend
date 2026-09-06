@@ -6,10 +6,16 @@
       <span class="label-micro">RESULTADOS EN VIVO</span>
       <h4 class="font-bold text-white fs-5 mt-1 mb-0">{{ poll?.title }}</h4>
     </div>
-    <span class="status-chip-match">
-      <iconify-icon icon="solar:users-group-rounded-bold" width="14"></iconify-icon>
-      {{ stats?.totalVotes || 0 }} {{ stats?.totalVotes === 1 ? 'voto' : 'votos' }}
-    </span>
+    <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+      <span *ngIf="poll?.is_anonymous" class="anon-chip" title="Los demás participantes solo ven los totales">
+        <iconify-icon icon="solar:incognito-broken" width="14"></iconify-icon>
+        Anónima
+      </span>
+      <span class="status-chip-match">
+        <iconify-icon icon="solar:users-group-rounded-bold" width="14"></iconify-icon>
+        {{ stats?.totalVotes || 0 }} {{ stats?.totalVotes === 1 ? 'voto' : 'votos' }}
+      </span>
+    </div>
   </div>
 
   <!-- Loading State -->
@@ -29,31 +35,27 @@
     <!-- 1. Multiple Choice Results -->
     <div *ngIf="poll?.type === 'multiple_choice'" class="d-flex flex-column gap-3">
       <div *ngFor="let opt of poll?.options" class="stats-option-row p-3 rounded-3">
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
           <span class="fw-bold text-white">{{ opt.text }}</span>
-          <span class="text-sage fw-bold">{{ stats.results ? (stats.results[opt.option_id!] || 0) : 0 }} votos</span>
+          <span class="text-sage fw-bold text-nowrap">{{ stats.results ? (stats.results[opt.option_id!] || 0) : 0 }} votos</span>
         </div>
+
+        <p *ngIf="opt.description" class="stats-option-desc mb-2">{{ opt.description }}</p>
 
         <!-- Barra de progreso -->
         <div class="progress-bar-track mb-2">
-          <div 
-            class="progress-bar-fill" 
+          <div
+            class="progress-bar-fill"
             [style.width.%]="stats.totalVotes ? (((stats.results ? (stats.results[opt.option_id!] || 0) : 0) / stats.totalVotes) * 100) : 0">
           </div>
         </div>
 
-        <!-- Avatares de votantes -->
-        <div *ngIf="stats.votersByOption && stats.votersByOption[opt.option_id!]?.length > 0" class="d-flex align-items-center gap-2 mt-2">
-          <span class="text-muted" style="font-size: 0.72rem;">Votantes:</span>
-          <div class="voter-avatars">
-            <div 
-              *ngFor="let v of stats.votersByOption[opt.option_id!]" 
-              class="voter-avatar" 
-              [title]="v.name">
-              {{ v.name ? (v.name.charAt(0) | uppercase) : '?' }}
-            </div>
-          </div>
-        </div>
+        <!-- Quién votó esta opción (tocar para ver los nombres) -->
+        <app-voters-list
+          *ngIf="stats.votersByOption && stats.votersByOption[opt.option_id!]?.length > 0"
+          [voters]="stats.votersByOption[opt.option_id!]"
+          label="Votaron">
+        </app-voters-list>
       </div>
     </div>
 
@@ -132,12 +134,17 @@
       </p>
 
       <div class="d-flex flex-column gap-2">
-        <div *ngFor="let item of stats.ranking; let i = index" class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-black bg-opacity-25 border border-white border-opacity-5">
-          <div class="d-flex align-items-center gap-3">
+        <div *ngFor="let item of stats.ranking; let i = index" class="d-flex justify-content-between align-items-start gap-3 p-3 rounded-3 bg-black bg-opacity-25 border border-white border-opacity-5">
+          <div class="d-flex align-items-start gap-3">
             <span class="ranking-position-badge" [class.gold]="i === 0">#{{ i + 1 }}</span>
-            <span class="fw-bold text-white">{{ item.item }}</span>
+            <div>
+              <span class="fw-bold text-white">{{ item.item }}</span>
+              <p *ngIf="getOptionDescription(item.item)" class="stats-option-desc mt-1 mb-0">
+                {{ getOptionDescription(item.item) }}
+              </p>
+            </div>
           </div>
-          <span class="text-sage fw-bold font-monospace">{{ item.score }} pts</span>
+          <span class="text-sage fw-bold font-monospace text-nowrap">{{ item.score }} pts</span>
         </div>
       </div>
     </div>

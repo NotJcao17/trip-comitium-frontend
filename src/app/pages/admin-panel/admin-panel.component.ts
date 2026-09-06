@@ -1,7 +1,9 @@
-import { Component, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { PollService } from '../../services/poll.service';
+import { AuthService } from '../../services/auth.service';
 import { Poll } from '../../models/poll.interface';
 import { PollCreatorComponent } from '../../features/voting/poll-creator/poll-creator.component';
 import { PollStatsDisplayComponent } from '../../features/voting/poll-stats-display/poll-stats-display.component';
@@ -15,9 +17,10 @@ import { ParticipantsTableComponent } from '../../features/voting/participants-t
   templateUrl: './admin-panel.component.html',
   styleUrl: './admin-panel.component.scss'
 })
-export class AdminPanelComponent implements OnInit {
+export class AdminPanelComponent implements OnInit, OnDestroy {
   private pollService = inject(PollService);
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   tripCode: string = '';
   polls: Poll[] = [];
@@ -26,9 +29,26 @@ export class AdminPanelComponent implements OnInit {
   showCreator = false;
   selectedPollStats: Poll | null = null;
 
+  private routeSub: Subscription | null = null;
+
   ngOnInit() {
-    this.tripCode = this.route.snapshot.paramMap.get('code') || '';
+    // La ruta /admin no lleva el código en la URL (a diferencia de
+    // /trip/:code/admin), así que lo recuperamos de la sesión guardada.
+    this.routeSub = this.route.paramMap.subscribe(params => {
+      this.tripCode = params.get('code') || this.resolveTripCodeFromSession();
+    });
     this.loadPolls();
+  }
+
+  ngOnDestroy() {
+    this.routeSub?.unsubscribe();
+  }
+
+  private resolveTripCodeFromSession(): string {
+    const active = this.authService.getActiveTripCode();
+    if (active) return active;
+    const recents = this.authService.getRecentTrips();
+    return recents.length > 0 ? recents[0].shareCode : '';
   }
 
   loadPolls() {

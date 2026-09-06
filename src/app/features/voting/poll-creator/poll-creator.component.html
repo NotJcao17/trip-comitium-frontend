@@ -56,6 +56,24 @@
         </span>
       </div>
 
+      <!-- Privacidad de los votos -->
+      <div class="col-12">
+        <label class="privacy-toggle" [class.is-on]="isAnonymous">
+          <input type="checkbox" [(ngModel)]="isAnonymous" name="isAnonymous" class="privacy-checkbox">
+          <span class="privacy-box" aria-hidden="true">
+            <iconify-icon *ngIf="isAnonymous" icon="solar:check-read-broken" width="14"></iconify-icon>
+          </span>
+          <span class="privacy-copy">
+            <span class="privacy-title">Votación anónima</span>
+            <span class="privacy-text">
+              {{ isAnonymous
+                 ? 'Tus amigos solo verán los totales. Tú sigues viendo quién votó qué.'
+                 : 'Todos podrán ver quién votó cada opción.' }}
+            </span>
+          </span>
+        </label>
+      </div>
+
     </div>
 
     <!-- Campos Dinámicos -->
@@ -63,18 +81,94 @@
       
       <!-- Opciones para Multiple Choice y Tier List -->
       <div *ngIf="type === 'multiple_choice' || type === 'tier_list'">
-        <div class="d-flex justify-content-between align-items-center mb-1">
-          <label class="form-label mb-0">Opciones (Escribe una por renglón) *</label>
-          <span class="badge-helper" style="font-size: 0.72rem; color: var(--sage-300);">Mínimo 2 opciones</span>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <label class="form-label mb-0">Opciones a votar *</label>
+          <span style="font-size: 0.72rem; color: var(--sage-300);">Mínimo 2</span>
         </div>
-        <textarea 
-          class="form-input font-monospace" 
-          rows="4" 
-          [(ngModel)]="optionsText" 
-          name="optionsText" 
-          placeholder="Cabaña en el Bosque&#10;Glamping Laguna&#10;Hotel en el Centro"></textarea>
-        <span class="text-muted" style="font-size: 0.75rem; display: block; margin-top: 4px;">
-          Cada renglón se convertirá en una tarjeta votable o clasificable.
+
+        <div class="option-editor-list">
+          <div
+            *ngFor="let opt of options; let i = index; trackBy: trackByIndex"
+            class="option-editor-row"
+            [class.has-details]="isOptionExpanded(i)">
+
+            <div class="option-editor-head">
+              <span class="option-index">{{ i + 1 }}</span>
+
+              <input
+                type="text"
+                class="form-input option-name-input"
+                [(ngModel)]="opt.text"
+                [name]="'optName' + i"
+                (keydown.enter)="onOptionEnter($event, i)"
+                placeholder="Nombre de la opción. Ej. Cabaña en el bosque"
+                autocomplete="off">
+
+              <div class="option-row-actions">
+                <button
+                  type="button"
+                  class="option-icon-btn"
+                  [class.is-on]="isOptionExpanded(i)"
+                  (click)="toggleOptionDetails(i)"
+                  [attr.aria-expanded]="isOptionExpanded(i)"
+                  [title]="isOptionExpanded(i) ? 'Ocultar detalles' : 'Agregar detalles'">
+                  <iconify-icon icon="solar:document-add-broken" width="16"></iconify-icon>
+                </button>
+
+                <button
+                  type="button"
+                  class="option-icon-btn"
+                  (click)="moveOption(i, -1)"
+                  [disabled]="i === 0"
+                  title="Subir opción">
+                  <iconify-icon icon="solar:alt-arrow-up-broken" width="16"></iconify-icon>
+                </button>
+
+                <button
+                  type="button"
+                  class="option-icon-btn"
+                  (click)="moveOption(i, 1)"
+                  [disabled]="i === options.length - 1"
+                  title="Bajar opción">
+                  <iconify-icon icon="solar:alt-arrow-down-broken" width="16"></iconify-icon>
+                </button>
+
+                <button
+                  type="button"
+                  class="option-icon-btn danger"
+                  (click)="removeOption(i)"
+                  [disabled]="options.length <= 1"
+                  title="Quitar opción">
+                  <iconify-icon icon="solar:trash-bin-trash-broken" width="16"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="isOptionExpanded(i)" class="option-editor-details">
+              <textarea
+                class="form-input option-desc-input"
+                rows="4"
+                [(ngModel)]="opt.description"
+                [name]="'optDesc' + i"
+                [maxlength]="maxOptionDescription"
+                placeholder="Detalles que tu grupo necesita para decidir: precio por noche, ubicación, qué incluye, horarios…"></textarea>
+              <div class="d-flex justify-content-between align-items-center mt-1">
+                <span class="text-muted" style="font-size: 0.72rem;">Se mostrará debajo del nombre al votar.</span>
+                <span class="text-muted" style="font-size: 0.72rem;">
+                  {{ (opt.description || '').length }}/{{ maxOptionDescription }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-add-option mt-2" (click)="addOption()">
+          <iconify-icon icon="solar:add-circle-broken" width="16"></iconify-icon>
+          <span>Agregar otra opción</span>
+        </button>
+
+        <span class="text-muted" style="font-size: 0.75rem; display: block; margin-top: 8px;">
+          Cada opción se convierte en una tarjeta votable. Los detalles son opcionales, pero ayudan cuando votan alojamiento o comidas.
         </span>
       </div>
 
@@ -150,7 +244,8 @@
             </div>
           </div>
           <p class="text-muted text-center mt-2 mb-0" style="font-size: 0.73rem;">
-            💡 Haz clic en el día de <strong>inicio</strong> y luego en el día de <strong>fin</strong> para marcar el periodo.
+            <iconify-icon icon="solar:cursor-square-broken" width="14" class="text-sage me-1"></iconify-icon>
+            Haz clic en el día de <strong>inicio</strong> y luego en el día de <strong>fin</strong> para marcar el periodo.
           </p>
         </div>
 

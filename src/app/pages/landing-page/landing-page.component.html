@@ -1,289 +1,272 @@
 <main class="landing-main">
 
   <!-- ========================================================================
-       HERO FULL-BLEED CON EFECTO DE PROFUNDIDAD Y MONTAÑA
+       APERTURA
+       El hero y las tres frases comparten una sola foto: al bajar, el texto del
+       hero se va, el fondo acompaña con parallax y después entra el zoom. Así no
+       hay salto entre dos imágenes ni cambio de foto al girar el teléfono.
        ======================================================================== -->
-  <section class="hero-depth-section">
-    <div class="hero-bg-layer"></div>
-    <div class="hero-fog-overlay"></div>
-
-    <!-- Título Monumental TRIP COMITIUM (Plano de profundidad) -->
-    <div class="hero-giant-text-wrapper">
-      <h1 class="hero-giant-title">TRIP COMITIUM</h1>
-    </div>
-
-    <!-- Capa de neblina de corte inferior -->
-    <div class="hero-foreground-mist"></div>
-
-    <!-- Contenido Frontal -->
-    <div class="hero-content-front">
-      <h2 class="hero-tagline">
-        Decidan fechas, lugares y presupuesto sin discusiones en chats.
-      </h2>
-      
-      <p class="hero-subtitle">
-        Crea una sala, comparte el código con tus amigos y voten de forma visual en segundos. Sin crear cuentas de correo ni formularios largos.
-      </p>
-
-      <!-- CTA & Quick Join Input -->
-      <div class="hero-cta-group">
-        <a routerLink="/create" class="btn-tc btn-tc-primary btn-tc-lg">
-          <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
-          Crear Nueva Sala
-        </a>
-
-        <form (ngSubmit)="onQuickJoin()" class="hero-quick-join-box">
-          <input 
-            type="text" 
-            [(ngModel)]="quickCode" 
-            name="quickCode" 
-            class="hero-quick-join-input" 
-            placeholder="CÓDIGO DE SALA" 
-            maxlength="8">
-          <button type="submit" class="btn-tc btn-tc-glass btn-tc-sm">
-            <iconify-icon icon="solar:arrow-right-broken" width="16"></iconify-icon> Unirse
-          </button>
-        </form>
+  <section class="opening" #openingSection>
+    <div class="opening-stage">
+      <div class="opening-media">
+        <!-- Una sola fuente: en vertical el recorte manda por el alto, así que
+             una variante reducida se vería borrosa aunque la pantalla sea angosta.
+             Son 174 KB y es la imagen que define la primera pantalla. -->
+        <img src="/images/apertura.jpg" alt="Un fiordo entre montañas al amanecer" fetchpriority="high" decoding="async">
       </div>
-    </div>
-  </section>
+      <div class="opening-veil"></div>
 
-  <!-- ========================================================================
-       PASO A PASO: ¿CÓMO FUNCIONA?
-       ======================================================================== -->
-  <section id="como-funciona" class="section-wrapper">
-    <div class="section-title-group">
-      <span class="label-micro">FLUJO SIMPLE</span>
-      <h2 class="section-heading">¿CÓMO FUNCIONA?</h2>
-      <p class="text-muted">Tres pasos para pasar de la idea al itinerario definido.</p>
-    </div>
+      <!-- Primer tramo: la portada -->
+      <div class="opening-hero" [class.is-gone]="heroGone">
+        <h1 class="hero-giant-title">TRIP COMITIUM</h1>
 
-    <div class="process-grid">
-      <div class="process-card">
-        <div class="process-step-num">01</div>
-        <div class="process-card-title">Crea tu sala</div>
-        <p class="text-muted" style="font-size: 0.9rem;">
-          Elige el nombre de la expedición y define qué votará el grupo: fechas en calendario, destinos en tier list o rango de presupuesto.
-        </p>
-      </div>
+        <div class="hero-content-front">
+          <h2 class="hero-tagline">
+            Decidan fechas, lugares y presupuesto sin discutir en el chat.
+          </h2>
 
-      <div class="process-card">
-        <div class="process-step-num">02</div>
-        <div class="process-card-title">Comparte el enlace</div>
-        <p class="text-muted" style="font-size: 0.9rem;">
-          Pasa el código corto a tu grupo de WhatsApp. Puedes habilitar sala abierta o predefinir la lista con los nombres de tus amigos.
-        </p>
-      </div>
+          <p class="hero-subtitle">
+            Abres una sala, pasas el código y cada quien vota desde su teléfono. Sin cuentas ni formularios.
+          </p>
 
-      <div class="process-card">
-        <div class="process-step-num">03</div>
-        <div class="process-card-title">Voten y vean el resultado</div>
-        <p class="text-muted" style="font-size: 0.9rem;">
-          Cada quien entra desde su teléfono, vota en menos de un minuto y la aplicación calcula automáticamente las opciones ganadoras.
-        </p>
-      </div>
-    </div>
-  </section>
+          <div class="hero-cta-group">
+            <a routerLink="/create" class="btn-tc btn-tc-primary btn-tc-lg">
+              <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
+              Crear nueva sala
+            </a>
 
-  <!-- ========================================================================
-       BENTO GRID: HERRAMIENTAS INTEGRADAS (LIMPIO, SIN IMÁGENES DE FONDO)
-       ======================================================================== -->
-  <section id="herramientas" class="section-wrapper" style="padding-top: 0;">
-    <div class="section-title-group">
-      <span class="label-micro">SISTEMA VISUAL</span>
-      <h2 class="section-heading">HERRAMIENTAS INTEGRADAS</h2>
-      <p class="text-muted">Diseñadas para resolver los desacuerdos habituales en cualquier viaje.</p>
-    </div>
-
-    <div class="bento-grid">
-      
-      <!-- Bento 1: Heatmap de Calendario -->
-      <div class="bento-card bento-col-8">
-        <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
-          <div>
-            <span class="label-micro">DISPONIBILIDAD</span>
-            <h3 class="font-bold text-white fs-5 mt-1 mb-0">Mapa de Calor de Fechas</h3>
+            <form (ngSubmit)="onQuickJoin()" class="hero-quick-join-box">
+              <label class="visually-hidden" for="hero-code">Código de sala</label>
+              <input
+                id="hero-code"
+                type="text"
+                [(ngModel)]="quickCode"
+                name="quickCode"
+                class="hero-quick-join-input"
+                placeholder="CÓDIGO DE SALA"
+                maxlength="8">
+              <button type="submit" class="btn-tc btn-tc-glass btn-tc-sm">
+                <iconify-icon icon="solar:arrow-right-broken" width="16"></iconify-icon> Unirse
+              </button>
+            </form>
           </div>
-          <span class="status-chip-match">
-            <iconify-icon icon="solar:check-circle-bold" width="14"></iconify-icon> Coincidencia: 14-18 Ago
+        </div>
+      </div>
+
+      <!-- Segundo tramo: las tres frases sobre la misma foto -->
+      <div class="opening-beats">
+        <p class="tree-beat" [class.is-active]="isBeatVisible(0)">
+          Seis personas, catorce ideas sueltas y un chat que ya nadie lee.
+        </p>
+        <p class="tree-beat" [class.is-active]="isBeatVisible(1)">
+          Aquí cada quien marca sus días libres, su presupuesto y sus lugares favoritos.
+        </p>
+        <p class="tree-beat" [class.is-active]="isBeatVisible(2)">
+          Y el grupo termina viendo una sola respuesta.
+        </p>
+      </div>
+
+      <!-- La foto no termina en una línea recta: se rasga contra el fondo -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100" preserveAspectRatio="none" aria-hidden="true" focusable="false" class="torn-edge"><path d="M0,100.0 L0,70.3 L6.9,81.5 L13.4,51.6 L24.9,73.0 L39.1,74.1 L57.8,65.1 L65.7,65.8 L74.0,70.4 L87.1,45.1 L102.0,67.6 L113.9,65.1 L123.1,66.6 L138.5,71.2 L154.4,68.9 L170.3,56.6 L185.4,53.2 L202.3,53.0 L209.1,49.3 L225.7,42.6 L232.0,50.4 L248.0,39.6 L265.4,39.3 L282.8,47.9 L294.2,44.3 L302.2,43.3 L314.5,58.8 L325.3,49.3 L338.0,65.7 L354.1,54.0 L365.3,53.1 L374.0,53.1 L382.0,61.1 L396.0,46.7 L406.7,46.3 L418.8,32.0 L429.2,47.7 L435.5,54.8 L448.6,46.1 L465.8,53.9 L474.0,55.4 L484.3,50.8 L501.4,58.1 L510.3,62.1 L520.0,53.8 L531.8,60.9 L542.5,53.8 L551.2,57.6 L563.4,69.9 L581.2,57.2 L589.5,56.5 L608.2,50.9 L623.6,47.7 L641.4,53.8 L660.1,53.3 L667.8,47.7 L680.7,58.7 L697.4,54.5 L706.5,60.2 L714.2,65.0 L727.8,67.8 L740.3,76.9 L748.7,62.7 L760.9,71.7 L773.6,82.9 L782.8,69.3 L796.1,74.7 L810.1,72.4 L822.0,72.6 L837.1,75.9 L850.3,83.6 L862.1,80.4 L878.3,76.1 L892.9,68.8 L901.7,77.0 L920.6,75.9 L933.3,70.7 L948.7,66.6 L954.9,69.2 L961.7,74.9 L969.1,36.7 L978.6,63.9 L995.3,61.9 L1008.7,46.4 L1023.6,24.4 L1037.9,26.6 L1044.8,57.3 L1057.9,67.1 L1067.0,54.6 L1077.1,47.7 L1089.6,54.5 L1095.8,51.5 L1108.0,53.9 L1119.6,50.1 L1132.2,53.1 L1149.0,54.7 L1159.5,62.4 L1168.8,19.5 L1186.2,56.3 L1196.0,54.2 L1200.0,59.2 L1200.0,100.0 Z" fill="currentColor"/></svg>
+
+      <div class="tree-ticks" *ngIf="motionDriven && treeBeat >= 0" aria-hidden="true">
+        <span class="tree-tick" [class.is-on]="treeBeat >= 0"></span>
+        <span class="tree-tick" [class.is-on]="treeBeat >= 1"></span>
+        <span class="tree-tick" [class.is-on]="treeBeat >= 2"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       RIEL HORIZONTAL: bajar con el scroll recorre los cuatro pasos de lado
+       ======================================================================== -->
+  <section id="como-funciona" class="rail-scene" #railSection>
+    <div class="rail-stage">
+
+      <header class="rail-head">
+        <h2 class="rail-heading">De la idea suelta al plan cerrado</h2>
+        <div class="rail-progress" *ngIf="motionDriven">
+          <span class="rail-progress-label">Paso {{ railStep + 1 }} de {{ railStepsCount }}</span>
+          <span class="rail-progress-track">
+            <span class="rail-progress-fill" [style.transform]="'scaleX(' + (railStep + 1) / railStepsCount + ')'"></span>
           </span>
         </div>
-        <p class="text-muted mb-3" style="font-size: 0.9rem;">
-          Cada integrante marca los días que tiene libres. Los días con más votos se iluminan en verde para identificar el fin de semana perfecto.
-        </p>
+        <p class="rail-hint" *ngIf="!motionDriven">Desliza para ver los pasos.</p>
+      </header>
 
-        <!-- Mini Heatmap Preview -->
-        <div class="mini-heatmap-grid">
-          <div class="heatmap-day-header">D</div>
-          <div class="heatmap-day-header">L</div>
-          <div class="heatmap-day-header">M</div>
-          <div class="heatmap-day-header">M</div>
-          <div class="heatmap-day-header">J</div>
-          <div class="heatmap-day-header">V</div>
-          <div class="heatmap-day-header">S</div>
+      <div class="rail-track" #railTrack>
+        <div class="rail-panels">
 
-          <div class="heatmap-cell">10</div>
-          <div class="heatmap-cell">11</div>
-          <div class="heatmap-cell match-low">12</div>
-          <div class="heatmap-cell match-mid">13</div>
-          <div class="heatmap-cell match-high">14</div>
-          <div class="heatmap-cell match-high">15</div>
-          <div class="heatmap-cell match-high">16</div>
-          <div class="heatmap-cell match-high">17</div>
-          <div class="heatmap-cell match-mid">18</div>
-          <div class="heatmap-cell match-low">19</div>
-          <div class="heatmap-cell">20</div>
-          <div class="heatmap-cell">21</div>
-          <div class="heatmap-cell">22</div>
-          <div class="heatmap-cell">23</div>
-        </div>
-      </div>
-
-      <!-- Bento 2: Tier Maker de Destinos -->
-      <div class="bento-card bento-col-4">
-        <span class="label-micro">RANKING</span>
-        <h3 class="font-bold text-white fs-5 mt-1 mb-2">Tier List de Destinos</h3>
-        <p class="text-muted mb-3" style="font-size: 0.85rem;">
-          Arrastra cabañas, playas y senderos. El sistema calcula los puntos ponderados del grupo.
-        </p>
-
-        <div class="bento-tier-stack">
-          <div class="bento-tier-row">
-            <div class="bento-tier-badge tier-s">S</div>
-            <div class="bento-tier-item">Cabaña en el Bosque</div>
-          </div>
-          <div class="bento-tier-row">
-            <div class="bento-tier-badge tier-a">A</div>
-            <div class="bento-tier-item">Glamping en la Laguna</div>
-          </div>
-          <div class="bento-tier-row">
-            <div class="bento-tier-badge tier-b">B</div>
-            <div class="bento-tier-item">Hotel en el Centro</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bento 3: Presupuesto Promedio -->
-      <div class="bento-card bento-col-6">
-        <span class="label-micro">FINANZAS</span>
-        <h3 class="font-bold text-white fs-5 mt-1 mb-2">Control de Presupuesto</h3>
-        <p class="text-muted mb-3" style="font-size: 0.85rem;">
-          Cada quien define su rango cómodo con un slider y el grupo obtiene el promedio consensuado.
-        </p>
-
-        <div class="budget-display-box">
-          <span class="label-micro">PROMEDIO GRUPAL ESTIMADO</span>
-          <div class="budget-number">$ 14,800 MXN</div>
-          <div class="d-flex justify-content-between text-muted" style="font-size: 0.78rem;">
-            <span>Mínimo: $ 9,000</span>
-            <span>Máximo: $ 22,000</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bento 4: Transparencia en Opción Múltiple -->
-      <div class="bento-card bento-col-6">
-        <span class="label-micro">TRANSPARENCIA</span>
-        <h3 class="font-bold text-white fs-5 mt-1 mb-2">Quién votó qué</h3>
-        <p class="text-muted mb-3" style="font-size: 0.85rem;">
-          Visualiza con claridad los nombres y avatares de quiénes apoyan cada propuesta.
-        </p>
-
-        <div class="d-flex flex-column gap-2">
-          <div class="voter-transparency-row selected">
-            <span class="fw-bold text-white" style="font-size: 0.88rem;">Renta de Van (4 votos)</span>
-            <div class="voter-avatars">
-              <div class="voter-avatar">C</div>
-              <div class="voter-avatar">S</div>
-              <div class="voter-avatar">M</div>
-              <div class="voter-avatar">A</div>
-            </div>
-          </div>
-
-          <div class="voter-transparency-row unselected">
-            <span class="text-muted" style="font-size: 0.88rem;">Vuelos separados (1 voto)</span>
-            <div class="voter-avatars">
-              <div class="voter-avatar" style="background: var(--bg-elevated);">R</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       GALERÍA DE EXPEDICIONES (AQUÍ SÍ VAN LAS FOTOGRAFÍAS REALES)
-       ======================================================================== -->
-  <section class="section-wrapper" style="padding-top: 0;">
-    <div class="section-title-group">
-      <span class="label-micro">INSPIRACIÓN</span>
-      <h2 class="section-heading">DISEÑADO PARA CUALQUIER ESCAPADA</h2>
-      <p class="text-muted">Desde campamentos de montaña hasta viajes de graduación o roadtrips.</p>
-    </div>
-
-    <div class="archetypes-grid">
-      
-      <div class="archetype-card" style="background-image: linear-gradient(180deg, transparent 35%, rgba(10, 13, 12, 0.95) 100%), url('/images/bergadder-trees-975091_1920.jpg');">
-        <div class="archetype-info">
-          <span class="label-micro">OUTDOOR</span>
-          <h4 class="text-white fw-bold mb-1 fs-5">Senderismo & Montaña</h4>
-          <p class="text-muted small mb-0">Rutas de senderos, refugios y cumbres.</p>
-        </div>
-      </div>
-
-      <div class="archetype-card" style="background-image: linear-gradient(180deg, transparent 35%, rgba(10, 13, 12, 0.95) 100%), url('/images/jplenio-forest-3082836_1920.jpg');">
-        <div class="archetype-info">
-          <span class="label-micro">RELAX</span>
-          <h4 class="text-white fw-bold mb-1 fs-5">Cabañas & Bosque</h4>
-          <p class="text-muted small mb-0">Fogatas, descanso y desconexión grupal.</p>
-        </div>
-      </div>
-
-      <div class="archetype-card" style="background-image: linear-gradient(180deg, transparent 35%, rgba(10, 13, 12, 0.95) 100%), url('/images/michael_pointner-road-7525091_1920.jpg');">
-        <div class="archetype-info">
-          <span class="label-micro">AVENTURA</span>
-          <h4 class="text-white fw-bold mb-1 fs-5">Roadtrips & Rutas</h4>
-          <p class="text-muted small mb-0">Itinerarios flexibles en camioneta.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       MODOS DE SALA (ABIERTA VS CERRADA)
-       ======================================================================== -->
-  <section class="section-wrapper" style="padding-top: 0;">
-    <div class="bento-card bento-col-12" style="background: linear-gradient(135deg, rgba(22, 28, 26, 0.85) 0%, rgba(16, 33, 25, 0.7) 100%);">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-          <span class="label-micro">FLEXIBILIDAD DE ACCESO</span>
-          <h2 class="font-bold text-white mt-2 mb-3 fs-3">Elige el modo de sala para tu grupo</h2>
-          <p class="text-muted mb-3" style="font-size: 0.95rem; line-height: 1.7;">
-            Como organizador puedes decidir la dinámica de entrada de tus amigos:
-          </p>
-          <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
-            <li class="d-flex gap-2 align-items-start">
-              <iconify-icon icon="solar:check-circle-bold" width="18" style="color: var(--sage-400); margin-top: 3px; flex-shrink: 0;"></iconify-icon>
-              <span><strong>Sala Cerrada (Recomendada para amigos):</strong> Escribes la lista con los nombres de tu grupo y al entrar solo eligen su nombre de un menú desplegable.</span>
-            </li>
-            <li class="d-flex gap-2 align-items-start">
-              <iconify-icon icon="solar:check-circle-bold" width="18" style="color: var(--sage-400); margin-top: 3px; flex-shrink: 0;"></iconify-icon>
-              <span><strong>Sala Abierta:</strong> Cualquier persona con el código puede unirse escribiendo su apodo libremente.</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="col-lg-5">
-          <div class="admin-feature-box">
-            <iconify-icon icon="solar:shield-check-broken" width="42" style="color: var(--sage-400); margin-bottom: 12px;"></iconify-icon>
-            <h4 class="font-bold text-white fs-5 mb-2">Recuperación de PIN por el Admin</h4>
-            <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.6;">
-              ¿Un amigo cambió de teléfono u olvidó su clave? Desde el panel de administración puedes restablecer su PIN con un solo clic para que ingrese una nueva clave de inmediato.
+          <!-- 1 -->
+          <article class="rail-panel">
+            <h3 class="rail-panel-title">Abres la sala</h3>
+            <p class="rail-panel-text">
+              Le pones nombre al viaje y eliges qué se va a decidir.
             </p>
-          </div>
+
+            <div class="rail-art">
+              <div class="code-chip">
+                <span class="code-chip-label">Código de la sala</span>
+                <span class="code-chip-value">K4M7Q</span>
+              </div>
+              <div class="chip-row">
+                <span class="type-chip is-on">Fechas</span>
+                <span class="type-chip is-on">Tier list</span>
+                <span class="type-chip">Presupuesto</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2 -->
+          <article class="rail-panel">
+            <h3 class="rail-panel-title">Pasas el código</h3>
+            <p class="rail-panel-text">
+              Lo mandas al grupo de WhatsApp y ya.
+            </p>
+
+            <div class="rail-art">
+              <div class="mode-row">
+                <h4 class="mode-row-title">Sala cerrada</h4>
+                <p class="mode-row-text">Escribes la lista de tu grupo y cada quien elige su nombre al entrar.</p>
+              </div>
+              <div class="mode-row">
+                <h4 class="mode-row-title">Sala abierta</h4>
+                <p class="mode-row-text">Cualquiera con el código entra con el apodo que quiera.</p>
+              </div>
+              <div class="voter-avatars mt-3">
+                <span class="voter-avatar">C</span>
+                <span class="voter-avatar">S</span>
+                <span class="voter-avatar">M</span>
+                <span class="voter-avatar">A</span>
+                <span class="voter-avatar">R</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3 -->
+          <article class="rail-panel">
+            <h3 class="rail-panel-title">Votan desde su teléfono</h3>
+            <p class="rail-panel-text">
+              Marcan sus días libres y los que más coinciden se encienden solos.
+            </p>
+
+            <div class="rail-art">
+              <div class="mini-heatmap-grid">
+                <div class="heatmap-day-header">D</div>
+                <div class="heatmap-day-header">L</div>
+                <div class="heatmap-day-header">M</div>
+                <div class="heatmap-day-header">M</div>
+                <div class="heatmap-day-header">J</div>
+                <div class="heatmap-day-header">V</div>
+                <div class="heatmap-day-header">S</div>
+
+                <div class="heatmap-cell">10</div>
+                <div class="heatmap-cell">11</div>
+                <div class="heatmap-cell match-low">12</div>
+                <div class="heatmap-cell match-mid">13</div>
+                <div class="heatmap-cell match-high">14</div>
+                <div class="heatmap-cell match-high">15</div>
+                <div class="heatmap-cell match-high">16</div>
+                <div class="heatmap-cell match-high">17</div>
+                <div class="heatmap-cell match-mid">18</div>
+                <div class="heatmap-cell match-low">19</div>
+                <div class="heatmap-cell">20</div>
+                <div class="heatmap-cell">21</div>
+                <div class="heatmap-cell">22</div>
+                <div class="heatmap-cell">23</div>
+              </div>
+              <p class="rail-art-caption">Del 14 al 17 de agosto pueden todos.</p>
+            </div>
+          </article>
+
+          <!-- 4 -->
+          <article class="rail-panel">
+            <h3 class="rail-panel-title">Sale una respuesta, no otra discusión</h3>
+            <p class="rail-panel-text">
+              El lugar mejor puntuado y quién votó qué, a la vista de todos.
+            </p>
+
+            <div class="rail-art">
+              <div class="bento-tier-row">
+                <div class="bento-tier-badge tier-s">S</div>
+                <div class="bento-tier-item">Cabaña en el bosque</div>
+              </div>
+              <div class="bento-tier-row">
+                <div class="bento-tier-badge tier-a">A</div>
+                <div class="bento-tier-item">Glamping en la laguna</div>
+              </div>
+              <div class="bento-tier-row">
+                <div class="bento-tier-badge tier-b">B</div>
+                <div class="bento-tier-item">Hotel en el centro</div>
+              </div>
+
+              <p class="rail-art-caption">Presupuesto promedio del grupo: $14,800 MXN</p>
+            </div>
+          </article>
+
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       GALERÍA DE ESCAPADAS
+       ======================================================================== -->
+  <section id="herramientas" class="gallery-scene">
+    <h2 class="gallery-heading">Sirve para el viaje que sea</h2>
+
+    <div class="gallery-rail">
+      <figure class="escape-card">
+        <img src="/images/esc-montana.jpg" srcset="/images/esc-montana-sm.jpg 1000w, /images/esc-montana.jpg 1600w"
+             sizes="(max-width: 780px) calc(100vw - 40px), (max-width: 1240px) 32vw, 385px"
+             alt="Bosque de niebla entre montañas" loading="lazy" decoding="async">
+        <figcaption>
+          <h3 class="escape-title">Senderismo<br>y montaña</h3>
+          <p class="escape-text">Rutas, refugios y a qué hora salimos.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="escape-card">
+        <img src="/images/esc-bosque.jpg" srcset="/images/esc-bosque-sm.jpg 1000w, /images/esc-bosque.jpg 1600w"
+             sizes="(max-width: 780px) calc(100vw - 40px), (max-width: 1240px) 32vw, 385px"
+             alt="Camino entre árboles altos al amanecer" loading="lazy" decoding="async">
+        <figcaption>
+          <h3 class="escape-title">Cabañas<br>y bosque</h3>
+          <p class="escape-text">Cuál rentamos y cuánto pone cada quien.</p>
+        </figcaption>
+      </figure>
+
+      <figure class="escape-card">
+        <img src="/images/esc-ruta.jpg" srcset="/images/esc-ruta-sm.jpg 1000w, /images/esc-ruta.jpg 1600w"
+             sizes="(max-width: 780px) calc(100vw - 40px), (max-width: 1240px) 32vw, 385px"
+             alt="Carretera abierta entre colinas al atardecer" loading="lazy" decoding="async">
+        <figcaption>
+          <h3 class="escape-title">Roadtrips<br>y graduación</h3>
+          <p class="escape-text">Qué paradas hacemos y en qué orden.</p>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       CIERRE
+       ======================================================================== -->
+  <section class="closing-scene grain-layer">
+    <div class="closing-inner">
+      <h2 class="closing-heading">Su próximo viaje empieza con un código de cinco caracteres.</h2>
+      <p class="closing-text">
+        Crea la sala en menos de un minuto. Si ya te pasaron un código, entra directo.
+      </p>
+
+      <div class="closing-actions">
+        <a routerLink="/create" class="btn-tc btn-tc-primary btn-tc-lg">
+          <iconify-icon icon="solar:add-circle-bold" width="18"></iconify-icon>
+          Crear nueva sala
+        </a>
+        <a routerLink="/join" class="btn-tc btn-tc-glass btn-tc-lg">
+          <iconify-icon icon="solar:login-2-broken" width="18"></iconify-icon>
+          Entrar con código
+        </a>
       </div>
     </div>
   </section>

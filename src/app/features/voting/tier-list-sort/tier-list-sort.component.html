@@ -14,7 +14,9 @@
 
   <p class="text-muted small mb-4 text-center">
     Arrastra y suelta cada opción dentro de la categoría que consideres adecuada.
-    <span *ngIf="optionsWithDetails.length > 0">Toca el icono de información para leer los detalles.</span>
+    <span *ngIf="optionsWithDetails.length > 0">
+      Toca el icono de información para ver los detalles{{ hasAnyImages ? ' y las fotos' : '' }}.
+    </span>
   </p>
 
   <!-- Filas de Tiers (S, A, B, C, D) -->
@@ -106,7 +108,13 @@
     <div *ngIf="showAllDetails" class="details-body">
       <div *ngFor="let opt of optionsWithDetails" class="detail-entry">
         <h6 class="detail-entry-title">{{ opt.text }}</h6>
-        <p class="detail-entry-text">{{ opt.description }}</p>
+        <p *ngIf="opt.description" class="detail-entry-text">{{ opt.description }}</p>
+        <app-option-gallery
+          *ngIf="opt.images?.length"
+          [images]="opt.images"
+          [label]="opt.text"
+          [compact]="true">
+        </app-option-gallery>
       </div>
     </div>
   </div>
@@ -121,7 +129,12 @@
           <iconify-icon icon="solar:close-circle-broken" width="18"></iconify-icon>
         </button>
       </div>
-      <p class="detail-sheet-text">{{ activeDetail.description }}</p>
+      <p *ngIf="activeDetail.description" class="detail-sheet-text">{{ activeDetail.description }}</p>
+      <app-option-gallery
+        *ngIf="activeDetail.images.length"
+        [images]="activeDetail.images"
+        [label]="activeDetail.text">
+      </app-option-gallery>
     </div>
   </dialog>
 

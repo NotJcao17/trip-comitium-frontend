@@ -1,0 +1,167 @@
+/* ==========================================================================
+   GALERÍA DE UNA OPCIÓN
+   Medidas fijas a propósito: las fotos vienen de fuera y llegan con cualquier
+   proporción, así que la tira se dibuja igual antes y después de cargar y la
+   tarjeta no da un salto cuando entra la primera imagen.
+   ========================================================================== */
+:host {
+  display: block;
+}
+
+.og-strip {
+  --og-thumb: 76px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  /* Sin `mandatory`: con dos o tres fotos y sitio de sobra, forzar el imán
+     deja la tira pegando tirones al soltar. */
+  scroll-snap-type: x proximity;
+}
+
+.og-strip.is-compact {
+  --og-thumb: 62px;
+}
+
+.og-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.og-thumb {
+  flex: 0 0 auto;
+  width: var(--og-thumb);
+  height: var(--og-thumb);
+  padding: 0;
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: zoom-in;
+  scroll-snap-align: start;
+  /* Se ve mientras la foto viaja, y se queda si nunca llega */
+  background: var(--glass-inset);
+  transition: var(--anim-fast);
+}
+
+.og-thumb:hover,
+.og-thumb:focus-visible {
+  border-color: var(--sage-400);
+  transform: translateY(-2px);
+}
+
+.og-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- Vista ampliada --- */
+.og-lightbox {
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+}
+
+.og-lightbox::backdrop {
+  background: rgba(8, 12, 10, 0.86);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.og-viewer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 16px;
+}
+
+/* `contain` y no `cover`: aquí se viene a ver la foto entera, no a que
+   encaje en una caja. */
+.og-full {
+  max-width: min(94vw, 1100px);
+  max-height: min(84vh, 900px);
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+.og-close,
+.og-nav {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--liquid-glass-border);
+  background: rgba(16, 24, 21, 0.82);
+  color: var(--mono-white);
+  cursor: pointer;
+  padding: 0;
+  transition: var(--anim-fast);
+}
+
+.og-close {
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.og-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.og-prev { left: 12px; }
+.og-next { right: 12px; }
+
+.og-close:hover,
+.og-nav:hover {
+  background: rgba(79, 126, 101, 0.85);
+  border-color: var(--sage-400);
+}
+
+.og-counter {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(16, 24, 21, 0.82);
+  border: 1px solid var(--liquid-glass-border);
+  color: var(--mono-light);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* En el teléfono los controles se van a las esquinas: en medio estorban a la
+   foto, que es lo único que se vino a ver. */
+@media (max-width: 560px) {
+  .og-viewer {
+    padding: 52px 8px 60px;
+  }
+
+  .og-nav {
+    top: auto;
+    bottom: 14px;
+    transform: none;
+    width: 40px;
+    height: 40px;
+  }
+
+  .og-prev { left: 16px; }
+  .og-next { right: 16px; }
+}

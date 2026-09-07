@@ -158,6 +158,64 @@
                   {{ (opt.description || '').length }}/{{ maxOptionDescription }}
                 </span>
               </div>
+
+              <!-- Fotos de la opción. Las imágenes no se suben aquí: se pega
+                   el enlace directo y la app solo lo muestra. -->
+              <div class="option-photos">
+                <div class="option-photos-head">
+                  <span class="option-photos-label">
+                    <iconify-icon icon="solar:gallery-broken" width="14"></iconify-icon>
+                    <span>Fotos</span>
+                  </span>
+                  <span class="option-photos-count">{{ opt.images.length }}/{{ maxImagesPerOption }}</span>
+                </div>
+
+                <div *ngIf="opt.images.length > 0" class="option-photo-grid">
+                  <div *ngFor="let url of opt.images; let j = index" class="option-photo">
+                    <img
+                      [src]="url"
+                      [alt]="'Foto ' + (j + 1) + (opt.text ? ' de ' + opt.text : '')"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer">
+                    <button
+                      type="button"
+                      class="option-photo-remove"
+                      (click)="removeImage(i, j)"
+                      [attr.aria-label]="'Quitar foto ' + (j + 1)">
+                      <iconify-icon icon="solar:close-circle-bold" width="15"></iconify-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <textarea
+                  class="form-input option-photo-input"
+                  rows="2"
+                  [(ngModel)]="opt.imageDraft"
+                  [name]="'optImgs' + i"
+                  (paste)="onImagePaste(i)"
+                  [disabled]="opt.images.length >= maxImagesPerOption"
+                  placeholder="Pega aquí los enlaces. Puedes pegar de una vez el bloque completo que copiaste de la galería."></textarea>
+
+                <div class="option-photo-actions">
+                  <button
+                    type="button"
+                    class="btn-add-photos"
+                    (click)="addImages(i)"
+                    [disabled]="!opt.imageDraft.trim() || opt.images.length >= maxImagesPerOption">
+                    <iconify-icon icon="solar:add-circle-broken" width="15"></iconify-icon>
+                    <span>Añadir fotos</span>
+                  </button>
+
+                  <span *ngIf="opt.imageNotice" class="option-photo-notice">{{ opt.imageNotice }}</span>
+                </div>
+
+                <span class="option-photo-hint">
+                  Súbelas a <a href="https://postimages.org" target="_blank" rel="noopener noreferrer">postimages.org</a>
+                  (no hace falta cuenta), elige redimensionar a 800px y copia el bloque de enlaces que te da.
+                  Solo se aceptan enlaces directos de {{ allowedImageHosts.join(' y ') }}.
+                </span>
+              </div>
             </div>
           </div>
         </div>

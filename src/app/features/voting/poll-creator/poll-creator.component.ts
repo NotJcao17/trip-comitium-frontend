@@ -3,6 +3,27 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PollService } from '../../../services/poll.service';
 import { PollOptionDraft } from '../../../models/poll.interface';
+import {
+  ALLOWED_IMAGE_HOSTS,
+  MAX_IMAGES_PER_OPTION,
+  ParsedImageLinks,
+  parseImageLinks
+} from '../../../shared/image-links';
+
+/**
+ * Opción mientras se está capturando. Lleva dos campos que solo existen en
+ * el formulario y nunca viajan al servidor: el texto recién pegado y el aviso
+ * de qué pasó con él. Van dentro de la opción, y no en listas paralelas,
+ * porque las opciones se suben, se bajan y se borran: una lista aparte se
+ * desincroniza al primer movimiento.
+ */
+interface OptionForm extends PollOptionDraft {
+  text: string;
+  description: string;
+  images: string[];
+  imageDraft: string;
+  imageNotice: string | null;
+}
 
 @Component({
   selector: 'app-poll-creator',
@@ -22,12 +43,11 @@ export class PollCreatorComponent implements OnInit {
   isAnonymous = false;
 
   // Opciones con detalles: cada renglón es una tarjeta que el grupo verá al votar
-  options: PollOptionDraft[] = [
-    { text: '', description: '' },
-    { text: '', description: '' }
-  ];
+  options: OptionForm[] = [this.blankOption(), this.blankOption()];
   expandedOptionIndex: number | null = null;
   readonly maxOptionDescription = 400;
+  readonly maxImagesPerOption = MAX_IMAGES_PER_OPTION;
+  readonly allowedImageHosts = ALLOWED_IMAGE_HOSTS;
 
   sliderMin = 1000;
   sliderMax = 30000;
@@ -186,8 +206,12 @@ export class PollCreatorComponent implements OnInit {
   }
 
   // --- Gestión de opciones con detalles ---
+  private blankOption(): OptionForm {
+    return { text: '', description: '', images: [], imageDraft: '', imageNotice: null };
+  }
+
   addOption() {
-    this.options.push({ text: '', description: '' });
+    this.options.push(this.blankOption());
     this.expandedOptionIndex = null;
   }
 
@@ -210,7 +234,65 @@ export class PollCreatorComponent implements OnInit {
   }
 
   isOptionExpanded(index: number): boolean {
-    return this.expandedOptionIndex === index || Boolean(this.options[index]?.description?.trim());
+    const opt = this.options[index];
+    return this.expandedOptionIndex === index
+      || Boolean(opt?.description?.trim())
+      || Boolean(opt?.images?.length);
+  }
+
+  // --- Fotos de la opción ---
+
+  /**
+   * Convierte lo pegado en enlaces. Acepta el bloque entero que da postimages
+   * al copiar una galería, con sus `[url=...][img]...[/img][/url]`, y también
+   * enlaces directos sueltos: la idea es pegar una vez, no diez.
+   */
+  addImages(index: number) {
+    const opt = this.options[index];
+    if (!opt || !opt.imageDraft.trim()) return;
+
+    const parsed = parseImageLinks(opt.imageDraft, opt.images);
+    opt.images = [...opt.images, ...parsed.urls];
+    opt.imageDraft = '';
+    opt.imageNotice = this.describeParse(parsed);
+  }
+
+  /** Al pegar, el valor aún no llegó al modelo; se procesa en el siguiente turno. */
+  onImagePaste(index: number) {
+    setTimeout(() => this.addImages(index), 0);
+  }
+
+  removeImage(optionIndex: number, imageIndex: number) {
+    const opt = this.options[optionIndex];
+    if (!opt) return;
+    opt.images.splice(imageIndex, 1);
+    opt.imageNotice = null;
+  }
+
+  private describeParse(parsed: ParsedImageLinks): string | null {
+    const partes: string[] = [];
+
+    if (parsed.urls.length > 0) {
+      partes.push(parsed.urls.length === 1 ? 'Se añadió 1 foto.' : `Se añadieron ${parsed.urls.length} fotos.`);
+    }
+
+    if (parsed.rejected > 0) {
+      partes.push(
+        parsed.rejected === 1
+          ? 'Un enlace no sirve: tiene que ser el enlace directo de la imagen.'
+          : `${parsed.rejected} enlaces no sirven: tienen que ser los enlaces directos de las imágenes.`
+      );
+    }
+
+    if (parsed.overflow > 0) {
+      partes.push(`${parsed.overflow} quedaron fuera; el máximo es ${MAX_IMAGES_PER_OPTION} por opción.`);
+    }
+
+    if (partes.length === 0) {
+      partes.push('Esas fotos ya estaban en la lista.');
+    }
+
+    return partes.join(' ');
   }
 
   onOptionEnter(event: Event, index: number) {
@@ -218,11 +300,12 @@ export class PollCreatorComponent implements OnInit {
     if (index === this.options.length - 1) this.addOption();
   }
 
-  filledOptions(): Array<{ text: string; description: string }> {
+  filledOptions(): Array<{ text: string; description: string; images: string[] }> {
     return this.options
       .map(o => ({
         text: (o.text || '').trim(),
-        description: (o.description || '').trim()
+        description: (o.description || '').trim(),
+        images: o.images || []
       }))
       .filter(o => o.text !== '');
   }
@@ -298,7 +381,8 @@ export class PollCreatorComponent implements OnInit {
     if (this.type === 'multiple_choice' || this.type === 'tier_list') {
       payload.options = this.filledOptions().map(o => ({
         text: o.text,
-        description: o.description || null
+        description: o.description || null,
+        images: o.images
       }));
     }
 
@@ -334,10 +418,7 @@ export class PollCreatorComponent implements OnInit {
   resetForm() {
     this.title = '';
     this.description = '';
-    this.options = [
-      { text: '', description: '' },
-      { text: '', description: '' }
-    ];
+    this.options = [this.blankOption(), this.blankOption()];
     this.expandedOptionIndex = null;
     this.type = 'multiple_choice';
     this.isAnonymous = false;

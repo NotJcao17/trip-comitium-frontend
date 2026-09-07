@@ -17,13 +17,31 @@ export interface PollOption {
     poll_id?: number;
     text: string;
     description?: string | null;
+    /** Columna histórica del esquema original. La galería vive en `images`. */
     image_url?: string;
+    images?: PollOptionImage[];
+}
+
+/**
+ * Foto de una opción. El archivo no es nuestro: guardamos el enlace directo
+ * a un servicio gratuito. `source` distingue de dónde salió, para poder
+ * añadir subidas propias más adelante sin tocar lo que ya existe.
+ */
+export interface PollOptionImage {
+    image_id?: number;
+    option_id?: number;
+    url: string;
+    /** Solo cuando el origen genera miniatura aparte; si no, se usa `url`. */
+    thumb_url?: string | null;
+    source?: 'link' | string;
 }
 
 /** Opción tal como la captura el organizador antes de publicar la encuesta. */
 export interface PollOptionDraft {
     text: string;
     description?: string;
+    /** Enlaces directos ya validados. */
+    images?: string[];
 }
 
 export interface PollCreatePayload {

@@ -2,14 +2,15 @@ import { Component, ElementRef, Input, OnInit, ViewChild, inject, CUSTOM_ELEMENT
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Poll } from '../../../models/poll.interface';
+import { Poll, PollOptionImage } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { AuthService } from '../../../services/auth.service';
+import { OptionGalleryComponent } from '../../../components/option-gallery/option-gallery.component';
 
 @Component({
   selector: 'app-tier-list-sort',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [CommonModule, DragDropModule, OptionGalleryComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './tier-list-sort.component.html',
   styleUrl: './tier-list-sort.component.scss'
@@ -37,7 +38,8 @@ export class TierListSortComponent implements OnInit {
 
   /** Los votos se guardan por texto, así que indexamos los detalles por texto. */
   private descriptions: Record<string, string> = {};
-  activeDetail: { text: string; description: string } | null = null;
+  private images: Record<string, PollOptionImage[]> = {};
+  activeDetail: { text: string; description: string; images: PollOptionImage[] } | null = null;
   showAllDetails = false;
 
   /**
@@ -59,17 +61,29 @@ export class TierListSortComponent implements OnInit {
         if (o.description && o.description.trim()) {
           this.descriptions[o.text] = o.description.trim();
         }
+        if (o.images && o.images.length > 0) {
+          this.images[o.text] = o.images;
+        }
       });
     }
     this.loadMyVote();
   }
 
+  /** Una opción puede traer solo fotos, sin texto: también merece su ficha. */
   hasDetails(item: string): boolean {
-    return Boolean(this.descriptions[item]);
+    return Boolean(this.descriptions[item]) || this.getImages(item).length > 0;
   }
 
   getDescription(item: string): string {
     return this.descriptions[item] || '';
+  }
+
+  getImages(item: string): PollOptionImage[] {
+    return this.images[item] || [];
+  }
+
+  get hasAnyImages(): boolean {
+    return Object.keys(this.images).length > 0;
   }
 
   get optionsWithDetails() {
@@ -80,7 +94,11 @@ export class TierListSortComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
     if (!this.hasDetails(item)) return;
-    this.activeDetail = { text: item, description: this.descriptions[item] };
+    this.activeDetail = {
+      text: item,
+      description: this.descriptions[item] || '',
+      images: this.getImages(item)
+    };
     // Esperamos a que Angular pinte el contenido antes de abrirlo
     queueMicrotask(() => {
       const dlg = this.detailDialog?.nativeElement;

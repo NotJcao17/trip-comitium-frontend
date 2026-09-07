@@ -1,0 +1,60 @@
+<!-- Tira de miniaturas. `referrerpolicy` evita anunciarle al servicio de
+     imágenes desde qué sala se está votando. -->
+<div
+  *ngIf="visible.length > 0"
+  class="og-strip"
+  [class.is-compact]="compact"
+  role="list">
+
+  <button
+    *ngFor="let img of visible; let i = index; trackBy: trackByUrl"
+    type="button"
+    role="listitem"
+    class="og-thumb"
+    (click)="open(i, $event)"
+    [attr.aria-label]="'Ampliar ' + altFor(i)">
+    <img
+      [src]="thumbSrc(img)"
+      [alt]="altFor(i)"
+      loading="lazy"
+      decoding="async"
+      referrerpolicy="no-referrer"
+      (error)="onImageError(img)">
+  </button>
+</div>
+
+<!-- El <dialog> se dibuja en la capa superior, por encima de los paneles con
+     backdrop-filter que rompen el posicionamiento. -->
+<dialog
+  #lightbox
+  class="og-lightbox"
+  (close)="activeIndex = -1"
+  (click)="onBackdropClick($event)"
+  (keydown)="onLightboxKeydown($event)">
+
+  <div *ngIf="active as img" class="og-viewer" (click)="$event.stopPropagation()">
+    <img
+      class="og-full"
+      [src]="img.url"
+      [alt]="altFor(activeIndex)"
+      decoding="async"
+      referrerpolicy="no-referrer"
+      (error)="onImageError(img)">
+
+    <button type="button" class="og-close" (click)="close()" aria-label="Cerrar foto">
+      <iconify-icon icon="solar:close-circle-broken" width="20"></iconify-icon>
+    </button>
+
+    <ng-container *ngIf="visible.length > 1">
+      <button type="button" class="og-nav og-prev" (click)="step(-1, $event)" aria-label="Foto anterior">
+        <iconify-icon icon="solar:alt-arrow-left-broken" width="22"></iconify-icon>
+      </button>
+
+      <button type="button" class="og-nav og-next" (click)="step(1, $event)" aria-label="Foto siguiente">
+        <iconify-icon icon="solar:alt-arrow-right-broken" width="22"></iconify-icon>
+      </button>
+
+      <span class="og-counter">{{ activeIndex + 1 }} / {{ visible.length }}</span>
+    </ng-container>
+  </div>
+</dialog>

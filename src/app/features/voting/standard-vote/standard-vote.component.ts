@@ -6,11 +6,12 @@ import { Poll, PollStats } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { AuthService } from '../../../services/auth.service';
 import { VotersListComponent } from '../../../components/voters-list/voters-list.component';
+import { OptionGalleryComponent } from '../../../components/option-gallery/option-gallery.component';
 
 @Component({
   selector: 'app-standard-vote',
   standalone: true,
-  imports: [CommonModule, FormsModule, VotersListComponent],
+  imports: [CommonModule, FormsModule, VotersListComponent, OptionGalleryComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './standard-vote.component.html',
   styleUrl: './standard-vote.component.scss'

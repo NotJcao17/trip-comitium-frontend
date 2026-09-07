@@ -49,6 +49,16 @@
           {{ isDescriptionExpanded(opt.option_id) ? 'Ver menos' : 'Ver detalles completos' }}
         </button>
 
+        <!-- Fotos que puso el organizador. La galería frena el clic para que
+             mirar una foto no cuente como elegir la opción. -->
+        <app-option-gallery
+          *ngIf="opt.images?.length"
+          class="mt-2 d-block"
+          [images]="opt.images"
+          [label]="opt.text"
+          [compact]="true">
+        </app-option-gallery>
+
         <div class="option-meta">
           <span class="option-count">
             {{ getVotesCount(opt.option_id) }} {{ getVotesCount(opt.option_id) === 1 ? 'voto' : 'votos' }}

@@ -407,3 +407,145 @@
   line-height: 1.45;
   color: var(--mono-muted);
 }
+
+/* ==========================================================================
+   FOTOS DE UNA OPCIÓN
+   El archivo no se sube: se pega el enlace directo y aquí solo se comprueba
+   y se previsualiza.
+   ========================================================================== */
+.option-photos {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mono-border);
+}
+
+.option-photos-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.option-photos-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sage-300);
+}
+
+.option-photos-count {
+  font-size: 0.72rem;
+  color: var(--mono-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cuadrado fijo: las fotos llegan de fuera con cualquier proporción y la
+   rejilla tiene que verse igual antes y después de que carguen. */
+.option-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.option-photo {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--liquid-glass-border);
+  background: var(--glass-inset);
+}
+
+.option-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.option-photo-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(10, 14, 12, 0.78);
+  color: var(--mono-light);
+  cursor: pointer;
+  transition: var(--anim-fast);
+}
+
+.option-photo-remove:hover {
+  background: rgba(248, 113, 113, 0.85);
+  color: #ffffff;
+}
+
+.option-photo-input {
+  font-family: monospace;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.option-photo-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.btn-add-photos {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--liquid-glass-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--mono-white);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--anim-fast);
+}
+
+.btn-add-photos:hover:not(:disabled) {
+  background: rgba(79, 126, 101, 0.24);
+  border-color: var(--sage-400);
+}
+
+.btn-add-photos:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.option-photo-notice {
+  flex: 1 1 180px;
+  font-size: 0.73rem;
+  line-height: 1.4;
+  color: var(--sage-200);
+}
+
+.option-photo-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--mono-muted);
+}
+
+.option-photo-hint a {
+  color: var(--sage-300);
+  text-decoration: underline;
+}

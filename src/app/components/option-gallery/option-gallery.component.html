@@ -32,9 +32,11 @@
   (click)="onBackdropClick($event)"
   (keydown)="onLightboxKeydown($event)">
 
-  <div *ngIf="active as img" class="og-viewer" (click)="$event.stopPropagation()">
+  <!-- El hueco alrededor de la foto cierra; la foto en sí, no. -->
+  <div *ngIf="active as img" class="og-viewer">
     <img
       class="og-full"
+      (click)="$event.stopPropagation()"
       [src]="img.url"
       [alt]="altFor(activeIndex)"
       decoding="async"

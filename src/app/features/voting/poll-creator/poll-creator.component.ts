@@ -288,8 +288,16 @@ export class PollCreatorComponent implements OnInit {
       partes.push(`${parsed.overflow} quedaron fuera; el máximo es ${MAX_IMAGES_PER_OPTION} por opción.`);
     }
 
+    if (parsed.duplicates > 0 && parsed.urls.length === 0) {
+      partes.push(
+        parsed.duplicates === 1 ? 'Esa foto ya estaba en la lista.' : 'Esas fotos ya estaban en la lista.'
+      );
+    }
+
+    // Ni enlaces buenos, ni malos, ni repetidos: ahí dentro no había ninguna
+    // dirección. Antes esto caía en «ya estaban en la lista», que era mentira.
     if (partes.length === 0) {
-      partes.push('Esas fotos ya estaban en la lista.');
+      partes.push('No encontré ningún enlace en ese texto.');
     }
 
     return partes.join(' ');

@@ -28,6 +28,8 @@ export interface ParsedImageLinks {
   rejected: number;
   /** Cuántos quedaron fuera por llegar al tope. */
   overflow: number;
+  /** Cuántos eran válidos pero ya estaban en la lista. */
+  duplicates: number;
 }
 
 /**
@@ -66,7 +68,7 @@ export function normalizeImageUrl(raw: string): string | null {
  *                 pasarse del tope al pegar por segunda vez.
  */
 export function parseImageLinks(raw: string, existing: string[] = []): ParsedImageLinks {
-  const result: ParsedImageLinks = { urls: [], rejected: 0, overflow: 0 };
+  const result: ParsedImageLinks = { urls: [], rejected: 0, overflow: 0, duplicates: 0 };
   if (!raw || !raw.trim()) return result;
 
   const bbcode = [...raw.matchAll(BBCODE_IMG)].map(m => m[1]);
@@ -83,7 +85,10 @@ export function parseImageLinks(raw: string, existing: string[] = []): ParsedIma
       continue;
     }
 
-    if (seen.has(url)) continue;
+    if (seen.has(url)) {
+      result.duplicates++;
+      continue;
+    }
 
     if (slots <= 0) {
       result.overflow++;

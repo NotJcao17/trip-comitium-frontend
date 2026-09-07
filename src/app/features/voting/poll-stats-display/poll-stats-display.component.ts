@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Poll } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { VotersListComponent } from '../../../components/voters-list/voters-list.component';
+import { OptionGalleryComponent } from '../../../components/option-gallery/option-gallery.component';
+import { PollOptionImage } from '../../../models/poll.interface';
 
 @Component({
   selector: 'app-poll-stats-display',
   standalone: true,
-  imports: [CommonModule, VotersListComponent],
+  imports: [CommonModule, VotersListComponent, OptionGalleryComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './poll-stats-display.component.html',
   styleUrl: './poll-stats-display.component.scss'
@@ -38,6 +40,12 @@ export class PollStatsDisplayComponent implements OnChanges {
     this.isLoading = true;
     this.error = '';
     this.stats = null;
+
+    // Se limpia al cambiar de encuesta: si no, el detalle del dia que estaba
+    // abierto se queda pegado y parece de la votacion nueva.
+    this.selectedDayDetails = [];
+    this.heatmapDays = [];
+    this.calendarDays = [];
 
     this.pollService.getPollStats(this.poll.poll_id).subscribe({
       next: (data) => {
@@ -112,6 +120,12 @@ export class PollStatsDisplayComponent implements OnChanges {
   getOptionDescription(itemText: string): string | null {
     const opt = this.poll?.options?.find(o => o.text === itemText);
     return opt?.description || null;
+  }
+
+  /** Y sus fotos, para que el organizador pueda revisar lo que publicó. */
+  getOptionImages(itemText: string): PollOptionImage[] {
+    const opt = this.poll?.options?.find(o => o.text === itemText);
+    return opt?.images || [];
   }
 
   showDayDetails(day: any) {

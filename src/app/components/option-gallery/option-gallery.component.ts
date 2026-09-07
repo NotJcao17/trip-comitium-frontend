@@ -96,7 +96,8 @@ export class OptionGalleryComponent {
   }
 
   /**
-   * Cerrar tocando el fondo.
+   * Cerrar tocando fuera de la foto: el fondo oscuro y el margen alrededor.
+   * Solo la imagen y los botones frenan el clic.
    *
    * El <dialog> se dibuja en la capa superior, pero en el árbol sigue estando
    * dentro de la tarjeta de la opción, y esa tarjeta entera es un botón de

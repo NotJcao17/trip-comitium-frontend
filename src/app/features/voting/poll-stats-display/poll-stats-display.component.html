@@ -42,6 +42,14 @@
 
         <p *ngIf="opt.description" class="stats-option-desc mb-2">{{ opt.description }}</p>
 
+        <app-option-gallery
+          *ngIf="opt.images?.length"
+          class="mb-2 d-block"
+          [images]="opt.images"
+          [label]="opt.text"
+          [compact]="true">
+        </app-option-gallery>
+
         <!-- Barra de progreso -->
         <div class="progress-bar-track mb-2">
           <div
@@ -142,6 +150,13 @@
               <p *ngIf="getOptionDescription(item.item)" class="stats-option-desc mt-1 mb-0">
                 {{ getOptionDescription(item.item) }}
               </p>
+              <app-option-gallery
+                *ngIf="getOptionImages(item.item).length"
+                class="mt-2 d-block"
+                [images]="getOptionImages(item.item)"
+                [label]="item.item"
+                [compact]="true">
+              </app-option-gallery>
             </div>
           </div>
           <span class="text-sage fw-bold font-monospace text-nowrap">{{ item.score }} pts</span>

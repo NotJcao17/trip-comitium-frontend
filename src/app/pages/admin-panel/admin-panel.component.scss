@@ -56,6 +56,13 @@
   align-items: center;
   justify-content: center;
   transition: var(--anim-fast);
+  /* El panel que lo contiene lleva backdrop-filter, y al hacer scroll Chrome
+     re-rasteriza lo que va encima: el icono desaparecía y volvía al entrar y
+     salir de pantalla. El botón de al lado no lo sufría porque su propio
+     backdrop-filter ya lo pone en una capa aparte; aquí se hace a mano.
+     Mismo remedio que en styles.scss para las capas de la portada. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .btn-delete-poll:hover {

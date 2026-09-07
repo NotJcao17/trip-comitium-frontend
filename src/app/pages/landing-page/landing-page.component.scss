@@ -26,6 +26,7 @@
   --hero-y: 0svh;
   --img-y: -2.5svh;
   --img-scale: 1.08;
+  --img-fade: 1;
   position: relative;
   height: 330svh;
 }
@@ -44,7 +45,7 @@
 .opening-media {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #16211c 0%, #101a15 100%);
+  background: linear-gradient(180deg, #141b17 0%, var(--bg-darkest) 100%);
 }
 
 .opening-media img {
@@ -54,8 +55,11 @@
   object-position: center 42%;
   /* La escala base deja margen para que el desplazamiento no descubra bordes */
   transform: translate3d(0, var(--img-y), 0) scale(var(--img-scale));
+  opacity: var(--img-fade);
   filter: brightness(0.72) contrast(1.08);
-  will-change: transform;
+  /* Opacidad y desplazamiento los resuelve el compositor sin volver a
+     dibujar: es lo único que se puede animar por cuadro sin pagarlo. */
+  will-change: transform, opacity;
 }
 
 .opening-veil {
@@ -76,11 +80,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 40svh;
+  height: 46svh;
   background: linear-gradient(180deg,
     rgba(17, 22, 20, 0) 0%,
-    rgba(17, 22, 20, 0.5) 44%,
-    rgba(17, 22, 20, 0.88) 76%,
+    rgba(17, 22, 20, 0.34) 32%,
+    rgba(17, 22, 20, 0.68) 58%,
+    rgba(17, 22, 20, 0.92) 80%,
+    var(--bg-darkest) 92%,
     var(--bg-darkest) 100%);
   pointer-events: none;
 }
@@ -247,11 +253,12 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 62svh;
+  height: 66svh;
   background: linear-gradient(180deg,
     var(--bg-darkest) 0%,
-    rgba(17, 22, 20, 0.74) 34%,
-    rgba(17, 22, 20, 0.3) 66%,
+    var(--bg-darkest) 12%,
+    rgba(17, 22, 20, 0.78) 34%,
+    rgba(17, 22, 20, 0.34) 62%,
     rgba(17, 22, 20, 0) 100%);
   pointer-events: none;
 }

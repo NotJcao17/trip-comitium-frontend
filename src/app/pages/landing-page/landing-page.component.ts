@@ -213,6 +213,12 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
       // …el fondo acompaña con un desplazamiento suave…
       this.setVar(opening, '--img-y', `${(openP * 5 - 2.5).toFixed(2)}svh`);
 
+      // …y la foto se apaga del todo antes de que el bloque suelte el pegado.
+      // Si al empezar a subir todavía queda algo visible, el ojo encuentra el
+      // borde y el salto de sección se nota, sobre todo en pantalla pequeña.
+      const apagado = this.clamp01((openP - 0.86) / 0.12);
+      this.setVar(opening, '--img-fade', (1 - apagado).toFixed(3));
+
       // …y el zoom entra cuando el texto de la portada ya salió. El máximo se
       // queda en 1.20 para no pedirle a la foto más píxeles de los que tiene.
       // En móvil no hay zoom: es lo que hacía que el recorrido se sintiera duro.

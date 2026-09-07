@@ -2,14 +2,17 @@ import {
   Component,
   ElementRef,
   Input,
+  NgZone,
+  OnDestroy,
   ViewChild,
+  inject,
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PollOptionImage } from '../../models/poll.interface';
 
 /**
- * Galería de fotos de una opción: una tira de miniaturas que se desliza en
+ * Galería de fotos de una opción: una tira de miniaturas que se recorre en
  * horizontal y, al tocar una, la abre en grande.
  *
  * Las imágenes viven en un servicio externo, así que dos cosas dan forma a
@@ -20,6 +23,10 @@ import { PollOptionImage } from '../../models/poll.interface';
  *  - No tenemos miniaturas de verdad, se descarga el original. Por eso la
  *    tira va en scroll horizontal con carga diferida: el navegador solo pide
  *    las que se ven, y en grande se muestra una sola cada vez.
+ *
+ * Las flechas no son decoración. La barra de scroll va oculta para que la
+ * tira no se vea sucia, y sin ellas en escritorio no había manera de pasar de
+ * las primeras miniaturas: con diez fotos solo se llegaban a ver cinco.
  */
 @Component({
   selector: 'app-option-gallery',
@@ -29,7 +36,7 @@ import { PollOptionImage } from '../../models/poll.interface';
   templateUrl: './option-gallery.component.html',
   styleUrl: './option-gallery.component.scss'
 })
-export class OptionGalleryComponent {
+export class OptionGalleryComponent implements OnDestroy {
   @Input() images: PollOptionImage[] | null | undefined = [];
 
   /** Nombre de la opción, para el texto alternativo. */
@@ -40,10 +47,48 @@ export class OptionGalleryComponent {
 
   @ViewChild('lightbox') lightboxRef?: ElementRef<HTMLDialogElement>;
 
+  private zone = inject(NgZone);
+
+  private stripEl?: HTMLElement;
+
+  /**
+   * Setter y no `ngAfterViewInit`: las fotos llegan por HTTP despues del
+   * primer pintado, asi que cuando se ejecuta AfterViewInit el *ngIf todavia
+   * no ha creado la tira y el listener no se enganchaba a nada. El resultado
+   * era que las flechas aparecian pero ya no se actualizaban al desplazar.
+   * El setter se vuelve a llamar en cuanto el elemento existe.
+   */
+  @ViewChild('strip')
+  set strip(ref: ElementRef<HTMLElement> | undefined) {
+    const el = ref?.nativeElement;
+    if (el === this.stripEl) return;
+
+    this.detachStrip();
+    this.stripEl = el;
+    if (!el) return;
+
+    this.zone.runOutsideAngular(() => {
+      el.addEventListener('scroll', this.onStripScroll, { passive: true });
+
+      if (typeof ResizeObserver !== 'undefined') {
+        this.resizeObserver = new ResizeObserver(() => this.syncArrows());
+        this.resizeObserver.observe(el);
+      }
+    });
+
+    // Fuera del ciclo de deteccion actual: la vista ya se verifico.
+    setTimeout(() => this.syncArrows(), 0);
+  }
+
   /** Enlaces que el navegador no pudo cargar. */
   private readonly broken = new Set<string>();
 
   activeIndex = -1;
+  canScrollPrev = false;
+  canScrollNext = false;
+
+  private resizeObserver?: ResizeObserver;
+  private readonly onStripScroll = () => this.syncArrows();
 
   get visible(): PollOptionImage[] {
     return (this.images || []).filter(img => img?.url && !this.broken.has(img.url));
@@ -51,6 +96,64 @@ export class OptionGalleryComponent {
 
   get active(): PollOptionImage | null {
     return this.visible[this.activeIndex] || null;
+  }
+
+  ngOnDestroy() {
+    this.detachStrip();
+  }
+
+  /** El scroll solo decide qué flechas se ven, así que se escucha fuera de la
+   *  zona de Angular y solo se vuelve a entrar cuando hay que repintar una. */
+  private detachStrip() {
+    this.stripEl?.removeEventListener('scroll', this.onStripScroll);
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = undefined;
+  }
+
+  /**
+   * Las flechas van superpuestas sobre los bordes de la tira, no en la fila.
+   * Si ocuparan sitio, aparecer y desaparecer cambiaría el ancho disponible,
+   * el ResizeObserver volvería a medir y se entraría en bucle.
+   */
+  private syncArrows() {
+    const el = this.stripEl;
+    if (!el) return;
+
+    const restante = el.scrollWidth - el.clientWidth;
+    const prev = el.scrollLeft > 2;
+    const next = el.scrollLeft < restante - 2;
+
+    if (prev === this.canScrollPrev && next === this.canScrollNext) return;
+
+    this.zone.run(() => {
+      this.canScrollPrev = prev;
+      this.canScrollNext = next;
+    });
+  }
+
+  /** Una foto recién cargada cambia el ancho total: hay que volver a mirar. */
+  onThumbLoad() {
+    this.syncArrows();
+  }
+
+  scrollStrip(direction: 1 | -1, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const el = this.stripEl;
+    if (!el) return;
+
+    // Casi una pantalla: deja una miniatura a la vista como referencia de
+    // dónde se estaba.
+    const paso = Math.max(el.clientWidth - 72, 90);
+
+    // El desplazamiento suave se anima con requestAnimationFrame. Si el
+    // usuario pidió menos movimiento, esa animación no debe existir; y si el
+    // navegador la tiene parada, un salto seco al menos llega.
+    const suave = typeof window !== 'undefined'
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    el.scrollBy({ left: direction * paso, behavior: suave ? 'smooth' : 'auto' });
   }
 
   thumbSrc(img: PollOptionImage): string {
@@ -75,6 +178,8 @@ export class OptionGalleryComponent {
       this.activeIndex = this.visible.length - 1;
     }
     if (this.visible.length === 0) this.close();
+
+    this.syncArrows();
   }
 
   open(index: number, event: Event) {

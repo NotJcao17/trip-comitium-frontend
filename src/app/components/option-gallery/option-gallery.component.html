@@ -1,25 +1,42 @@
 <!-- Tira de miniaturas. `referrerpolicy` evita anunciarle al servicio de
      imágenes desde qué sala se está votando. -->
-<div
-  *ngIf="visible.length > 0"
-  class="og-strip"
-  [class.is-compact]="compact"
-  role="list">
+<div *ngIf="visible.length > 0" class="og-rail" [class.is-compact]="compact">
 
   <button
-    *ngFor="let img of visible; let i = index; trackBy: trackByUrl"
+    *ngIf="canScrollPrev"
     type="button"
-    role="listitem"
-    class="og-thumb"
-    (click)="open(i, $event)"
-    [attr.aria-label]="'Ampliar ' + altFor(i)">
-    <img
-      [src]="thumbSrc(img)"
-      [alt]="altFor(i)"
-      loading="lazy"
-      decoding="async"
-      referrerpolicy="no-referrer"
-      (error)="onImageError(img)">
+    class="og-scroll og-scroll-prev"
+    (click)="scrollStrip(-1, $event)"
+    aria-label="Ver fotos anteriores">
+    <iconify-icon icon="solar:alt-arrow-left-broken" width="16"></iconify-icon>
+  </button>
+
+  <div #strip class="og-strip" role="list">
+    <button
+      *ngFor="let img of visible; let i = index; trackBy: trackByUrl"
+      type="button"
+      role="listitem"
+      class="og-thumb"
+      (click)="open(i, $event)"
+      [attr.aria-label]="'Ampliar ' + altFor(i)">
+      <img
+        [src]="thumbSrc(img)"
+        [alt]="altFor(i)"
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        (load)="onThumbLoad()"
+        (error)="onImageError(img)">
+    </button>
+  </div>
+
+  <button
+    *ngIf="canScrollNext"
+    type="button"
+    class="og-scroll og-scroll-next"
+    (click)="scrollStrip(1, $event)"
+    aria-label="Ver más fotos">
+    <iconify-icon icon="solar:alt-arrow-right-broken" width="16"></iconify-icon>
   </button>
 </div>
 

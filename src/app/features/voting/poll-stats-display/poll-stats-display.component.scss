@@ -97,3 +97,11 @@
   line-height: 1.5;
   white-space: pre-line;
 }
+
+/* La galeria tiene que poder encogerse dentro de estas filas flex. Sin esto,
+   un elemento flex reclama el ancho de todo su contenido y la tira de fotos
+   se sale del panel en vez de quedarse dentro y desplazarse. */
+.ranking-row-main,
+.ranking-row-body {
+  min-width: 0;
+}

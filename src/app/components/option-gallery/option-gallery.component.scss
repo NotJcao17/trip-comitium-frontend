@@ -4,14 +4,31 @@
    proporción, así que la tira se dibuja igual antes y después de cargar y la
    tarjeta no da un salto cuando entra la primera imagen.
    ========================================================================== */
+/* `min-width: 0` no es opcional: sin él, dentro de una fila flex la tira
+   reclama el ancho de todas sus miniaturas y desborda la tarjeta en vez de
+   quedarse dentro y desplazarse. Con diez fotos se salía del panel. */
 :host {
   display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.og-rail {
+  --og-thumb: 76px;
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.og-rail.is-compact {
+  --og-thumb: 62px;
 }
 
 .og-strip {
-  --og-thumb: 76px;
   display: flex;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   padding-bottom: 4px;
@@ -21,9 +38,34 @@
   scroll-snap-type: x proximity;
 }
 
-.og-strip.is-compact {
-  --og-thumb: 62px;
+/* Superpuestas y no en la fila: si ocuparan sitio, aparecer y desaparecer
+   cambiaría el ancho de la tira y el ResizeObserver entraría en bucle. */
+.og-scroll {
+  position: absolute;
+  top: calc(var(--og-thumb) / 2);
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--liquid-glass-border);
+  border-radius: 50%;
+  background: rgba(16, 24, 21, 0.9);
+  color: var(--mono-white);
+  cursor: pointer;
+  transition: var(--anim-fast);
 }
+
+.og-scroll:hover {
+  background: rgba(79, 126, 101, 0.9);
+  border-color: var(--sage-400);
+}
+
+.og-scroll-prev { left: -2px; }
+.og-scroll-next { right: -2px; }
 
 .og-strip::-webkit-scrollbar {
   display: none;

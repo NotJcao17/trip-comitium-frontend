@@ -37,9 +37,6 @@
             <span class="label-micro text-white-50">
               {{ participants.length > 0 ? (participants.length + ' TRIPULANTES') : 'EXPEDICIÓN' }}
             </span>
-            <span *ngIf="tripData.room_type === 'closed'" class="label-micro text-sage">
-              • SALA CERRADA
-            </span>
           </div>
 
           <h1 class="trip-title">{{ tripData.name }}</h1>

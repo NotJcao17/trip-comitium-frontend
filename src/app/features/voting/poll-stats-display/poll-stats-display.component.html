@@ -142,10 +142,10 @@
       </p>
 
       <div class="d-flex flex-column gap-2">
-        <div *ngFor="let item of stats.ranking; let i = index" class="d-flex justify-content-between align-items-start gap-3 p-3 rounded-3 bg-black bg-opacity-25 border border-white border-opacity-5">
-          <div class="d-flex align-items-start gap-3">
+        <div *ngFor="let item of stats.ranking; let i = index" class="ranking-row d-flex justify-content-between align-items-start gap-3 p-3 rounded-3 bg-black bg-opacity-25 border border-white border-opacity-5">
+          <div class="ranking-row-main d-flex align-items-start gap-3">
             <span class="ranking-position-badge" [class.gold]="i === 0">#{{ i + 1 }}</span>
-            <div>
+            <div class="ranking-row-body">
               <span class="fw-bold text-white">{{ item.item }}</span>
               <p *ngIf="getOptionDescription(item.item)" class="stats-option-desc mt-1 mb-0">
                 {{ getOptionDescription(item.item) }}

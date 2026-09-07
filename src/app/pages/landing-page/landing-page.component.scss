@@ -3,6 +3,11 @@
    `overflow-x` vive en <body>: aquí rompería el position:sticky de las escenas.
    ========================================================================== */
 .landing-main {
+  /* El tono en el que se dan la mano la foto y la sección siguiente. Lo usan
+     las dos capas, así que en la costura no hay diferencia posible. Es el
+     verde oscuro de la sección, no un negro neutro: lo que se busca es que
+     el pie de la foto ya sea el fondo de abajo, no una banda aparte. */
+  --seam-tone: #121a16;
   min-height: 100vh;
   background:
     radial-gradient(130% 55% at 50% 0%, rgba(79, 126, 101, 0.10) 0%, transparent 62%),
@@ -26,7 +31,6 @@
   --hero-y: 0svh;
   --img-y: -2.5svh;
   --img-scale: 1.08;
-  --img-fade: 1;
   position: relative;
   height: 330svh;
 }
@@ -45,7 +49,7 @@
 .opening-media {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #141b17 0%, var(--bg-darkest) 100%);
+  background: linear-gradient(180deg, #16211c 0%, #101a15 100%);
 }
 
 .opening-media img {
@@ -55,11 +59,8 @@
   object-position: center 42%;
   /* La escala base deja margen para que el desplazamiento no descubra bordes */
   transform: translate3d(0, var(--img-y), 0) scale(var(--img-scale));
-  opacity: var(--img-fade);
   filter: brightness(0.72) contrast(1.08);
-  /* Opacidad y desplazamiento los resuelve el compositor sin volver a
-     dibujar: es lo único que se puede animar por cuadro sin pagarlo. */
-  will-change: transform, opacity;
+  will-change: transform;
 }
 
 .opening-veil {
@@ -80,14 +81,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 46svh;
+  height: 42svh;
   background: linear-gradient(180deg,
-    rgba(17, 22, 20, 0) 0%,
-    rgba(17, 22, 20, 0.34) 32%,
-    rgba(17, 22, 20, 0.68) 58%,
-    rgba(17, 22, 20, 0.92) 80%,
-    var(--bg-darkest) 92%,
-    var(--bg-darkest) 100%);
+    rgba(18, 26, 22, 0) 0%,
+    rgba(18, 26, 22, 0.42) 40%,
+    rgba(18, 26, 22, 0.8) 68%,
+    var(--seam-tone) 88%,
+    var(--seam-tone) 100%);
   pointer-events: none;
 }
 
@@ -253,13 +253,13 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 66svh;
+  height: 62svh;
   background: linear-gradient(180deg,
-    var(--bg-darkest) 0%,
-    var(--bg-darkest) 12%,
-    rgba(17, 22, 20, 0.78) 34%,
-    rgba(17, 22, 20, 0.34) 62%,
-    rgba(17, 22, 20, 0) 100%);
+    var(--seam-tone) 0%,
+    var(--seam-tone) 10%,
+    rgba(18, 26, 22, 0.72) 34%,
+    rgba(18, 26, 22, 0.28) 66%,
+    rgba(18, 26, 22, 0) 100%);
   pointer-events: none;
 }
 
@@ -774,6 +774,240 @@
   .rail-panel {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+  }
+}
+
+/* ==========================================================================
+   TELÉFONO EN HORIZONTAL
+   Aquí sobra ancho y falta alto: al girar, el alto útil cae a ~300 px y las
+   escenas que se apoyan en 100svh se quedan sin sitio (el título se metía
+   debajo de la barra y las tarjetas se cortaban). El arreglo no es encoger
+   todo, es repartir: lo que en vertical va apilado, aquí va en dos columnas.
+   Va después de los bloques de móvil y escritorio a propósito, para pisarlos.
+   ========================================================================== */
+@media (orientation: landscape) and (max-height: 560px) {
+  /* --- Portada --- */
+  /* Centrar en un alto tan corto metía el título bajo la barra flotante */
+  .opening-stage {
+    padding-top: 44px;
+  }
+
+  /* En vertical el título se mide contra el ancho; aquí el que manda es el alto */
+  .hero-giant-title {
+    font-size: clamp(2rem, 12vh, 4rem);
+  }
+
+  .hero-content-front {
+    margin-top: 10px;
+  }
+
+  .hero-tagline {
+    font-size: clamp(0.95rem, 4.4vh, 1.35rem);
+    margin-bottom: 6px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+
+  .hero-cta-group {
+    gap: 10px;
+  }
+
+  .btn-tc-lg {
+    height: 40px;
+    padding: 0 22px;
+    font-size: 0.85rem;
+  }
+
+  .tree-beat {
+    font-size: clamp(1.1rem, 6vh, 1.9rem);
+  }
+
+  .tree-ticks {
+    bottom: 3svh;
+  }
+
+  /* --- Riel --- */
+  .rail-stage {
+    padding: 62px 0 14px;
+    gap: 10px;
+  }
+
+  .rail-heading {
+    font-size: clamp(1.05rem, 6vh, 1.6rem);
+    max-width: 22ch;
+  }
+
+  .rail-progress {
+    min-width: 140px;
+    gap: 5px;
+    padding-bottom: 2px;
+  }
+
+  .rail-progress-label {
+    font-size: 0.7rem;
+  }
+
+  /* El texto a un lado y la ilustración al otro: apilados no caben, y de
+     ancho es justo de lo que sobra al girar. Se coloca por rejilla porque
+     título, texto e ilustración son hermanos sueltos en la plantilla. */
+  .rail-panel {
+    width: min(74vw, 600px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    column-gap: 18px;
+    padding: 14px 18px;
+  }
+
+  .rail-panel-title {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+  }
+
+  .rail-panel-text {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .rail-art {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .rail-art .mini-heatmap-grid {
+    max-width: 100%;
+    gap: 3px;
+    padding: 8px;
+    margin-top: 0;
+  }
+
+  .heatmap-cell {
+    font-size: 0.6rem;
+    border-radius: 4px;
+  }
+
+  .heatmap-day-header {
+    font-size: 0.56rem;
+  }
+
+  .rail-art-caption {
+    font-size: 0.68rem;
+    margin-top: 6px;
+  }
+
+  .code-chip {
+    padding: 8px 12px;
+  }
+
+  .code-chip-value {
+    font-size: 1.15rem;
+  }
+
+  .chip-row {
+    margin-top: 8px;
+  }
+
+  .type-chip {
+    font-size: 0.68rem;
+    padding: 4px 9px;
+  }
+
+  .mode-row {
+    padding: 7px 0;
+  }
+
+  .mode-row-title {
+    font-size: 0.8rem;
+  }
+
+  .mode-row-text {
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  .bento-tier-row {
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .bento-tier-badge {
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+  }
+
+  .bento-tier-item {
+    font-size: 0.72rem;
+    padding: 4px 9px;
+  }
+
+  /* --- Galería --- */
+  /* Con menos de 780 px de ancho las tarjetas se pegan y se apilan; al girar
+     eso deja tarjetas más altas que la pantalla, que nunca terminan de verse. */
+  .gallery-scene {
+    padding: 32px 0 44px;
+  }
+
+  .gallery-heading {
+    font-size: clamp(1.05rem, 6vh, 1.6rem);
+    margin-bottom: 16px;
+  }
+
+  .gallery-rail {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .gallery-rail::after {
+    display: none;
+  }
+
+  .escape-card,
+  .escape-card:nth-child(2),
+  .escape-card:nth-child(3) {
+    position: static;
+    top: auto;
+    margin-top: 0;
+    aspect-ratio: 16 / 11;
+  }
+
+  .escape-card figcaption {
+    padding: 12px 14px 14px;
+  }
+
+  .escape-title {
+    font-size: clamp(0.95rem, 4.4vh, 1.4rem);
+    margin-bottom: 4px;
+  }
+
+  .escape-text {
+    font-size: 0.74rem;
+    line-height: 1.4;
+  }
+
+  /* --- Cierre --- */
+  .closing-scene {
+    padding: 44px 20px 52px;
+  }
+
+  .closing-heading {
+    font-size: clamp(1.15rem, 7vh, 2rem);
+  }
+
+  .closing-text {
+    font-size: 0.85rem;
+    margin-bottom: 18px;
   }
 }
 

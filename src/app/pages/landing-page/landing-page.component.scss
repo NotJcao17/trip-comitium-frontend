@@ -5,13 +5,13 @@
 .landing-main {
   min-height: 100vh;
   background:
-    radial-gradient(130% 55% at 50% 0%, rgba(79, 126, 101, 0.13) 0%, transparent 62%),
-    radial-gradient(90% 45% at 85% 62%, rgba(41, 71, 56, 0.35) 0%, transparent 70%),
+    radial-gradient(130% 55% at 50% 0%, rgba(79, 126, 101, 0.10) 0%, transparent 62%),
+    radial-gradient(90% 45% at 85% 62%, rgba(41, 71, 56, 0.26) 0%, transparent 70%),
     linear-gradient(180deg,
       var(--bg-darkest) 0%,
-      #141c18 26%,
-      #17211c 52%,
-      #131a16 78%,
+      #101713 26%,
+      #131c17 52%,
+      #0f1512 78%,
       var(--bg-darkest) 100%);
 }
 
@@ -63,21 +63,25 @@
   inset: 0;
   background:
     radial-gradient(circle at 50% 32%, rgba(79, 126, 101, 0.2) 0%, transparent 62%),
-    linear-gradient(180deg, rgba(10, 13, 12, 0.55) 0%, rgba(10, 13, 12, 0.12) 34%, rgba(10, 13, 12, 0.62) 88%, rgba(10, 13, 12, 0.78) 100%);
+    linear-gradient(180deg, rgba(10, 13, 12, 0.55) 0%, rgba(10, 13, 12, 0.12) 34%, rgba(10, 13, 12, 0.42) 88%, rgba(10, 13, 12, 0.52) 100%);
   pointer-events: none;
 }
 
-/* Corte rasgado al pie de la foto, en el tono al que entra la página */
-.torn-edge {
+/* La foto se apaga hacia abajo hasta el tono con el que arranca la sección
+   siguiente. Antes ahí había un corte rasgado y se veía la costura. */
+.opening-stage::after {
+  content: '';
   position: absolute;
-  z-index: 4;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  width: calc(100% + 2px);
-  height: clamp(26px, 4vw, 56px);
-  display: block;
-  color: var(--bg-darkest);
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40svh;
+  background: linear-gradient(180deg,
+    rgba(17, 22, 20, 0) 0%,
+    rgba(17, 22, 20, 0.5) 44%,
+    rgba(17, 22, 20, 0.88) 76%,
+    var(--bg-darkest) 100%);
   pointer-events: none;
 }
 
@@ -232,6 +236,24 @@
 .rail-scene {
   position: relative;
   height: calc(100svh + 230vh);
+}
+
+/* El verde no empieza de golpe: arranca en el oscuro con el que terminó la
+   foto y va apareciendo mientras se baja. */
+.rail-scene::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 62svh;
+  background: linear-gradient(180deg,
+    var(--bg-darkest) 0%,
+    rgba(17, 22, 20, 0.74) 34%,
+    rgba(17, 22, 20, 0.3) 66%,
+    rgba(17, 22, 20, 0) 100%);
+  pointer-events: none;
 }
 
 /* Sin capa de grano: su máscara vertical dibujaba una banda de otro tono
@@ -720,6 +742,35 @@
 }
 
 /* ==========================================================================
+   MÓVIL: MENOS TRABAJO POR CUADRO
+   El recorrido de la portada se sentía a tirones en el teléfono. Lo caro no
+   es desplazar, es volver a dibujar: al animar la escala de la foto el
+   navegador la rasteriza de nuevo en cada cuadro, y los desenfoques de fondo
+   se recalculan con ella moviéndose detrás.
+   ========================================================================== */
+@media (max-width: 779px), (pointer: coarse) {
+  /* Escala fija: la foto se compone sin volver a dibujarse y solo se
+     desplaza. El JS deja de escribir --img-scale en estos equipos. */
+  .opening-media img {
+    transform: translate3d(0, var(--img-y), 0) scale(1.1);
+  }
+
+  /* Desenfocar un texto de este tamaño cuesta casi lo mismo que la foto */
+  .tree-beat,
+  .tree-beat.is-active {
+    filter: none;
+    transition: opacity 0.42s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Detrás de las tarjetas solo hay un degradado: desenfocarlo no cambia lo
+     que se ve, pero se recalcula entero mientras el riel se mueve. */
+  .rail-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ==========================================================================
    MENOS MOVIMIENTO
    Las frases se leen juntas y el riel vuelve a ser un carrusel manual.
    ========================================================================== */
@@ -742,21 +793,7 @@
     transform: none;
   }
 
-  /* Corte rasgado al pie de la foto, en el tono al que entra la página */
-.torn-edge {
-  position: absolute;
-  z-index: 4;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  width: calc(100% + 2px);
-  height: clamp(26px, 4vw, 56px);
-  display: block;
-  color: var(--bg-darkest);
-  pointer-events: none;
-}
-
-.opening-hero {
+  .opening-hero {
     opacity: 1;
     transform: none;
   }

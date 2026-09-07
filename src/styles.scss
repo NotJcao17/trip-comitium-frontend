@@ -37,6 +37,12 @@
   --liquid-glass-glow: 0 15px 35px rgba(16, 33, 25, 0.35);
   --glass-blur: 26px;
 
+  /* La barra flotante es la excepcion al vidrio claro: se apoya sobre la foto
+     de la portada y necesita cuerpo propio, asi que conserva el tono oscuro
+     del mockup. */
+  --nav-glass-bg: rgba(22, 28, 26, 0.66);
+  --nav-glass-blur: 28px;
+
   /* Superficies hundidas dentro de un panel */
   --glass-inset: rgba(16, 26, 21, 0.5);
   --glass-inset-strong: rgba(12, 20, 16, 0.66);

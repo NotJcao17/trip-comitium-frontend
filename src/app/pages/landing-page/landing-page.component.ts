@@ -38,6 +38,16 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /**
+   * Teléfonos y tabletas. Animar la escala de la foto obliga al navegador a
+   * rasterizarla otra vez en cada cuadro y ahí se va el presupuesto entero:
+   * en esos equipos la portada se mueve solo en vertical. El CSS fija la
+   * escala con la misma condición.
+   */
+  private readonly lowPower =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(max-width: 779px), (pointer: coarse)').matches;
+
   /** El scroll controla el riel y el árbol (falso si se pidió menos movimiento). */
   motionDriven = !this.prefersReducedMotion;
 
@@ -65,10 +75,36 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
 
   private frameId = 0;
   private listening = false;
+  private forceNext = false;
+
+  /** Medidas de la ventana: pedirlas dentro del cuadro no aporta nada. */
+  private viewportW = typeof window !== 'undefined' ? window.innerWidth : 0;
+  private viewportH = typeof window !== 'undefined' ? window.innerHeight : 0;
+
+  /** Último scroll atendido, para no repetir el trabajo sin que nada se mueva. */
+  private lastY = -1;
+
+  /**
+   * Último valor escrito de cada variable CSS. Volver a escribir el mismo
+   * invalida el estilo de todo el bloque para dejarlo igual que estaba.
+   */
+  private readonly varCache = new Map<string, string>();
+
   private onScroll = () => this.requestUpdate();
   private onResize = () => {
-    this.measureRail();
-    this.requestUpdate();
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // En móvil, mostrar u ocultar la barra del navegador dispara `resize`.
+    // Volver a medir el riel ahí recalcula el diseño de una página de varias
+    // pantallas justo mientras se está bajando, que es cuando se nota.
+    const soloBarraDelNavegador = w === this.viewportW && Math.abs(h - this.viewportH) < 140;
+
+    this.viewportW = w;
+    this.viewportH = h;
+
+    if (!soloBarraDelNavegador) this.measureRail();
+    this.requestUpdate(true);
   };
 
   ngAfterViewInit() {
@@ -95,12 +131,22 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
     if (this.frameId) cancelAnimationFrame(this.frameId);
   }
 
-  private requestUpdate() {
+  private requestUpdate(force = false) {
+    if (force) this.forceNext = true;
     if (this.frameId) return;
     this.frameId = requestAnimationFrame(() => {
       this.frameId = 0;
-      this.update();
+      const forzado = this.forceNext;
+      this.forceNext = false;
+      this.update(forzado);
     });
+  }
+
+  /** Escribe una variable CSS solo si cambió de valor. */
+  private setVar(el: HTMLElement, name: string, value: string) {
+    if (this.varCache.get(name) === value) return;
+    this.varCache.set(name, value);
+    el.style.setProperty(name, value);
   }
 
   /**
@@ -113,8 +159,8 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
     if (!host || !track) return;
 
     const shift = Math.max(0, track.scrollWidth - track.clientWidth);
-    const travel = Math.max(shift * 1.15, window.innerHeight * 0.9);
-    host.style.height = `${Math.round(window.innerHeight + travel)}px`;
+    const travel = Math.max(shift * 1.15, this.viewportH * 0.9);
+    host.style.height = `${Math.round(this.viewportH + travel)}px`;
   }
 
   private clamp01(v: number): number {
@@ -124,65 +170,78 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
   /** Progreso 0..1 de un bloque alto mientras su interior sticky ocupa la pantalla. */
   private progressOf(el: HTMLElement): number {
     const rect = el.getBoundingClientRect();
-    const travel = rect.height - window.innerHeight;
+    const travel = rect.height - this.viewportH;
     if (travel <= 0) return 0;
     const raw = -rect.top / travel;
     return raw < 0 ? 0 : raw > 1 ? 1 : raw;
   }
 
-  private update() {
+  private update(force = false) {
+    const y = window.scrollY;
+    if (!force && y === this.lastY) return;
+    this.lastY = y;
+
     const railHost = this.railSection?.nativeElement;
     const track = this.railTrack?.nativeElement;
+    const opening = this.openingSection?.nativeElement;
 
-    if (railHost && track) {
-      const p = this.progressOf(railHost);
-      const maxShift = track.scrollWidth - track.clientWidth;
-      track.style.setProperty('--rail-shift', `${(p * maxShift).toFixed(2)}px`);
+    // Todas las medidas juntas y después todas las escrituras: intercalarlas
+    // obliga al navegador a recalcular el diseño en mitad del cuadro, y con
+    // dos bloques de varias pantallas de alto eso se paga caro.
+    const railP = railHost ? this.progressOf(railHost) : 0;
+    const maxShift = track ? track.scrollWidth - track.clientWidth : 0;
+    const openP = opening ? this.progressOf(opening) : 0;
 
-      const step = Math.min(
+    let step = this.railStep;
+    let beat = this.treeBeat;
+    let gone = this.heroGone;
+
+    if (track) {
+      this.setVar(track, '--rail-shift', `${(railP * maxShift).toFixed(2)}px`);
+      step = Math.min(
         this.railStepsCount - 1,
-        Math.round(p * (this.railStepsCount - 1))
+        Math.round(railP * (this.railStepsCount - 1))
       );
-      if (step !== this.railStep) {
-        this.zone.run(() => (this.railStep = step));
-      }
     }
 
-    const opening = this.openingSection?.nativeElement;
     if (opening) {
-      const p = this.progressOf(opening);
-
       // La portada aguanta, luego sube y se desvanece…
-      const salida = this.clamp01((p - this.heroHold) / (this.heroFadeEnd - this.heroHold));
-      opening.style.setProperty('--hero-fade', (1 - salida).toFixed(3));
-      opening.style.setProperty('--hero-y', `${(-salida * 46).toFixed(2)}svh`);
+      const salida = this.clamp01((openP - this.heroHold) / (this.heroFadeEnd - this.heroHold));
+      this.setVar(opening, '--hero-fade', (1 - salida).toFixed(3));
+      this.setVar(opening, '--hero-y', `${(-salida * 46).toFixed(2)}svh`);
 
       // …el fondo acompaña con un desplazamiento suave…
-      opening.style.setProperty('--img-y', `${(p * 5 - 2.5).toFixed(2)}svh`);
+      this.setVar(opening, '--img-y', `${(openP * 5 - 2.5).toFixed(2)}svh`);
 
       // …y el zoom entra cuando el texto de la portada ya salió. El máximo se
       // queda en 1.20 para no pedirle a la foto más píxeles de los que tiene.
-      const zoomStart = 0.2;
-      const zoom = p <= zoomStart ? 0 : (p - zoomStart) / (1 - zoomStart);
-      opening.style.setProperty('--img-scale', (1.08 + zoom * 0.12).toFixed(4));
+      // En móvil no hay zoom: es lo que hacía que el recorrido se sintiera duro.
+      if (!this.lowPower) {
+        const zoomStart = 0.2;
+        const zoom = openP <= zoomStart ? 0 : (openP - zoomStart) / (1 - zoomStart);
+        this.setVar(opening, '--img-scale', (1.08 + zoom * 0.12).toFixed(4));
+      }
 
       // Las frases arrancan solapadas con el final del desvanecido para que
       // no quede ni un momento con la foto sola.
       const beatsStart = this.heroFadeEnd - 0.08;
-      const beat = p < beatsStart
+      beat = openP < beatsStart
         ? -2
         : Math.min(
             this.treeBeatsCount - 1,
-            Math.floor(((p - beatsStart) / (1 - beatsStart)) * this.treeBeatsCount)
+            Math.floor(((openP - beatsStart) / (1 - beatsStart)) * this.treeBeatsCount)
           );
 
-      const gone = salida >= 1;
-      if (beat !== this.treeBeat || gone !== this.heroGone) {
-        this.zone.run(() => {
-          this.treeBeat = beat;
-          this.heroGone = gone;
-        });
-      }
+      gone = salida >= 1;
+    }
+
+    // Una sola entrada al ciclo de Angular por cuadro, y solo si algo cambió.
+    if (step !== this.railStep || beat !== this.treeBeat || gone !== this.heroGone) {
+      this.zone.run(() => {
+        this.railStep = step;
+        this.treeBeat = beat;
+        this.heroGone = gone;
+      });
     }
   }
 

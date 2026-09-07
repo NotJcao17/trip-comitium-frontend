@@ -18,9 +18,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 18px;
-  background: var(--liquid-glass-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  background: var(--nav-glass-bg);
+  backdrop-filter: blur(var(--nav-glass-blur));
+  -webkit-backdrop-filter: blur(var(--nav-glass-blur));
   border: 1px solid var(--liquid-glass-border);
   border-radius: 40px;
   box-shadow: var(--liquid-glass-glow), inset 0 1px 1px var(--liquid-glass-highlight);
@@ -173,6 +173,9 @@
   .liquid-navbar {
     padding: 8px 14px;
     min-height: 52px;
+    /* Un desenfoque grande sobre la foto en movimiento se recalcula en cada
+       cuadro. Con el fondo mas opaco de aqui, bajarlo no se nota. */
+    --nav-glass-blur: 14px;
   }
 
   .nav-logo-text {

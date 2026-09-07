@@ -81,12 +81,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 42svh;
+  height: 34svh;
   background: linear-gradient(180deg,
     rgba(18, 26, 22, 0) 0%,
-    rgba(18, 26, 22, 0.42) 40%,
-    rgba(18, 26, 22, 0.8) 68%,
-    var(--seam-tone) 88%,
+    rgba(18, 26, 22, 0.3) 34%,
+    rgba(18, 26, 22, 0.66) 62%,
+    rgba(18, 26, 22, 0.9) 84%,
     var(--seam-tone) 100%);
   pointer-events: none;
 }
@@ -252,13 +252,14 @@
   z-index: 0;
   left: 0;
   right: 0;
-  top: 0;
-  height: 62svh;
+  /* Monta 2px sobre la foto. El alto en svh cae en medio píxel según el
+     scroll y ahí se colaba una línea del fondo, que parpadeaba al bajar. */
+  top: -2px;
+  height: calc(44svh + 2px);
   background: linear-gradient(180deg,
     var(--seam-tone) 0%,
-    var(--seam-tone) 10%,
-    rgba(18, 26, 22, 0.72) 34%,
-    rgba(18, 26, 22, 0.28) 66%,
+    rgba(18, 26, 22, 0.72) 22%,
+    rgba(18, 26, 22, 0.34) 52%,
     rgba(18, 26, 22, 0) 100%);
   pointer-events: none;
 }
@@ -563,8 +564,10 @@
 }
 
 /* En móvil cada tarjeta se queda pegada arriba y la siguiente se le monta
-   encima, así que van apareciendo y escondiéndose una detrás de otra. */
-@media (max-width: 779px) {
+   encima, así que van apareciendo y escondiéndose una detrás de otra.
+   Pide alto de sobra a propósito: en una pantalla corta las tarjetas salen
+   más altas que la ventana y el apilado nunca llega a verse entero. */
+@media (max-width: 779px) and (min-height: 620px) {
   .gallery-rail {
     gap: 20px;
   }
@@ -785,7 +788,7 @@
    todo, es repartir: lo que en vertical va apilado, aquí va en dos columnas.
    Va después de los bloques de móvil y escritorio a propósito, para pisarlos.
    ========================================================================== */
-@media (orientation: landscape) and (max-height: 560px) {
+@media (orientation: landscape) and (max-height: 620px) {
   /* --- Portada --- */
   /* Centrar en un alto tan corto metía el título bajo la barra flotante */
   .opening-stage {
@@ -855,13 +858,13 @@
      ancho es justo de lo que sobra al girar. Se coloca por rejilla porque
      título, texto e ilustración son hermanos sueltos en la plantilla. */
   .rail-panel {
-    width: min(74vw, 600px);
+    width: min(72vw, 560px);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
     grid-template-rows: auto auto;
     align-content: center;
-    column-gap: 18px;
-    padding: 14px 18px;
+    column-gap: 16px;
+    padding: 14px 16px;
   }
 
   .rail-panel-title {
@@ -973,10 +976,13 @@
     display: none;
   }
 
+  /* `relative`, nunca `static`: la foto y el pie de foto van en absolute
+     dentro de la tarjeta, y sin bloque contenedor se posicionan contra la
+     página — las tres imágenes acaban amontonadas sobre el título. */
   .escape-card,
   .escape-card:nth-child(2),
   .escape-card:nth-child(3) {
-    position: static;
+    position: relative;
     top: auto;
     margin-top: 0;
     aspect-ratio: 16 / 11;

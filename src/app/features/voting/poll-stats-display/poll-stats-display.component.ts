@@ -28,6 +28,11 @@ export class PollStatsDisplayComponent implements OnChanges {
   currentDate = new Date();
   selectedDayDetails: string[] = [];
 
+  // Detalle de votos de tier list: una fila por tripulante, una columna por opcion.
+  showTierMatrix = false;
+  tierMatrixItems: string[] = [];
+  tierMatrixRows: { name: string; cells: { tier: string; label: string }[] }[] = [];
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['poll'] && this.poll) {
       this.loadStats();
@@ -46,6 +51,9 @@ export class PollStatsDisplayComponent implements OnChanges {
     this.selectedDayDetails = [];
     this.heatmapDays = [];
     this.calendarDays = [];
+    this.showTierMatrix = false;
+    this.tierMatrixItems = [];
+    this.tierMatrixRows = [];
 
     this.pollService.getPollStats(this.poll.poll_id).subscribe({
       next: (data) => {
@@ -61,6 +69,9 @@ export class PollStatsDisplayComponent implements OnChanges {
           }
           this.generateCalendar();
         }
+        if (this.poll?.type === 'tier_list') {
+          this.buildTierMatrix(data);
+        }
         this.isLoading = false;
       },
       error: () => {
@@ -68,6 +79,38 @@ export class PollStatsDisplayComponent implements OnChanges {
         this.isLoading = false;
       }
     });
+  }
+
+  /**
+   * Arma la tabla cruzada a partir de los votos crudos. El backend solo manda
+   * `rawVotes` al organizador, asi que si no vienen simplemente no hay tabla.
+   */
+  private buildTierMatrix(data: any) {
+    const fromOptions = this.poll?.options?.map(o => o.text) || [];
+    this.tierMatrixItems = fromOptions.length
+      ? fromOptions
+      : (data?.ranking || []).map((r: any) => r.item);
+
+    const raw = Array.isArray(data?.rawVotes) ? data.rawVotes : [];
+    this.tierMatrixRows = raw.map((v: any) => {
+      const tiers = (v?.tiers && typeof v.tiers === 'object') ? v.tiers : {};
+      return {
+        name: v?.name || 'Sin nombre',
+        cells: this.tierMatrixItems.map(item => {
+          // Lo que el votante dejo sin clasificar no se guarda: ausente = sin tier.
+          const tier = tiers[item] ? String(tiers[item]).toUpperCase() : '';
+          return { tier, label: tier || '—' };
+        })
+      };
+    });
+  }
+
+  get hasTierMatrix(): boolean {
+    return this.tierMatrixRows.length > 0 && this.tierMatrixItems.length > 0;
+  }
+
+  toggleTierMatrix() {
+    this.showTierMatrix = !this.showTierMatrix;
   }
 
   generateCalendar() {

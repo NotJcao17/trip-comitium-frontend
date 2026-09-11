@@ -105,3 +105,84 @@
 .ranking-row-body {
   min-width: 0;
 }
+
+/* --- Tabla cruzada de votos de tier list --- */
+
+/* La tabla crece con el numero de opciones, asi que se desplaza dentro de su
+   propia caja en vez de empujar el panel de estadisticas a lo ancho. */
+.tier-matrix-scroll {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.tier-matrix {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 0.8rem;
+}
+
+.tier-matrix th,
+.tier-matrix td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+.tier-matrix thead th {
+  color: var(--mono-muted);
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.tier-matrix tbody tr:last-child th,
+.tier-matrix tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* El nombre se queda a la vista al desplazar de lado: sin eso, con muchas
+   opciones se pierde de quien es la fila que estas leyendo. */
+.tier-matrix .tier-matrix-name-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg-darkest, #0e0f10);
+  color: var(--mono-white);
+  font-weight: 700;
+  text-align: left;
+}
+
+.tier-matrix thead .tier-matrix-name-col {
+  z-index: 3;
+  color: var(--mono-muted);
+}
+
+.tier-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 800;
+  font-size: 0.72rem;
+}
+
+.tier-cell-s { background: var(--tier-s); color: var(--tier-s-ink); }
+.tier-cell-a { background: var(--tier-a); color: var(--tier-a-ink); }
+.tier-cell-b { background: var(--tier-b); color: var(--tier-b-ink); }
+.tier-cell-c { background: var(--tier-c); color: var(--tier-c-ink); }
+.tier-cell-d { background: var(--tier-d); color: var(--tier-d-ink); }
+
+.tier-cell-none {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--mono-muted);
+}

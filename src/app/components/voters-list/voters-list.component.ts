@@ -24,7 +24,7 @@ export class VotersListComponent {
   /** Deja los nombres siempre visibles, sin necesidad de tocar los avatares. */
   @Input() alwaysExpanded = false;
   /** Cuántos avatares se dibujan antes de resumir el resto en un "+N". */
-  @Input() maxAvatars = 5;
+  @Input() maxAvatars = 4;
 
   isOpen = false;
 

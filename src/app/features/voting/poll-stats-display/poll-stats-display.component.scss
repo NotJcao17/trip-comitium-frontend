@@ -247,8 +247,10 @@
   transition: width 0.4s ease;
 }
 
-/* Las dos listas comparten fila cuando hay sitio y se apilan cuando no.
-   Cada una se puede encoger: los nombres largos no deben estirar la caja. */
+/* Las dos listas comparten fila solo si de verdad caben enteras. El ancho
+   mínimo sale de la etiqueta más larga ("Faltan por votar") más la tira de
+   avatares: por debajo de eso se apilan, que es mejor que partir la tira en
+   dos renglones. Cada una se puede encoger para no estirar la caja. */
 .participation-lists {
   display: flex;
   flex-wrap: wrap;
@@ -256,7 +258,7 @@
 
   > * {
     min-width: 0;
-    flex: 1 1 260px;
+    flex: 1 1 320px;
   }
 }
 

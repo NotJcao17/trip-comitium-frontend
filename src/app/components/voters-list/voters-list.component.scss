@@ -59,3 +59,26 @@
   padding: 3px 10px;
   border-radius: 999px;
 }
+
+/* Aunque el corte deja pocos avatares, con etiquetas largas o pantallas
+   estrechas la tira todavía puede no caber: que baje de línea antes que
+   desbordarse por encima de lo que tenga al lado. */
+.voter-avatars {
+  flex-wrap: wrap;
+  row-gap: 4px;
+  min-width: 0;
+}
+
+/* El resumen del resto del grupo: mismo tamaño que un avatar, pero apagado
+   para que no se confunda con una persona. */
+.voter-avatar-more {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mono-light);
+  font-size: 0.68rem;
+  cursor: default;
+}
+
+.voter-avatar-more:hover {
+  transform: none;
+  border-color: var(--bg-deep);
+}

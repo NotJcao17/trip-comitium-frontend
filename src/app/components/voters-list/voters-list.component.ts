@@ -23,11 +23,26 @@ export class VotersListComponent {
   @Input() label = 'Votantes';
   /** Deja los nombres siempre visibles, sin necesidad de tocar los avatares. */
   @Input() alwaysExpanded = false;
+  /** Cuántos avatares se dibujan antes de resumir el resto en un "+N". */
+  @Input() maxAvatars = 5;
 
   isOpen = false;
 
   get expanded(): boolean {
     return this.alwaysExpanded || this.isOpen;
+  }
+
+  /**
+   * En un grupo grande la tira de avatares se salía del recuadro y se
+   * encimaba con lo de al lado. Se corta a unos pocos: los nombres completos
+   * siguen estando al desplegar.
+   */
+  get visibleVoters(): VoterRef[] {
+    return this.voters.slice(0, this.maxAvatars);
+  }
+
+  get hiddenCount(): number {
+    return Math.max(0, this.voters.length - this.maxAvatars);
   }
 
   toggle() {

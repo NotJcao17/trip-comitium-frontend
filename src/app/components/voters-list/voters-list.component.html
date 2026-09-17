@@ -10,7 +10,11 @@
     <span class="voters-label">{{ label }}</span>
 
     <span class="voter-avatars">
-      <span *ngFor="let v of voters" class="voter-avatar" [title]="v.name">{{ initial(v.name) }}</span>
+      <span *ngFor="let v of visibleVoters" class="voter-avatar" [title]="v.name">{{ initial(v.name) }}</span>
+      <span
+        *ngIf="hiddenCount"
+        class="voter-avatar voter-avatar-more"
+        [title]="hiddenCount + ' más'">+{{ hiddenCount }}</span>
     </span>
 
     <iconify-icon

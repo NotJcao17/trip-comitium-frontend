@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <form (ngSubmit)="submit()">
+  <form (ngSubmit)="submit()" (keydown.enter)="onFormEnter($event)">
     <div class="row g-3">
       
       <!-- Título -->

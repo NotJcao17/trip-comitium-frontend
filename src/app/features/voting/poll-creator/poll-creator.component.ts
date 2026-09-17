@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, ElementRef, Output, EventEmitter, OnInit, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PollService } from '../../../services/poll.service';
@@ -35,6 +35,7 @@ interface OptionForm extends PollOptionDraft {
 })
 export class PollCreatorComponent implements OnInit {
   private pollService = inject(PollService);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
   @Output() created = new EventEmitter<void>();
 
   title = '';
@@ -303,9 +304,53 @@ export class PollCreatorComponent implements OnInit {
     return partes.join(' ');
   }
 
+  /**
+   * Enter dentro de una opción avanza a la siguiente, y en la última crea una
+   * nueva. Antes publicaba la encuesta de golpe (el envío implícito del
+   * formulario), que es justo lo que no quieres mientras aún escribes.
+   */
   onOptionEnter(event: Event, index: number) {
     event.preventDefault();
-    if (index === this.options.length - 1) this.addOption();
+
+    if (index < this.options.length - 1) {
+      this.focusOptionInput(index + 1);
+      return;
+    }
+
+    // Una fila vacía no necesita otra fila vacía detrás.
+    if (!(this.options[index]?.text || '').trim()) return;
+
+    this.addOption();
+    this.focusOptionInput(this.options.length - 1);
+  }
+
+  /**
+   * setTimeout y no queueMicrotask: la fila nueva todavía no existe en el DOM
+   * hasta que Angular detecta cambios, y eso pasa después de este manejador.
+   */
+  private focusOptionInput(index: number) {
+    setTimeout(() => {
+      const input = this.host.nativeElement.querySelector(
+        `input[name="optName${index}"]`
+      ) as HTMLInputElement | null;
+      input?.focus();
+      input?.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  /**
+   * El formulario solo se envía con el botón de publicar. Enter en cualquier
+   * campo de una línea creaba la encuesta sin querer; en los textarea sí debe
+   * seguir insertando el salto de línea.
+   */
+  onFormEnter(event: Event) {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const tag = target.tagName.toLowerCase();
+    if (tag === 'textarea' || tag === 'button' || tag === 'a') return;
+
+    event.preventDefault();
   }
 
   filledOptions(): Array<{ text: string; description: string; images: string[] }> {

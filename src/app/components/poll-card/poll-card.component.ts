@@ -33,7 +33,7 @@ export class PollCardComponent {
   getTypeLabel(): string {
     switch (this.poll.type) {
       case 'date': return 'Calendario de Fechas';
-      case 'tier_list': return 'Tier List de Lugares';
+      case 'tier_list': return 'Tier List';
       case 'slider': return 'Presupuesto Grupal';
       case 'multiple_choice': return 'Opción Múltiple';
       case 'text': return 'Propuesta Libre';

@@ -59,11 +59,6 @@
   box-shadow: 0 0 10px rgba(120, 163, 140, 0.4);
 }
 
-.calendar-day-cell.high-match {
-  background: rgba(79, 126, 101, 0.3);
-  border-color: var(--sage-500);
-}
-
 .calendar-day-cell.is-today {
   border-color: rgba(255, 255, 255, 0.4);
 }
@@ -81,29 +76,6 @@
 .day-number {
   font-size: 0.88rem;
   font-weight: 700;
-}
-
-.vote-count-dot {
-  font-size: 0.65rem;
-  font-weight: 900;
-  color: var(--sage-300);
-  margin-top: 2px;
-}
-
-.legend-box {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-}
-
-.legend-box.selected {
-  background: var(--sage-600);
-  border: 1px solid var(--sage-400);
-}
-
-.legend-box.high-match {
-  background: rgba(79, 126, 101, 0.4);
-  border: 1px solid var(--sage-500);
 }
 
 .success-banner {

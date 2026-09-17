@@ -10,6 +10,30 @@
   
   <!-- Solar Icons via Iconify CDN -->
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+
+  <!--
+    Por defecto <iconify-icon> vigila su visibilidad: tira el SVG cuando el
+    icono sale de la pantalla y lo vuelve a dibujar al volver a entrar. Con
+    ratón eso se nota como un parpadeo de los iconos al borde de la ventana
+    mientras haces scroll. El propio componente trae el interruptor para
+    apagarlo (`noobserver`), pero solo surte efecto si el atributo ya está
+    puesto cuando el elemento entra en el documento: ponerlo después deja el
+    icono sin dibujar. Por eso se añade aquí, en connectedCallback, y no a
+    mano en las 120 etiquetas de las plantillas (que además habría que
+    recordar en cada icono nuevo).
+  -->
+  <script>
+    (function () {
+      var ctor = window.customElements && customElements.get('iconify-icon');
+      if (!ctor || !ctor.prototype.connectedCallback) return;
+
+      var original = ctor.prototype.connectedCallback;
+      ctor.prototype.connectedCallback = function () {
+        if (!this.hasAttribute('noobserver')) this.setAttribute('noobserver', '');
+        return original.apply(this, arguments);
+      };
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

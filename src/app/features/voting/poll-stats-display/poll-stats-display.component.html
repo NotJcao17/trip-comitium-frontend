@@ -32,6 +32,49 @@
   <!-- Content based on Poll Type -->
   <div *ngIf="!isLoading && stats">
 
+    <!-- Seguimiento de participación (igual para todos los tipos de encuesta) -->
+    <div *ngIf="participation" class="participation-box mb-4">
+      <div class="participation-head">
+        <span class="label-micro m-0">SEGUIMIENTO DE PARTICIPACIÓN</span>
+        <div class="participation-chips">
+          <span class="participation-chip done">
+            <iconify-icon icon="solar:check-circle-bold" width="13"></iconify-icon>
+            {{ participation.votedCount }} de {{ participation.totalParticipants }} ya votaron
+          </span>
+          <span *ngIf="participation.pendingCount > 0" class="participation-chip pending">
+            <iconify-icon icon="solar:clock-circle-broken" width="13"></iconify-icon>
+            {{ participation.pendingCount }} {{ participation.pendingCount === 1 ? 'falta' : 'faltan' }}
+          </span>
+          <span *ngIf="participation.pendingCount === 0 && participation.totalParticipants > 0" class="participation-chip done">
+            <iconify-icon icon="solar:confetti-minimalistic-broken" width="13"></iconify-icon>
+            Votó toda la tripulación
+          </span>
+        </div>
+      </div>
+
+      <div class="participation-track">
+        <div class="participation-fill" [style.width.%]="participationPercent"></div>
+      </div>
+
+      <p *ngIf="stats.votersHidden" class="text-muted small mb-0 mt-2">
+        Encuesta anónima: solo se muestran los totales, sin nombres.
+      </p>
+
+      <div *ngIf="!stats.votersHidden" class="participation-lists mt-2">
+        <app-voters-list
+          *ngIf="participation.voted.length"
+          [voters]="participation.voted"
+          label="Ya votaron">
+        </app-voters-list>
+
+        <app-voters-list
+          *ngIf="participation.pending.length"
+          [voters]="participation.pending"
+          label="Faltan por votar">
+        </app-voters-list>
+      </div>
+    </div>
+
     <!-- 1. Multiple Choice Results -->
     <div *ngIf="poll?.type === 'multiple_choice'" class="d-flex flex-column gap-3">
       <div *ngFor="let opt of poll?.options" class="stats-option-row p-3 rounded-3">
@@ -114,9 +157,36 @@
         </div>
       </div>
 
-      <div *ngIf="selectedDayDetails.length > 0" class="mt-3 p-3 rounded bg-black bg-opacity-25 small">
-        <span class="label-micro d-block mb-1">DISPONIBLES ESTE DÍA:</span>
-        <span class="text-white">{{ selectedDayDetails.join(', ') }}</span>
+      <div *ngIf="selectedDayLabel" class="day-detail-box mt-3 p-3 rounded bg-black bg-opacity-25 small">
+        <span class="label-micro d-block mb-2">DETALLE DEL {{ selectedDayLabel }}</span>
+
+        <div class="day-detail-row">
+          <span class="day-detail-tag available">
+            <iconify-icon icon="solar:check-circle-bold" width="13"></iconify-icon>
+            Disponibles ({{ selectedDayDetails.length }})
+          </span>
+          <span *ngIf="selectedDayDetails.length" class="text-white">
+            {{ joinNames(selectedDayDetails) }}
+          </span>
+          <span *ngIf="!selectedDayDetails.length" class="text-muted">Nadie marcó este día.</span>
+        </div>
+
+        <div class="day-detail-row mt-2">
+          <span class="day-detail-tag unavailable">
+            <iconify-icon icon="solar:close-circle-broken" width="13"></iconify-icon>
+            No disponibles ({{ selectedDayAbsentees.length }})
+          </span>
+          <span *ngIf="selectedDayAbsentees.length" class="text-white">
+            {{ joinNames(selectedDayAbsentees) }}
+          </span>
+          <span *ngIf="!selectedDayAbsentees.length" class="text-muted">
+            Nadie de quienes ya votaron lo descartó.
+          </span>
+        </div>
+
+        <span *ngIf="participation?.pendingCount" class="text-muted d-block mt-2" style="font-size: 0.72rem;">
+          Sin contar a {{ participation?.pendingCount }} que aún no votan esta encuesta.
+        </span>
       </div>
     </div>
 

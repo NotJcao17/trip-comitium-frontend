@@ -325,14 +325,17 @@ export class PollCreatorComponent implements OnInit {
   }
 
   /**
+   * Se busca por clase y posición, no por `name`: ese atributo lo consume la
+   * directiva ngModel y nunca llega al DOM, así que un selector por nombre no
+   * encuentra nada.
+   *
    * setTimeout y no queueMicrotask: la fila nueva todavía no existe en el DOM
    * hasta que Angular detecta cambios, y eso pasa después de este manejador.
    */
   private focusOptionInput(index: number) {
     setTimeout(() => {
-      const input = this.host.nativeElement.querySelector(
-        `input[name="optName${index}"]`
-      ) as HTMLInputElement | null;
+      const inputs = this.host.nativeElement.querySelectorAll<HTMLInputElement>('.option-name-input');
+      const input = inputs[index];
       input?.focus();
       input?.scrollIntoView({ block: 'nearest' });
     });

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Poll } from '../../../models/poll.interface';
+import { Poll, PollParticipation } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { VotersListComponent } from '../../../components/voters-list/voters-list.component';
 import { OptionGalleryComponent } from '../../../components/option-gallery/option-gallery.component';
@@ -26,7 +26,9 @@ export class PollStatsDisplayComponent implements OnChanges {
   calendarDays: any[] = [];
   monthName: string = '';
   currentDate = new Date();
-  selectedDayDetails: string[] = [];
+  selectedDayDetails: { id?: number; name: string }[] = [];
+  selectedDayAbsentees: { id?: number; name: string }[] = [];
+  selectedDayLabel = '';
 
   // Detalle de votos de tier list: una fila por tripulante, una columna por opcion.
   showTierMatrix = false;
@@ -49,6 +51,8 @@ export class PollStatsDisplayComponent implements OnChanges {
     // Se limpia al cambiar de encuesta: si no, el detalle del dia que estaba
     // abierto se queda pegado y parece de la votacion nueva.
     this.selectedDayDetails = [];
+    this.selectedDayAbsentees = [];
+    this.selectedDayLabel = '';
     this.heatmapDays = [];
     this.calendarDays = [];
     this.showTierMatrix = false;
@@ -79,6 +83,16 @@ export class PollStatsDisplayComponent implements OnChanges {
         this.isLoading = false;
       }
     });
+  }
+
+  get participation(): PollParticipation | null {
+    return this.stats?.participation || null;
+  }
+
+  get participationPercent(): number {
+    const p = this.participation;
+    if (!p || !p.totalParticipants) return 0;
+    return Math.round((p.votedCount / p.totalParticipants) * 100);
   }
 
   /**
@@ -135,13 +149,18 @@ export class PollStatsDisplayComponent implements OnChanges {
       const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
       const found = this.heatmapDays.find(d => d.date === dateStr);
 
-      const votersList = found?.voters ? found.voters.map((v: any) => typeof v === 'object' ? v.name : v) : [];
+      const votersList: { id?: number; name: string }[] = (found?.voters || []).map((v: any) =>
+        typeof v === 'object' ? { id: v.id, name: v.name } : { name: v }
+      );
 
       this.calendarDays.push({
         date: i,
         fullDate: dateStr,
         count: found ? found.count : 0,
         voters: votersList,
+        // Solo entre quienes ya contestaron: de los que no han votado no
+        // sabemos si pueden ese dia, y contarlos como "no disponibles" mentiria.
+        absentees: this.absenteesFor(votersList),
         empty: false
       });
     }
@@ -171,9 +190,40 @@ export class PollStatsDisplayComponent implements OnChanges {
     return opt?.images || [];
   }
 
+  joinNames(list: { name: string }[]): string {
+    return list.map(v => v.name).join(', ');
+  }
+
+  /** Quienes ya votaron la encuesta pero no marcaron este dia. */
+  private absenteesFor(available: { id?: number; name: string }[]): { id?: number; name: string }[] {
+    const voted = this.participation?.voted || [];
+    if (!voted.length) return [];
+
+    const ids = new Set(available.map(v => v.id).filter(id => id !== undefined));
+    const names = new Set(available.map(v => v.name));
+
+    return voted.filter(p => !ids.has(p.id) && !names.has(p.name));
+  }
+
   showDayDetails(day: any) {
-    if (!day.empty) {
-      this.selectedDayDetails = day.voters || [];
-    }
+    if (day.empty) return;
+    this.selectedDayDetails = day.voters || [];
+    this.selectedDayAbsentees = day.absentees || [];
+    this.selectedDayLabel = this.formatDayLabel(day.fullDate);
+  }
+
+  /** "2026-10-16" -> "viernes 16 de octubre". Se parte a mano para que la
+   *  fecha no se interprete en UTC y termine mostrando el dia anterior. */
+  private formatDayLabel(fullDate: string): string {
+    if (!fullDate) return '';
+    const [y, m, d] = fullDate.split('-').map(Number);
+    if (!y || !m || !d) return fullDate;
+
+    // Intl devuelve "viernes, 16 de octubre"; la coma sobra en un titulillo.
+    return new Intl.DateTimeFormat('es-ES', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    }).format(new Date(y, m - 1, d)).replace(',', '');
   }
 }

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, HostListener, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Poll, PollStats } from '../../../models/poll.interface';
+import { Poll } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { AuthService } from '../../../services/auth.service';
 
@@ -25,7 +25,6 @@ export class DateSelectorComponent implements OnInit {
   calendarDays: any[] = [];
   isSubmitting = false;
   successMessage = '';
-  stats: PollStats | null = null;
 
   // Drag-to-select state
   isDragging = false;
@@ -47,7 +46,6 @@ export class DateSelectorComponent implements OnInit {
 
     this.generateCalendar();
     this.loadMyVote();
-    this.loadStats();
   }
 
   getMonthYearLabel(): string {
@@ -94,17 +92,6 @@ export class DateSelectorComponent implements OnInit {
     }
   }
 
-  loadStats() {
-    if (!this.poll.poll_id) return;
-    this.pollService.getPollStats(this.poll.poll_id).subscribe({
-      next: (data) => {
-        this.stats = data;
-        this.generateCalendar();
-      },
-      error: (err) => console.warn('Could not load date stats:', err)
-    });
-  }
-
   generateCalendar() {
     const year = this.currentMonth.getFullYear();
     const month = this.currentMonth.getMonth();
@@ -140,16 +127,15 @@ export class DateSelectorComponent implements OnInit {
         }
       }
 
-      const voteInfo = this.stats?.heatmap ? this.stats.heatmap[dateStr] : null;
-      const count = voteInfo ? (typeof voteInfo === 'number' ? voteInfo : voteInfo.count) : 0;
-
+      // Esta pantalla es la de votar: el organizador ve lo mismo que los
+      // demas. Los resultados del grupo viven en el panel de administracion,
+      // y ensenarlos aqui condicionaba las fechas que el propio admin marcaba.
       this.calendarDays.push({
         day: d,
         date: dateStr,
         selected: this.selectedDates.has(dateStr),
         disabled: isBlocked,
-        isToday: dateStr === todayStr,
-        voteCount: count
+        isToday: dateStr === todayStr
       });
     }
   }

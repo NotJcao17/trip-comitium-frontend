@@ -62,6 +62,8 @@ export interface PollStats {
     /** El servidor no envió los nombres porque quien consulta no es el organizador. */
     votersHidden?: boolean;
     totalVotes?: number;
+    /** Padrón del viaje cruzado con los votos: quién ya votó y quién falta. */
+    participation?: PollParticipation;
     results?: Record<string | number, number>;
     votersByOption?: Record<string | number, Array<{ id: number; name: string }>>;
     min?: number;
@@ -73,4 +75,17 @@ export interface PollStats {
     rawVotes?: Array<{ id?: number; name: string; tiers?: any }>;
     responses?: Array<{ id?: number; name: string; text: string }>;
     days?: any[];
+}
+
+/**
+ * Seguimiento de participación de una encuesta. En las encuestas anónimas el
+ * servidor manda los conteos pero deja las listas vacías: saber quién falta
+ * equivale a saber quién votó.
+ */
+export interface PollParticipation {
+    totalParticipants: number;
+    votedCount: number;
+    pendingCount: number;
+    voted: Array<{ id: number; name: string }>;
+    pending: Array<{ id: number; name: string }>;
 }

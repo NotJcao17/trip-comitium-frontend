@@ -186,3 +186,99 @@
   background: rgba(255, 255, 255, 0.05);
   color: var(--mono-muted);
 }
+
+/* --- Seguimiento de participación --- */
+
+.participation-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.participation-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.participation-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.participation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.participation-chip.done {
+  background: rgba(79, 126, 101, 0.25);
+  border: 1px solid var(--sage-500);
+  color: var(--sage-200);
+}
+
+.participation-chip.pending {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+}
+
+.participation-track {
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.participation-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--sage-400);
+  transition: width 0.4s ease;
+}
+
+/* Las dos listas comparten fila cuando hay sitio y se apilan cuando no.
+   Cada una se puede encoger: los nombres largos no deben estirar la caja. */
+.participation-lists {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+
+  > * {
+    min-width: 0;
+    flex: 1 1 220px;
+  }
+}
+
+/* --- Detalle de un día del heatmap --- */
+
+.day-detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.day-detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.day-detail-tag.available { color: var(--sage-300); }
+.day-detail-tag.unavailable { color: #f87171; }

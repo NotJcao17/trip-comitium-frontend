@@ -42,6 +42,8 @@
   transition: var(--anim-fast);
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
   touch-action: none;
 }
 

@@ -18,10 +18,19 @@
   transition: width var(--anim-smooth);
 }
 
+.heatmap-stats-box {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .calendar-grid-admin {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .admin-day-cell {
@@ -35,6 +44,11 @@
   font-size: 0.78rem;
   border: 1px solid var(--mono-border);
   transition: var(--anim-fast);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
 }
 
 .admin-day-cell:hover:not(.empty) {

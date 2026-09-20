@@ -140,6 +140,10 @@
   color: #ffffff;
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid transparent;
   transition: all 0.15s ease;

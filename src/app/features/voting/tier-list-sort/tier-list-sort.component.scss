@@ -119,6 +119,15 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* Rellena lo que sobra de la fila para que soltar ahí cuente como "al final". */
+.tier-end-slot {
+  flex: 1 1 24px;
+  min-width: 24px;
+  align-self: stretch;
+  min-height: 40px;
+  cursor: default;
+}
+
 .tier-item-placeholder {
   opacity: 0.35;
   border: 1px dashed var(--sage-400);

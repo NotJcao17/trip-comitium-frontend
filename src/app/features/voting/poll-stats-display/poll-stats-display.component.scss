@@ -174,8 +174,13 @@
   text-align: left;
 }
 
+/* `thead th` gana en especificidad (Angular le suma atributos a cada selector)
+   y le ponía el fondo translúcido: los títulos que pasaban por debajo se veían. */
 .tier-matrix thead .tier-matrix-name-col {
   z-index: 3;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
+    var(--bg-darkest, #0e0f10);
   color: var(--mono-muted);
 }
 

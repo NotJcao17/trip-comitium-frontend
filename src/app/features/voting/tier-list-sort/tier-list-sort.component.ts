@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, inject, CUSTOM_ELEMENTS_SCHEMA, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Poll, PollOptionImage } from '../../../models/poll.interface';
 import { PollService } from '../../../services/poll.service';
 import { AuthService } from '../../../services/auth.service';
@@ -140,39 +140,30 @@ export class TierListSortComponent implements OnInit {
   drop(event: CdkDragDrop<string[]>) {
     if (this.poll.status === 'locked') return;
 
-    const sameList = event.previousContainer === event.container;
-    const currentIndex = this.isPastLastItem(event)
-      ? event.container.data.length - (sameList ? 1 : 0)
-      : event.currentIndex;
-
-    if (sameList) {
-      moveItemInArray(event.container.data, event.previousIndex, currentIndex);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        currentIndex,
+        event.currentIndex,
       );
     }
   }
 
   /**
-   * Con orientación "mixed" el CDK solo reordena cuando el puntero pasa sobre otro
-   * elemento; si sueltas en el hueco vacío al final de la fila, lo mete *antes* del
-   * elemento más cercano. Aquí detectamos ese caso para mandarlo al final.
+   * Cada fila termina con un hueco invisible (`.tier-end-slot`) que ocupa el espacio
+   * libre. Con orientación "mixed" el CDK solo reordena al pasar sobre un elemento, así
+   * que sin él, soltar en el espacio vacío metía la opción *antes* de la más cercana.
+   * Este predicado evita que algo se acomode después del hueco: siempre es el último.
+   * Mientras se arrastra, la lista interna incluye la opción arrastrada (de esta u otra
+   * fila), así que el hueco está en `data.length` (misma fila) o `data.length + 1`.
    */
-  private isPastLastItem(event: CdkDragDrop<string[]>): boolean {
-    const dragged = event.item.element.nativeElement;
-    const others = Array.from(
-      event.container.element.nativeElement.querySelectorAll<HTMLElement>('.tier-drag-item')
-    ).filter(el => el !== dragged && !el.classList.contains('cdk-drag-placeholder'));
-    if (others.length === 0) return false;
-
-    const last = others[others.length - 1].getBoundingClientRect();
-    const { x, y } = event.dropPoint;
-    return y > last.bottom || (y >= last.top && x > last.right);
-  }
+  keepEndSlotLast = (index: number, drag: CdkDrag, drop: CdkDropList<string[]>): boolean => {
+    const endSlotIndex = drop.data.length + (drag.dropContainer === drop ? 0 : 1);
+    return index < endSlotIndex;
+  };
 
   moveToTier(item: string, currentTierId: string, targetTierId: string) {
     if (this.poll.status === 'locked' || currentTierId === targetTierId) return;

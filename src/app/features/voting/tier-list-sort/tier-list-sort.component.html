@@ -39,6 +39,7 @@
         [id]="'tier-' + tier.id"
         [cdkDropListData]="tier.items" 
         [cdkDropListConnectedTo]="connectedLists"
+        [cdkDropListSortPredicate]="keepEndSlotLast"
         (cdkDropListDropped)="drop($event)">
 
         <div *ngFor="let item of tier.items" class="tier-drag-item" cdkDrag>
@@ -54,6 +55,9 @@
           </button>
           <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
         </div>
+
+        <!-- Hueco del final: soltar en el espacio libre deja la opción al final -->
+        <div *ngIf="tier.items.length" class="tier-end-slot" cdkDrag cdkDragDisabled aria-hidden="true"></div>
 
       </div>
     </div>
@@ -73,6 +77,7 @@
       id="tier-Unranked"
       [cdkDropListData]="tiers[5].items" 
       [cdkDropListConnectedTo]="connectedLists"
+      [cdkDropListSortPredicate]="keepEndSlotLast"
       (cdkDropListDropped)="drop($event)">
 
       <div *ngFor="let item of tiers[5].items" class="tier-drag-item pool-item" cdkDrag>
@@ -88,6 +93,8 @@
         </button>
         <div *cdkDragPlaceholder class="tier-item-placeholder"></div>
       </div>
+
+      <div *ngIf="tiers[5].items.length" class="tier-end-slot" cdkDrag cdkDragDisabled aria-hidden="true"></div>
 
       <p *ngIf="tiers[5].items.length === 0" class="text-muted small m-0 text-center w-100 py-3 fst-italic">
         <iconify-icon icon="solar:check-circle-bold" width="16" class="text-sage me-1"></iconify-icon>

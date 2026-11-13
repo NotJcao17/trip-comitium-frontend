@@ -35,7 +35,8 @@
       <div 
         class="tier-drop-zone flex-grow-1 p-2 d-flex flex-wrap gap-2 align-items-center" 
         cdkDropList
-        [id]="'tier-' + tier.id" 
+        cdkDropListOrientation="mixed"
+        [id]="'tier-' + tier.id"
         [cdkDropListData]="tier.items" 
         [cdkDropListConnectedTo]="connectedLists"
         (cdkDropListDropped)="drop($event)">
@@ -67,8 +68,9 @@
 
     <div 
       class="pool-drop-zone d-flex flex-wrap gap-2 p-2"
-      cdkDropList 
-      id="tier-Unranked" 
+      cdkDropList
+      cdkDropListOrientation="mixed"
+      id="tier-Unranked"
       [cdkDropListData]="tiers[5].items" 
       [cdkDropListConnectedTo]="connectedLists"
       (cdkDropListDropped)="drop($event)">

@@ -140,16 +140,38 @@ export class TierListSortComponent implements OnInit {
   drop(event: CdkDragDrop<string[]>) {
     if (this.poll.status === 'locked') return;
 
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    const sameList = event.previousContainer === event.container;
+    const currentIndex = this.isPastLastItem(event)
+      ? event.container.data.length - (sameList ? 1 : 0)
+      : event.currentIndex;
+
+    if (sameList) {
+      moveItemInArray(event.container.data, event.previousIndex, currentIndex);
     } else {
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex,
+        currentIndex,
       );
     }
+  }
+
+  /**
+   * Con orientación "mixed" el CDK solo reordena cuando el puntero pasa sobre otro
+   * elemento; si sueltas en el hueco vacío al final de la fila, lo mete *antes* del
+   * elemento más cercano. Aquí detectamos ese caso para mandarlo al final.
+   */
+  private isPastLastItem(event: CdkDragDrop<string[]>): boolean {
+    const dragged = event.item.element.nativeElement;
+    const others = Array.from(
+      event.container.element.nativeElement.querySelectorAll<HTMLElement>('.tier-drag-item')
+    ).filter(el => el !== dragged && !el.classList.contains('cdk-drag-placeholder'));
+    if (others.length === 0) return false;
+
+    const last = others[others.length - 1].getBoundingClientRect();
+    const { x, y } = event.dropPoint;
+    return y > last.bottom || (y >= last.top && x > last.right);
   }
 
   moveToTier(item: string, currentTierId: string, targetTierId: string) {
